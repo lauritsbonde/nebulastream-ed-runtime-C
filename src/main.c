@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <math.h>
-#include "logger.h"
+#include "logger/logger.h"
 
 //Macros
 #define ARRAY_SIZE(arr) (sizeof(arr)/sizeof(*arr))

@@ -3,7 +3,7 @@
 main:    #target name
 	make clean
 	mkdir build
-	gcc ./src/*.c -o ./build/EDRuntime -Wall
+	gcc ./src/*/*.c ./src/*.c -o ./build/EDRuntime -Wall
 	echo "Build to build folder"
 
 buildAndRun: 
