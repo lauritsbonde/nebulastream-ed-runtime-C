@@ -1,16 +1,22 @@
 .SILENT: build clean
-build:    #target name
-	mkdir -p build
-	gcc -o ./build/main ./src/main.c
-	echo "Buil to build folder"
+
+main:    #target name
+	make clean
+	mkdir build
+	gcc ./src/*/*.c ./src/*.c -o ./build/EDRuntime -Wall
+	echo "Build to build folder"
 
 buildAndRun: 
-	make build
-	./build/main
+	make main
+	./build/EDRuntime
+
+buildAndRunLogs: 
+	make main
+	./build/EDRuntime log
 
 buildAndTest: 
 	echo "Not implemented"
 
 clean:
-	rm -r build
+	rm -rf build
 	echo "Cleaned!"

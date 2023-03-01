@@ -92,4 +92,7 @@ dkms.conf
 ### Ignore build ###
 build/*
 
+### Ignore log ###
+/log.txt
+
 # End of https://www.toptal.com/developers/gitignore/api/c,visualstudiocode,git
