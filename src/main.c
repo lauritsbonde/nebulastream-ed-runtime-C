@@ -59,12 +59,12 @@ int main(int argc, char **argv) {
 
     pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
 
-    uint32_t instr = EndDeviceProtocol_ExpressionInstructions_ADD;
+    // uint32_t instr = EndDeviceProtocol_ExpressionInstructions_ADD;
     
-    pb_callback_t instructions = {instr};
+    // pb_callback_t instructions = {instr};
 
-    map.attribute = 1;
-    map.function = instructions;
+    // map.attribute = 1;
+    // map.function.arg = instr;
 
     status = pb_encode(&stream, EndDeviceProtocol_MapOperation_fields, &map);
 

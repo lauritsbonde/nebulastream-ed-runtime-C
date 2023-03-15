@@ -1,6 +1,11 @@
 # shamelessly stolen and modified from https://spin.atomicobject.com/2016/08/26/makefile-c-projects/
 # include protoc specific rules from nanopb
-include ./external/nanopb/extra/nanopb.mk
+UNAME := $(shell uname)
+ifeq ($(UNAME), Linux)
+include ./external/linux/nanopb/extra/nanopb.mk
+else ifeq ($(UNAME), Darwin)
+include ./external/mac/nanopb/extra/nanopb.mk
+endif
 
 # Name of target executable
 TARGET_EXEC ?= EDRuntime
@@ -20,7 +25,11 @@ DEPS := $(OBJS:.o=.d)
 
 # and include them for the compiler
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
-INC_DIRS += ./external/nanopb
+ifeq ($(UNAME), Linux)
+INC_DIRS += ./external/linux/nanopb
+else ifeq ($(UNAME), Darwin)
+INC_DIRS += ./external/mac/nanopb
+endif
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CFLAGS := $(INC_FLAGS)
@@ -58,10 +67,13 @@ clean:
 
 MKDIR_P ?= mkdir -p
 
+echo: 
+	echo $(INC_FLAGS)
+
 main:    #target name
 	make clean
 	$(MKDIR_P) ./build
-	$(CC) -I./external/nanopb $(SRC_DIRS)/*/*.c $(SRC_DIRS)/*.c -o $(BUILD_DIR)/EDRuntime -Wall -v
+	$(CC) $(CFLAGS) $(SRC_DIRS)/*/*.c $(SRC_DIRS)/*.c -o $(BUILD_DIR)/EDRuntime -Wall
 	echo "Build to build folder"
 
 buildAndRun: 

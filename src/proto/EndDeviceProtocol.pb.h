@@ -266,7 +266,7 @@ X(a, STATIC,   ONEOF,    MESSAGE,  (operation,window,operation.window),   3)
 X(a, CALLBACK, REPEATED, MESSAGE,  operations,        1)
 #define EndDeviceProtocol_Query_CALLBACK pb_default_field_callback
 #define EndDeviceProtocol_Query_DEFAULT NULL
-#define EndDeviceProtocol_Query_operations_MSGTYPE EndDeviceProtocol_Operation
+#define EndDeviceProtocol_Query_operations_MSGTYPE EndDeviceProtocol_MapOperation
 
 #define EndDeviceProtocol_Message_FIELDLIST(X, a) \
 X(a, CALLBACK, REPEATED, MESSAGE,  queries,           1)
