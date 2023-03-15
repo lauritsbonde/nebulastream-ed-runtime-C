@@ -31,3 +31,10 @@ const int CEIL = 17;
 const int FLOOR = 18;
 const int ROUND = 19;
 const int ABS = 20;
+
+typedef struct Expression {
+    int* program;
+    int pc;
+    int* stack;
+} Expression;
+

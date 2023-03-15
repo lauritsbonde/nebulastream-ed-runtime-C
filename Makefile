@@ -3,8 +3,14 @@
 main:    #target name
 	make clean
 	mkdir build
-	gcc ./src/*/*.c ./src/*.c -o ./build/EDRuntime -Wall
+	gcc -I/opt/homebrew/Cellar/protobuf-c/1.4.1_1/include -L/opt/homebrew/Cellar/protobuf-c/1.4.1_1/lib -lprotobuf-c ./src/*/*.c ./src/*.c -o ./build/EDRuntime -Wall
 	echo "Build to build folder"
+
+# main:    #target name
+# 	make clean
+# 	mkdir build
+# 	gcc -I/opt/homebrew/Cellar/protobuf-c/1.4.1_1/include -L/opt/homebrew/Cellar/protobuf-c/1.4.1_1/lib -lprotobuf-c ./src/*/*.c ./src/*.c -o ./build/EDRuntime -Wall
+# 	echo "Build to build folder"
 
 buildAndRun: 
 	make main

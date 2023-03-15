@@ -1,22 +1,38 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <math.h>
+#include <stdlib.h>
 #include "logger/logger.h"
 #include "operators/operators.h"
+#include "protocol/protocol.h"
 
 //Macros
 #define ARRAY_SIZE(arr) (sizeof(arr)/sizeof(*arr))
 #define SLEEP_SEC(t) (usleep(t * (int)pow(10, 6))) // sleep in seconds
 
 int* mapFunction(int* arr, int size) {
-  printf("Map function called\n");
-  printf("Array size: %d\n", size);
   for(int i = 0; i < size; i++) {
-    printf("Array element: %d, ", arr[i]);
     arr[i] = arr[i] * 2;
   }
-  printf("\n");
   return arr;
+}
+
+int* filterFunction(int* arr, int size){
+  int* newArr = malloc(size * sizeof(int));
+  int j = 0;
+
+  for(int i = 0; i < size; i++) {
+    if(arr[i] > 7) {
+      newArr[j] = arr[i];
+      j++;
+    }
+  }
+
+  if(j < size){
+    newArr = realloc(newArr, j * sizeof(int));
+  }
+
+  return newArr;
 }
 
 int main(int argc, char **argv) {
@@ -32,21 +48,9 @@ int main(int argc, char **argv) {
   while(1) {
     printf("Main loop iteration\n");
     //TODO: Create a protobuf message
+    uint16_t rawMsg[] = {\n\x12\n\x10\n\x0e\n\x02\x08\x00\n\x02\x10\x08\n\x02\x08\n\x10\x01}
     
-
-    struct Map map;
-    int arr[5] = {1, 2, 3, 4, 5};
-    map.fun = mapFunction;
-    map.arraySize = ARRAY_SIZE(arr);
-    map.array = arr;
-
-    map.array = map.fun(map.array, map.arraySize);
-
-    printf("Map function result:\n");
-
-    for(int i = 0; i < map.arraySize; i++) {
-      printf("%d\n", map.array[i]);
-    }
+    decodeInputMsg(rawMsg);
 
     //TODO: "Send" the message somewhere
     //TODO: "Receive" the message somewhere

@@ -99,9 +99,10 @@ message Operation {
         WindowOperation window = 3;    
     }
 }
+
 message Query {
     //bytes resultType = 1; //For some reason minipb breaks if I make this a repeated enum or int32
-    repeated Operation operations = 1;
+    repeated MapOperation operations = 1;
     
 }
 
