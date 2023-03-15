@@ -3,6 +3,9 @@
 #include <math.h>
 #include <stdlib.h>
 #include "logger/logger.h"
+#include "proto/EndDeviceProtocol.pb.h"
+#include <pb_encode.h>
+#include <pb_decode.h>
 #include "operators/operators.h"
 #include "protocol/protocol.h"
 
@@ -48,9 +51,32 @@ int main(int argc, char **argv) {
   while(1) {
     printf("Main loop iteration\n");
     //TODO: Create a protobuf message
-    uint16_t rawMsg[] = {\n\x12\n\x10\n\x0e\n\x02\x08\x00\n\x02\x10\x08\n\x02\x08\n\x10\x01}
+    uint8_t buffer[128];
+    size_t message_length;
+    bool status;
+
+    EndDeviceProtocol_MapOperation map = EndDeviceProtocol_MapOperation_init_zero;
+
+    pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+
+    uint32_t instr = EndDeviceProtocol_ExpressionInstructions_ADD;
     
-    decodeInputMsg(rawMsg);
+    pb_callback_t instructions = {instr};
+
+    map.attribute = 1;
+    map.function = instructions;
+
+    status = pb_encode(&stream, EndDeviceProtocol_MapOperation_fields, &map);
+
+    if(!status){
+      printf("Encoding failed: %s\n", PB_GET_ERROR(&stream));
+    } else {
+      printf("Succes!");
+      for(int i = 0; i < 128; i++){
+        printf("%d", buffer[i]);
+      };
+      printf("\n done \n");
+    }
 
     //TODO: "Send" the message somewhere
     //TODO: "Receive" the message somewhere

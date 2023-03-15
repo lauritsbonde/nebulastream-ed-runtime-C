@@ -57,3 +57,13 @@ clean:
 -include $(DEPS)
 
 MKDIR_P ?= mkdir -p
+
+main:    #target name
+	make clean
+	$(MKDIR_P) ./build
+	$(CC) -I./external/nanopb $(SRC_DIRS)/*/*.c $(SRC_DIRS)/*.c -o $(BUILD_DIR)/EDRuntime -Wall -v
+	echo "Build to build folder"
+
+buildAndRun: 
+	make main
+	$(BUILD_DIR)/EDRuntime

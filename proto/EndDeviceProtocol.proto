@@ -102,8 +102,7 @@ message Operation {
 
 message Query {
     //bytes resultType = 1; //For some reason minipb breaks if I make this a repeated enum or int32
-    repeated MapOperation operations = 1;
-    
+    repeated MapOperation operations = 1;   
 }
 
 message Message {

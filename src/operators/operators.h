@@ -35,8 +35,8 @@ typedef struct {
   struct Expression* expression;
 } Operator;
 
-struct Query {
+typedef struct _Query {
   struct Map* operations;
-};
+} Query;
 
 
