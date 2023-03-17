@@ -6,37 +6,57 @@
 //   int (*call) (int *func);
 // };
 
-struct Instruction {
+typedef struct _Instruction
+{
   int type;
-};
+} Instruction;
 
-struct Expression {
-  int* Instruction;
-};
+typedef struct _Expression
+{
+  int *Instruction;
+} Expression;
 
-struct Map {
-  struct Expression* expression;
+typedef struct _Map
+{
+  Expression *expression;
   int attribute;
-};
+} Map;
 
-struct Filter {
-  struct Expression* predicate;
-};
+typedef struct _Filter
+{
+  Expression *predicate;
+} Filter;
 
 // struct Operator {
 //   int* array;
 //   int arraySize;
-//   int* (*fun) (int* arr, int size); 
+//   int* (*fun) (int* arr, int size);
 // };
 
-//TODO: Kig på at lave unions af Filter og Map
+// TODO: Kig på at lave unions af Filter og Map
 
-typedef struct {
-  struct Expression* expression;
+typedef struct _Operator
+{
+  Expression *expression;
 } Operator;
 
-typedef struct _Query {
-  struct Map* operations;
+typedef struct _Query
+{
+  Map *operations;
 } Query;
 
+typedef struct _Message
+{
+  Query *queries;
+} Message;
 
+typedef struct _QueryResponse
+{
+  int id;
+  Instruction *response;
+} QueryResponse;
+
+typedef struct _OutputMessage
+{
+  QueryResponse responses;
+} OutputMessage;

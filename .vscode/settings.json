@@ -4,6 +4,8 @@
 		"locale": "c",
 		"protocol.h": "c",
 		"array": "c",
-		"vector": "c"
+		"vector": "c",
+		"operators.h": "c",
+		"enddeviceprotocol.pb.h": "c"
 	}
 }
