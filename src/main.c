@@ -2,11 +2,13 @@
 #include <unistd.h>
 #include <math.h>
 #include <stdlib.h>
-#include "logger/logger.h"
-#include "proto/EndDeviceProtocol.pb.h"
 #include <pb_encode.h>
 #include <pb_decode.h>
+
+#include "logger/logger.h"
+#include "proto/EndDeviceProtocol.pb.h"
 #include "protocol/protocol.h"
+#include "./operators/operators.h"
 
 // Macros
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
@@ -28,12 +30,12 @@ int main(int argc, char **argv)
 
   while (1)
   {
-    printf("Main loop iteration\n");
-    // TODO: Create a protobuf message
-    uint8_t buffer[128];
+    uint8_t buffer[128]; // a buffer to hold the encoded message
     size_t message_length;
     bool status;
 
+    printf("Main loop iteration\n");
+    // TODO: Create a protobuf message
     EndDeviceProtocol_MapOperation map = EndDeviceProtocol_MapOperation_init_zero;
 
     pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
@@ -50,7 +52,7 @@ int main(int argc, char **argv)
 
     if (!status)
     {
-      printf("Encoding failed: %s\n", PB_GET_ERROR(&stream));
+      printf("Encoding failed: %s\n", PB_GET_ESERROR(&stream));
     }
     else
     {
