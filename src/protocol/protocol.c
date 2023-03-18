@@ -73,13 +73,16 @@ bool messageCallback(pb_istream_t *istream, pb_ostream_t *ostream, const pb_fiel
     PB_UNUSED(istream);
     if (ostream != NULL && field->tag == EndDeviceProtocol_Message_queries_tag)
     {
-        EndDeviceProtocol_Query queries = {};
+        EndDeviceProtocol_Query queries = EndDeviceProtocol_Query_init_zero;
 
         while (field->pData != NULL)
         {
-            queries.operations =
+            if(!queryCallback(istream, ostream, field)){
+                return false;
+            }
         }
     }
+    return true;
 }
 
 bool queryCallback(pb_istream_t *istream, pb_ostream_t *ostream, const pb_field_iter_t *field)
@@ -88,13 +91,16 @@ bool queryCallback(pb_istream_t *istream, pb_ostream_t *ostream, const pb_field_
     if (ostream != NULL && field->tag == EndDeviceProtocol_Query_operations_tag)
     {
         // TODO: change to operations
-        EndDeviceProtocol_MapOperation mapOperation = {};
+        EndDeviceProtocol_MapOperation mapOperation = EndDeviceProtocol_MapOperation_init_zero;
 
         while (field->pData != NULL)
         {
-            mapOperation.operations =
+            if(!mapCallback(istream, ostream, field)){
+                return false;
+            }
         }
     }
+    return true;
 }
 
 bool mapCallback(pb_istream_t *istream, pb_ostream_t *ostream, const pb_field_iter_t *field)
