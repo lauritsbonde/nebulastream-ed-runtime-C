@@ -6,6 +6,7 @@
 		"array": "c",
 		"vector": "c",
 		"operators.h": "c",
-		"enddeviceprotocol.pb.h": "c"
+		"enddeviceprotocol.pb.h": "c",
+		"operators.H": "cpp"
 	}
 }

@@ -64,20 +64,65 @@ EndDeviceProtocol_Message encodeInputMessage(Message message)
     size_t message_length;
     bool status;
 
-    EndDeviceProtocol_Message encodedMessage = EndDeviceProtocol_Message_init_zero;
-    encodedMessage.queries = ;
+    pb_ostream_t ostream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+
+    EndDeviceProtocol_MapOperation mapOperation = EndDeviceProtocol_MapOperation_init_zero;
+    EndDeviceProtocol_Query query = EndDeviceProtocol_Query_init_zero;
+    EndDeviceProtocol_Message msg = EndDeviceProtocol_Message_init_zero;
+
+    uint32_t instr = EndDeviceProtocol_ExpressionInstructions_ADD;
+
+    msg.queries.arg = message.queries;
+    msg.queries.funcs.encode = &encode;
+    
+
+    if(!pb_encode(&ostream, EndDeviceProtocol_Message_fields, &message)){
+        const char* err = PB_GET_ERROR(&ostream);
+        printf("pb_encode Error: %s", err);        
+    }
+    
 }
 
-bool messageCallback(pb_istream_t *istream, pb_ostream_t *ostream, const pb_field_iter_t *field)
+bool encode(pb_istream_t *istream, pb_ostream_t *ostream, const pb_field_iter_t *field)
 {
     PB_UNUSED(istream);
-    if (ostream != NULL && field->tag == EndDeviceProtocol_Message_queries_tag)
+    if (ostream != NULL){
+        if(field->tag == EndDeviceProtocol_MapOperation_function_tag){
+            EndDeviceProtocol_Data data = {};
+
+            while (field->pData != NULL)
+            {
+                if (!pb_encode_tag_for_field(ostream, field))
+                {
+                    return false;
+                }
+
+                if (!pb_encode_submessage(ostream, EndDeviceProtocol_Data_fields, &data))
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+bool mapCallback(pb_istream_t *istream, pb_ostream_t *ostream, const pb_field_iter_t *field)
+{
+    PB_UNUSED(istream);
+    if (ostream != NULL && field->tag == EndDeviceProtocol_MapOperation_function_tag)
     {
-        EndDeviceProtocol_Query queries = EndDeviceProtocol_Query_init_zero;
+        EndDeviceProtocol_Data data = {};
 
         while (field->pData != NULL)
         {
-            if(!queryCallback(istream, ostream, field)){
+            if (!pb_encode_tag_for_field(ostream, field))
+            {
+                return false;
+            }
+
+            if (!pb_encode_submessage(ostream, EndDeviceProtocol_Data_fields, &data))
+            {
                 return false;
             }
         }
@@ -103,22 +148,17 @@ bool queryCallback(pb_istream_t *istream, pb_ostream_t *ostream, const pb_field_
     return true;
 }
 
-bool mapCallback(pb_istream_t *istream, pb_ostream_t *ostream, const pb_field_iter_t *field)
+
+bool messageCallback(pb_istream_t *istream, pb_ostream_t *ostream, const pb_field_iter_t *field)
 {
     PB_UNUSED(istream);
-    if (ostream != NULL && field->tag == EndDeviceProtocol_MapOperation_function_tag)
+    if (ostream != NULL && field->tag == EndDeviceProtocol_Message_queries_tag)
     {
-        EndDeviceProtocol_Data data = {};
+        EndDeviceProtocol_Query queries = EndDeviceProtocol_Query_init_zero;
 
         while (field->pData != NULL)
         {
-            if (!pb_encode_tag_for_field(ostream, field))
-            {
-                return false;
-            }
-
-            if (!pb_encode_submessage(ostream, EndDeviceProtocol_Data_fields, &data))
-            {
+            if(!queryCallback(istream, ostream, field)){
                 return false;
             }
         }

@@ -5,14 +5,36 @@
 //   int (*call) (int *func);
 // };
 
+typedef enum _ExpressionInstruction {
+  CONST = 0,
+  VAR = 1,
+  AND = 2,
+  OR = 3,
+  NOT = 4,
+  LT = 5,
+  GT = 6,
+  EQ = 7,
+  ADD = 8,
+  SUB = 9,
+  MUL = 10,
+  DIV = 11,
+  MOD = 12
+} ExpressionInstruction;
+
 typedef struct _Instruction
 {
-  int type;
+  union {
+    ExpressionInstruction instruction;
+    uint32_t value;
+    int value;
+    float value;
+    double value;
+  } data;
 } Instruction;
 
 typedef struct _Expression
 {
-  int *Instruction;
+  int *instructions;
   int amount;
 } Expression;
 
