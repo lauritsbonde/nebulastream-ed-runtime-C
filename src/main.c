@@ -2,11 +2,9 @@
 #include <unistd.h>
 #include <math.h>
 #include <stdlib.h>
-#include <pb_encode.h>
-#include <pb_decode.h>
 
 #include "logger/logger.h"
-#include "proto/EndDeviceProtocol.pb.h"
+#include "../proto/EndDeviceProtocol.pb-c.h"
 #include "protocol/protocol.h"
 #include "./operators/operators.h"
 
@@ -40,15 +38,9 @@ int main(int argc, char **argv)
       {ADD}
     };
 
-    // Create an expression
-    Expression expression = {
-      instructions,
-      ARRAY_SIZE(instructions)
-    };
-
     // Create a map
     Map map = {
-      &expression,
+      instructions,
       1,
       1
     };
@@ -65,13 +57,18 @@ int main(int argc, char **argv)
       1
     };
 
-
     // Encode the message
-    EndDeviceProtocol_Message encodedMessage = endcodeInputMessage(message);
-
+    uint8_t buffer[1024];
+    int len = encodeInputMessage(message, buffer);
+    printf("Encoded message length: %d\n", len);
+    printf("Encoded message: ");
+    for (int i = 0; i < len; i++)
+    {
+      printf("%d ", buffer[i]);
+    }
+    printf("\n");
 
     SLEEP_SEC(3);
   }
-
   return 0;
 }

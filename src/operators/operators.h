@@ -25,10 +25,10 @@ typedef struct _Instruction
 {
   union {
     ExpressionInstruction instruction;
-    uint32_t value;
-    int value;
-    float value;
-    double value;
+    uint32_t _uint32;
+    int _int;
+    float _float;
+    double _double;
   } data;
 } Instruction;
 
@@ -40,7 +40,7 @@ typedef struct _Expression
 
 typedef struct _Map
 {
-  Expression *expression;
+  Instruction *function;
   int attribute;
   int amount;
 } Map;

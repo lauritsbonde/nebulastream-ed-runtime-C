@@ -28,7 +28,7 @@ INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 ifeq ($(UNAME), Linux)
 INC_DIRS += ./external/linux/nanopb
 else ifeq ($(UNAME), Darwin)
-INC_DIRS += ./external/mac/nanopb
+INC_DIRS += ./external/protobuf-c
 endif
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
@@ -52,6 +52,10 @@ $(BUILD_DIR)/%.c.o: %.c
 
 # special target to generate proto files. The rules for getting the *.pb.* files are in nanopb.mk
 proto: proto/EndDeviceProtocol.pb.c
+	$(MKDIR_P) $(SRC_DIRS)/proto
+	mv ./proto/*.pb.* $(SRC_DIRS)/proto/
+
+protoc: protoc --c_out=. ./proto/EndDeviceProtocol.proto
 	$(MKDIR_P) $(SRC_DIRS)/proto
 	mv ./proto/*.pb.* $(SRC_DIRS)/proto/
 
