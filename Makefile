@@ -4,7 +4,7 @@ UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
 include ./external/linux/nanopb/extra/nanopb.mk
 else ifeq ($(UNAME), Darwin)
-include ./external/mac/nanopb/extra/nanopb.mk
+include ./external/protobuf-c/Makefile
 endif
 
 # Name of target executable
