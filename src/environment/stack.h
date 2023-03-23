@@ -3,15 +3,16 @@
 
 #define STACK_SIZE 10
 
-typedef struct Stack {
+typedef struct _Stack
+{
     int top;
     int size;
     int stack[STACK_SIZE];
-} stack;
+} Stack;
 
-stack init_stack();
-void push(stack stack, int val);
-int pop(stack stack);
-void resize(stack stack);
+Stack init_stack();
+void push(Stack stack, int val);
+int pop(Stack stack);
+void resize(Stack stack);
 
 #endif /* STACK_H */
