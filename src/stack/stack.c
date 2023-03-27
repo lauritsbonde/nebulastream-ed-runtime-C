@@ -2,19 +2,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void init_stack(Stack *stack, int size)
+Stack *init_stack()
 {
-    stack->stack = (int *)malloc(size * sizeof(int));
-    stack->size = size;
+    Stack *stack = calloc(1, sizeof(Stack));
+    stack->stack = calloc(10, sizeof(int));
+    stack->size = 10;
     stack->top = -1;
     print_stack(stack);
+    return stack;
 }
 
 void push(Stack *stack, int val)
 {
     if (stack->top == stack->size - 1)
     {
-        resize(stack);
+        resize_stack(stack);
     }
     stack->top++;
     stack->stack[stack->top] = val;
@@ -27,10 +29,10 @@ int pop(Stack *stack)
 }
 
 // TODO: Optimal algorithm for stack resizing?
-void resize(Stack *stack)
+void resize_stack(Stack *stack)
 {
     stack->size += 10;
-    realloc(stack->stack, stack->size * sizeof(int));
+    stack->stack = realloc(stack->stack, stack->size * sizeof(int));
 }
 
 void print_stack(Stack *stack)

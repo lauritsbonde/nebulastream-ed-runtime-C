@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "logger/logger.h"
 #include "stack/stack.h"
+#include "environment/environment.h"
 #include "expression/expression.h"
 
 // Macros
@@ -27,20 +28,21 @@ int main(int argc, char **argv)
   while (1)
   {
     printf("main loop iteration\n");
-    Stack stack;
-    init_stack(&stack, 10);
+    Env *env = init_env();
+    env->env[0] = 10;
 
     Expression e;
     int p[5] = {
         0, // CONST
         1, // 1
-        0, // CONST
-        1, // 1
-        9, // Sub
+        1, // Var
+        0, // Index 0 (= 10)
+        8, // Add
     };
     e.program = p;
     e.p_size = 5;
-    e.stack = &stack;
+    e.env = env;
+    e.stack = get_stack(env);
 
     int res = call(&e);
     printf("result: %d \n", res);

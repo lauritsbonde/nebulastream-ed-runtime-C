@@ -15,7 +15,9 @@ void _CONST(Expression *e)
 
 void _VAR(Expression *e)
 {
-    return;
+    int index = e->program[++e->pc];
+    int val = get_value(e->env, index);
+    push(e->stack, val);
 }
 
 void _AND(Expression *e)
