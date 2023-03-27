@@ -76,7 +76,13 @@ main:    #target name
 	$(CC) $(CFLAGS) $(SRC_DIRS)/*/*.c $(SRC_DIRS)/*.c -o $(BUILD_DIR)/EDRuntime -Wall
 	echo "Build to build folder"
 
-buildAndRun:
+buildAndRun: 
+	make main
+	$(BUILD_DIR)/EDRuntime
+
+buildAndRunStack:
 	make clean
-	make all
+	$(MKDIR_P) ./build
+	echo ./src/*/*.c ./src/*.c
+	$(CC) $(SRC_DIRS)/*/*.c $(SRC_DIRS)/*.c -o $(BUILD_DIR)/EDRuntime -Wall
 	$(BUILD_DIR)/EDRuntime

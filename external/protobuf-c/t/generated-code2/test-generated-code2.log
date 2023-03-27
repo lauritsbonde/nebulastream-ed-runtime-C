@@ -1,0 +1,112 @@
+Test: small enums...  done.
+Test: big enums...  done.
+Test: test field numbers...  done.
+Test: test required int32...  done.
+Test: test required sint32...  done.
+Test: test required sfixed32...  done.
+Test: test required int64...  done.
+Test: test required sint64...  done.
+Test: test required sfixed64...  done.
+Test: test required uint32...  done.
+Test: test required fixed32...  done.
+Test: test required uint64...  done.
+Test: test required fixed64...  done.
+Test: test required float...  done.
+Test: test required double...  done.
+Test: test required bool...  done.
+Test: test required TestEnumSmall...  done.
+Test: test required TestEnum...  done.
+Test: test required string...  done.
+Test: test required bytes...  done.
+Test: test required SubMess...  done.
+Test: test empty optional...  done.
+Test: test optional int32...  done.
+Test: test optional sint32...  done.
+Test: test optional sfixed32...  done.
+Test: test optional int64...  done.
+Test: test optional sint64...  done.
+Test: test optional sfixed64...  done.
+Test: test optional uint32...  done.
+Test: test optional fixed32...  done.
+Test: test optional uint64...  done.
+Test: test optional fixed64...  done.
+Test: test optional float...  done.
+Test: test optional double...  done.
+Test: test optional bool...  done.
+Test: test optional TestEnumSmall...  done.
+Test: test optional TestEnum...  done.
+Test: test optional string...  done.
+Test: test optional bytes...  done.
+Test: test optional SubMess...  done.
+Test: test empty oneof...  done.
+Test: test oneof int32...  done.
+Test: test oneof sint32...  done.
+Test: test oneof sfixed32...  done.
+Test: test oneof int64...  done.
+Test: test oneof sint64...  done.
+Test: test oneof sfixed64...  done.
+Test: test oneof uint32...  done.
+Test: test oneof fixed32...  done.
+Test: test oneof uint64...  done.
+Test: test oneof fixed64...  done.
+Test: test oneof float...  done.
+Test: test oneof double...  done.
+Test: test oneof bool...  done.
+Test: test oneof TestEnumSmall...  done.
+Test: test oneof TestEnum...  done.
+Test: test oneof string...  done.
+Test: test oneof bytes...  done.
+Test: test oneof SubMess...  done.
+Test: test oneof message check...  done.
+Test: test merged oneof unpack...  done.
+Test: test empty repeated...  done.
+Test: test repeated int32...  done.
+Test: test repeated sint32...  done.
+Test: test repeated sfixed32...  done.
+Test: test repeated uint32...  done.
+Test: test repeated int64...  done.
+Test: test repeated sint64...  done.
+Test: test repeated sfixed64...  done.
+Test: test repeated fixed32...  done.
+Test: test repeated uint64...  done.
+Test: test repeated fixed64...  done.
+Test: test repeated float...  done.
+Test: test repeated double...  done.
+Test: test repeated boolean...  done.
+Test: test repeated TestEnumSmall...  done.
+Test: test repeated TestEnum...  done.
+Test: test repeated string...  done.
+Test: test repeated bytes...  done.
+Test: test repeated SubMess...  done.
+Test: test packed repeated int32...  done.
+Test: test packed repeated sint32...  done.
+Test: test packed repeated sfixed32...  done.
+Test: test packed repeated uint32...  done.
+Test: test packed repeated int64...  done.
+Test: test packed repeated sint64...  done.
+Test: test packed repeated sfixed64...  done.
+Test: test packed repeated fixed32...  done.
+Test: test packed repeated uint64...  done.
+Test: test packed repeated fixed64...  done.
+Test: test packed repeated float...  done.
+Test: test packed repeated double...  done.
+Test: test packed repeated boolean...  done.
+Test: test packed repeated TestEnumSmall...  done.
+Test: test packed repeated TestEnum...  done.
+Test: test unknown fields...  done.
+Test: test enum lookups...  done.
+Test: test message lookups...  done.
+Test: test required default values...  done.
+Test: test optional default values...  done.
+Test: test optional lowercase enum default value...  done.
+Test: test field merge...  done.
+Test: test submessage merge...  done.
+Test: test free unpacked...  done.
+Test: test alloc failure...  done.
+Test: test free unpacked input check for null message...  done.
+Test: test free unpacked input check for null repeated field...  done.
+Test: test required_fields_bitmap...  done.
+Test: test field flags...  done.
+Test: test message_check()...  done.
+Test: test freeing NULL...  done.
+PASS t/generated-code2/test-generated-code2 (exit status: 0)

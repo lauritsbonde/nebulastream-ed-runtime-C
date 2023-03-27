@@ -3,10 +3,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include "logger/logger.h"
-#include "proto/EndDeviceProtocol.pb.h"
-#include <pb_encode.h>
-#include <pb_decode.h>
-#include "protocol/protocol.h"
+#include "stack/stack.h"
+#include "expression/expression.h"
 
 // Macros
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
@@ -28,54 +26,24 @@ int main(int argc, char **argv)
 
   while (1)
   {
-    printf("Main loop iteration\n");
-    // TODO: Create a protobuf message
-    uint8_t buffer[128];
-    size_t message_length;
-    bool status;
+    printf("main loop iteration\n");
+    Stack stack;
+    init_stack(&stack, 10);
 
-    EndDeviceProtocol_MapOperation map = EndDeviceProtocol_MapOperation_init_zero;
+    Expression e;
+    int p[5] = {
+        0, // CONST
+        1, // 1
+        0, // CONST
+        1, // 1
+        9, // Sub
+    };
+    e.program = p;
+    e.p_size = 5;
+    e.stack = &stack;
 
-    pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
-
-    uint32_t instr = EndDeviceProtocol_ExpressionInstructions_ADD;
-
-    // pb_callback_t instructions = {instr};
-
-    map.attribute = 22;
-    // map.function = instr;
-
-    status = pb_encode(&stream, EndDeviceProtocol_MapOperation_fields, &map);
-    message_length = stream.bytes_written;
-
-    if (!status)
-    {
-      printf("Encoding failed: %s\n", PB_GET_ERROR(&stream));
-    }
-    else
-    {
-      printf("Succes!");
-      for (int i = 0; i < 128; i++)
-      {
-        // TODO: "Send" the message somewhere
-        printf("%d", buffer[i]);
-      };
-      printf("\n done \n");
-    }
-
-    // TODO: "Receive" the message somewhere
-    EndDeviceProtocol_MapOperation mapout = EndDeviceProtocol_MapOperation_init_zero;
-    pb_istream_t in_stream = pb_istream_from_buffer(buffer, message_length);
-
-    status = pb_decode(&in_stream, EndDeviceProtocol_MapOperation_fields, &mapout);
-
-    if (!status)
-    {
-      printf("Decoding failed: %s\n", PB_GET_ERROR(&stream));
-    }
-    // TODO: Print the message content somewhere
-    printf("decoded message: %d \n", mapout.attribute);
-    logger("loop", "Main loop iteration");
+    int res = call(&e);
+    printf("result: %d \n", res);
     SLEEP_SEC(3);
   }
 
