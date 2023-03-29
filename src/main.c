@@ -4,6 +4,9 @@
 #include <stdlib.h>
 
 #include "logger/logger.h"
+#include "stack/stack.h"
+#include "environment/environment.h"
+#include "expression/expression.h"
 #include "../proto/EndDeviceProtocol.pb-c.h"
 #include "protocol/protocol.h"
 #include "./operators/operators.h"
@@ -28,46 +31,25 @@ int main(int argc, char **argv)
 
   while (1)
   {
-    printf("Main loop iteration\n");
-    
-    // Create a message
-    // Start with data/instruction
-    Instruction instructions[] = {
-      {CONST, 1},
-      {CONST, 2},
-      {ADD}
+    printf("main loop iteration\n");
+    Env *env = init_env();
+    env->env[0] = 10;
+
+    Expression e;
+    int p[5] = {
+        0, // CONST
+        1, // 1
+        1, // Var
+        0, // Index 0 (= 10)
+        8, // Add
     };
+    e.program = p;
+    e.p_size = 5;
+    e.env = env;
+    e.stack = get_stack(env);
 
-    // Create a map
-    Map map = {
-      instructions,
-      1,
-      1
-    };
-
-    // Create a query
-    Query query = {
-      &map,
-      1
-    };
-
-    // Create a message
-    Message message = {
-      &query,
-      1
-    };
-
-    // Encode the message
-    uint8_t buffer[1024];
-    int len = encodeInputMessage(message, buffer);
-    printf("Encoded message length: %d\n", len);
-    printf("Encoded message: ");
-    for (int i = 0; i < len; i++)
-    {
-      printf("%d ", buffer[i]);
-    }
-    printf("\n");
-
+    int res = call(&e);
+    printf("result: %d \n", res);
     SLEEP_SEC(3);
   }
   return 0;

@@ -34,21 +34,19 @@ typedef struct _Instruction
 
 typedef struct _Expression
 {
-  int *instructions;
-  int amount;
-} Expression;
+  int *Instruction;
+} ExpressionT;
 
 typedef struct _Map
 {
-  Instruction *function;
+  ExpressionT *expression;
   int attribute;
   int amount;
 } Map;
 
 typedef struct _Filter
 {
-  Expression *predicate;
-  int amount;
+  ExpressionT *predicate;
 } Filter;
 
 // struct Operator {
@@ -61,8 +59,7 @@ typedef struct _Filter
 
 typedef struct _Operator
 {
-  Expression *expression;
-  int amount;
+  ExpressionT *expression;
 } Operator;
 
 typedef struct _Query
