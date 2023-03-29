@@ -1,6 +1,0 @@
-PACKAGE_VERSION = 1.4.1
-PROTOBUF_C_VERSION = 1.4.1
-PROTOBUF_C_VERSION_NUMBER = 1004001
-protobuf_c_version() = 1.4.1
-protobuf_c_version_number() = 1004001
-PASS t/version/version (exit status: 0)
