@@ -2,10 +2,14 @@
 #include <unistd.h>
 #include <math.h>
 #include <stdlib.h>
+
 #include "logger/logger.h"
 #include "stack/stack.h"
 #include "environment/environment.h"
 #include "expression/expression.h"
+#include "../proto/EndDeviceProtocol.pb-c.h"
+#include "protocol/protocol.h"
+#include "./operators/operators.h"
 
 // Macros
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
@@ -48,6 +52,5 @@ int main(int argc, char **argv)
     printf("result: %d \n", res);
     SLEEP_SEC(3);
   }
-
   return 0;
 }
