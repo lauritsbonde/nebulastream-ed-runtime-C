@@ -4,6 +4,13 @@
 		"locale": "c",
 		"protocol.h": "c",
 		"array": "c",
-		"vector": "c"
+		"vector": "c",
+		"operators.h": "c",
+		"enddeviceprotocol.pb.h": "c",
+		"operators.H": "cpp",
+		"stdio.h": "c",
+		"enddeviceprotocol.pb-c.h": "c",
+		"string": "c",
+		"string_view": "c"
 	}
 }
