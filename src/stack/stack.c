@@ -5,14 +5,14 @@
 Stack *init_stack()
 {
     Stack *stack = calloc(1, sizeof(Stack));
-    stack->stack = calloc(10, sizeof(int));
+    stack->stack = calloc(10, sizeof(Number));
     stack->size = 10;
     stack->top = -1;
     print_stack(stack);
     return stack;
 }
 
-void push(Stack *stack, int val)
+void push(Stack *stack, Number val)
 {
     if (stack->top == stack->size - 1)
     {
@@ -22,7 +22,7 @@ void push(Stack *stack, int val)
     stack->stack[stack->top] = val;
 }
 
-int pop(Stack *stack)
+Number pop(Stack *stack)
 {
     // TODO: What if stack is empty?
     return stack->stack[stack->top--];

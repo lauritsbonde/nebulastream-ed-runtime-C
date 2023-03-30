@@ -8,8 +8,9 @@
 #include "environment/environment.h"
 #include "expression/expression.h"
 #include "../proto/EndDeviceProtocol.pb-c.h"
-#include "protocol/protocol.h"
+#include "./protocol/protocol.h"
 #include "./operators/operators.h"
+#include "./protocol/EncodeInput.h"
 
 // Macros
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
@@ -32,24 +33,13 @@ int main(int argc, char **argv)
   while (1)
   {
     printf("main loop iteration\n");
-    Env *env = init_env();
-    env->env[0] = 10;
 
-    Expression e;
-    int p[5] = {
-        0, // CONST
-        1, // 1
-        1, // Var
-        0, // Index 0 (= 10)
-        8, // Add
-    };
-    e.program = p;
-    e.p_size = 5;
-    e.env = env;
-    e.stack = get_stack(env);
+    Instruction test = {.data = 2, .unionCase = 3};
 
-    int res = call(&e);
-    printf("result: %d \n", res);
+    EndDeviceProtocol__Data *preparedData = prepare_instruction(&test);
+
+
+    
     SLEEP_SEC(3);
   }
   return 0;

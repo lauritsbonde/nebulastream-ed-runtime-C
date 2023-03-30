@@ -1,6 +1,10 @@
 #ifndef OPERATORS_H
 #define OPERATORS_H
 
+#include <stdlib.h>
+#include "../environment/environment.h"
+#include "../stack/stack.h"
+
 // struct Operator {
 //   int (*call) (int *func);
 // };
@@ -24,29 +28,34 @@ typedef enum _ExpressionInstruction {
 typedef struct _Instruction
 {
   union {
-    ExpressionInstruction instruction;
-    uint32_t _uint32;
-    int _int;
-    float _float;
-    double _double;
+    ExpressionInstruction instruction; // case 0
+    uint32_t _uint32;                  // case 1
+    int _int;                          // case 2
+    float _float;                      // case 3
+    double _double;                    // case 4
   } data;
+  int unionCase;
 } Instruction;
 
 typedef struct _Expression
 {
-  int *Instruction;
-} ExpressionT;
+  Instruction *program;
+  int p_size;
+  int pc;
+  Env *env;
+  Stack *stack;
+} Expression;
 
 typedef struct _Map
 {
-  ExpressionT *expression;
+  Expression *expression;
   int attribute;
   int amount;
 } Map;
 
 typedef struct _Filter
 {
-  ExpressionT *predicate;
+  Expression *predicate;
 } Filter;
 
 // struct Operator {
@@ -59,7 +68,7 @@ typedef struct _Filter
 
 typedef struct _Operator
 {
-  ExpressionT *expression;
+  Expression *expression;
 } Operator;
 
 typedef struct _Query

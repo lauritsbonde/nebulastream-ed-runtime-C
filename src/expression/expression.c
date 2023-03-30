@@ -1,32 +1,68 @@
 #include <math.h>
 #include "../stack/stack.h"
 #include "expression.h"
+#include "../operators/operators.h"
 
 // TODO: How do we handle functions that return doubles?
 // TODO: Fix linker errors with math.h functions.
-// TODO: Implement environment.
 
 void _CONST(Expression *e)
 {
     // push the next value from program as data to the stack
-    int val = e->program[++e->pc];
+    Number val;
+    val.unionCase = e->program[++e->pc].unionCase;
+
+    //TODO: check if 1 can be replaced with enum for instance?
+    if(val.unionCase == 1){
+        val.type._uint32 = e->program[e->pc].data._uint32;
+    }
+    else if (val.unionCase == 2){
+        val.type._int = e->program[e->pc].data._int;
+    }
+    else if (val.unionCase == 3) {
+        val.type._float = e->program[e->pc].data._float;
+    }
+    else if (val.unionCase == 4) {
+        val.type._double = e->program[e->pc].data._double;
+    }
+
     push(e->stack, val);
 }
 
 void _VAR(Expression *e)
 {
-    int index = e->program[++e->pc];
-    int val = get_value(e->env, index);
+    //TODO: check index is an int.
+    int index = e->program[++e->pc].data._int;
+    Number val = get_value(e->env, index);
     push(e->stack, val);
 }
 
 void _AND(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l2 && l1;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+
+    Number val = number_and(l1, l2);
+
     push(e->stack, val);
 }
+
+Number number_and(Number a, Number b){
+    Number number;
+    if (a.unionCase != b.unionCase) {
+    }
+
+    number.type._int = (int) a.type && (int) b.type;
+    return number;
+};
+
+// and two unions of the Number type
+int and(Number a, Number b){
+    if (a.unionCase != b.unionCase) {
+        a.type._uint32
+    }
+    return (int) a.type && (int) b.type;
+};
 
 void _OR(Expression *e)
 {
@@ -181,7 +217,7 @@ void _GTEQ(Expression *e)
 
 void execute_next(Expression *e)
 {
-    switch (e->program[e->pc])
+    switch (e->program[e->pc].data.instruction)
     {
     case 0:
         _CONST(e);

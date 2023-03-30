@@ -5,15 +5,15 @@
 
 typedef struct _Env
 {
-    int *env;
+    Number *env;
     int size;
     Stack *stack;
 } Env;
 
 Env *init_env();
 void clear_env(Env *env);
-int get_value(Env *env, int index);
-void set_value(Env *env, int index, int val);
+Number get_value(Env *env, int index);
+void set_value(Env *env, int index, Number val);
 void clear_stack(Env *env);
 Stack *get_stack(Env *env);
 
