@@ -1,8 +1,8 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include "../operators/operators.h"
 #include <stdlib.h>
+#include "../operators/operators.h"
 
 typedef struct _Number {
     union {

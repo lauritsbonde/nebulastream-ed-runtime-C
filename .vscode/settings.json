@@ -13,6 +13,7 @@
 		"string": "c",
 		"string_view": "c",
 		"encodeinput.h": "c",
-		"stdlib.h": "c"
+		"stdlib.h": "c",
+		"stack.h": "c"
 	}
 }

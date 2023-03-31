@@ -3,11 +3,11 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "logger/logger.h"
-#include "stack/stack.h"
-#include "environment/environment.h"
-#include "expression/expression.h"
-#include "../proto/EndDeviceProtocol.pb-c.h"
+#include "./logger/logger.h"
+#include "./stack/stack.h"
+#include "./environment/environment.h"
+#include "./expression/expression.h"
+#include "./proto/EndDeviceProtocol.pb-c.h"
 #include "./protocol/protocol.h"
 #include "./operators/operators.h"
 #include "./protocol/EncodeInput.h"

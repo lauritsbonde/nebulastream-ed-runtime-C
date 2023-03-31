@@ -42,103 +42,135 @@ void _AND(Expression *e)
     Number l2 = pop(e->stack);
     Number l1 = pop(e->stack);
 
-    Number val = number_and(l1, l2);
+    Number val;
+
+    //Number stores all different datatypes in the same bits
+    //Double is the largest datatype, so we can get all bits by "casting" to double
+    //TODO: Test if this is correct
+    val.type._int = l2.type._double && l1.type._double;
+    val.unionCase = 2;
 
     push(e->stack, val);
 }
 
-Number number_and(Number a, Number b){
-    Number number;
-    if (a.unionCase != b.unionCase) {
-    }
-
-    number.type._int = (int) a.type && (int) b.type;
-    return number;
-};
-
-// and two unions of the Number type
-int and(Number a, Number b){
-    if (a.unionCase != b.unionCase) {
-        a.type._uint32
-    }
-    return (int) a.type && (int) b.type;
-};
-
 void _OR(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l2 || l1;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val;
+
+    val.type._int = l2.type._double || l1.type._double;
+    val.unionCase = 2;
+
     push(e->stack, val);
 }
 
 void _NOT(Expression *e)
 {
-    int val = !pop(e->stack);
+    Number val;
+    val.type._int = !pop(e->stack).type._double;
+    val.unionCase = 2;
+
     push(e->stack, val);
 }
 
 void _LT(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 < l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val;
+    val.type._int = l1.type._double < l2.type._double;
+
     push(e->stack, val);
 }
 
 void _GT(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 > l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val;
+    val.type._int = l1.type._double > l2.type._double;
+
     push(e->stack, val);
 }
 
 void _EQ(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 == l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val;
+    val.type._int = l1.type._double == l2.type._double;
+    
     push(e->stack, val);
 }
 
 void _ADD(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 + l2;
+    Number val;
+    
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    val.type._int = l1.type._double + l2.type._double;
+    val.unionCase = 2;
     push(e->stack, val);
 }
 
 void _SUB(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 - l2;
+    Number val;
+    
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    val.type._double = l1.type._double - l2.type._double;
+    val.unionCase = 4;
     push(e->stack, val);
 }
 
 void _MUL(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 * l2;
+    Number val;
+    
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    val.type._double = l1.type._double * l2.type._double;
+    val.unionCase = 4;
     push(e->stack, val);
 }
 
 void _DIV(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 / l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val;
+
+    double res = l1.type._double / l2.type._double;
+
+    val.type._double = res;
+    val.unionCase = 4;
     push(e->stack, val);
 }
 
 void _MOD(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 % l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+
+    if(l1.unionCase != 2 || l2.unionCase != 2){
+        return; //TODO: Throw error (not int)
+    }
+    
+    Number val;
+
+    int res = l1.type._int % l2.type._int;
+
+    val.type._int = res;
+    val.unionCase = 2;
+    
     push(e->stack, val);
 }
 
@@ -201,17 +233,31 @@ void _ABS(Expression *e)
 
 void _LTEQ(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 <= l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val;
+
+    int res = l1.type._double <= l2.type._double;
+    
+    val.type._int = res;
+    val.unionCase = 2;
+
     push(e->stack, val);
 }
 
 void _GTEQ(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 >= l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+
+    Number val;
+
+    int res = l1.type._double >= l2.type._double;
+
+    val.type._int = res;
+    val.unionCase = 2;
+
     push(e->stack, val);
 }
 
@@ -300,8 +346,8 @@ int call(Expression *e)
         print_stack(e->stack);
         e->pc++;
     }
-    int val = pop(e->stack);
-    return val;
+    Number val = pop(e->stack);
+    return val.type._double;
 }
 
 // Instructions:
