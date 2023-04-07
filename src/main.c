@@ -34,11 +34,26 @@ int main(int argc, char **argv)
   {
     printf("main loop iteration\n");
 
-    Instruction test = {.data = 2, .unionCase = 3};
+    //Create a program
+    Env *env = init_env();
+    
+    Expression exp;
+    exp.env = env;
+    exp.stack = env->stack;
 
-    EndDeviceProtocol__Data *preparedData = prepare_instruction(&test);
+    Instruction i1 = {0, 0};
 
+    Instruction p[5] = {
+        {0, 0},
+        {2.1, 4},
+        {0, 0},
+        {1, 2},
+        {6, 0}};
 
+    exp.program = p;
+    exp.p_size = 5;
+
+    call(&exp);
     
     SLEEP_SEC(3);
   }

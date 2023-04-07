@@ -14,6 +14,8 @@
 		"string_view": "c",
 		"encodeinput.h": "c",
 		"stdlib.h": "c",
-		"stack.h": "c"
-	}
+		"stack.h": "c",
+		"stack": "c"
+	},
+	"cmake.configureOnOpen": false
 }

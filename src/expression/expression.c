@@ -1,10 +1,535 @@
 #include <math.h>
+#include <stdio.h>
 #include "../stack/stack.h"
 #include "expression.h"
 #include "../operators/operators.h"
 
 // TODO: How do we handle functions that return doubles?
 // TODO: Fix linker errors with math.h functions.
+
+int compare(Number n1, Number n2){
+    if(n1.unionCase == 1){
+        if(n2.unionCase == 1){
+            if(n1.type._uint32 > n2.type._uint32){
+                return 1;
+            } else if (n1.type._uint32 < n2.type._uint32){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 2){
+            if(n1.type._uint32 > n2.type._int){
+                return 1;
+            } else if (n1.type._uint32 < n2.type._int){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 3){
+            if(n1.type._uint32 > n2.type._float){
+                return 1;
+            } else if (n1.type._uint32 < n2.type._float){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 4){
+            if(n1.type._uint32 > n2.type._double){
+                return 1;
+            } else if (n1.type._uint32 < n2.type._double){
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    } else if(n1.unionCase == 2){
+        if(n2.unionCase == 1){
+            if(n1.type._int > n2.type._uint32){
+                return 1;
+            } else if (n1.type._int < n2.type._uint32){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 2){
+            if(n1.type._int > n2.type._int){
+                return 1;
+            } else if (n1.type._int < n2.type._int){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 3){
+            if(n1.type._int > n2.type._float){
+                return 1;
+            } else if (n1.type._int < n2.type._float){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 4){
+            if(n1.type._int > n2.type._double){
+                return 1;
+            } else if (n1.type._int < n2.type._double){
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    } else if(n1.unionCase == 3){
+        if(n2.unionCase == 1){
+            if(n1.type._float > n2.type._uint32){
+                return 1;
+            } else if (n1.type._float < n2.type._uint32){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 2){
+            if(n1.type._float > n2.type._int){
+                return 1;
+            } else if (n1.type._float < n2.type._int){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 3){
+            if(n1.type._float > n2.type._float){
+                return 1;
+            } else if (n1.type._float < n2.type._float){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 4){
+            if(n1.type._float > n2.type._double){
+                return 1;
+            } else if (n1.type._float < n2.type._double){
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    } else if(n1.unionCase == 4){
+        if(n2.unionCase == 1){
+            if(n1.type._double > n2.type._uint32){
+                return 1;
+            } else if (n1.type._double < n2.type._uint32){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 2){
+            if(n1.type._double > n2.type._int){
+                return 1;
+            } else if (n1.type._double < n2.type._int){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 3){
+            if(n1.type._double > n2.type._float){
+                return 1;
+            } else if (n1.type._double < n2.type._float){
+                return -1;
+            } else {
+                return 0;
+            }
+        } else if (n2.unionCase == 4){
+            if(n1.type._double > n2.type._double){
+                return 1;
+            } else if (n1.type._double < n2.type._double){
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+}
+
+Number bin_op(Number n1, Number n2, char op){
+    Number result;
+    if (op == '+') {
+        if(n1.unionCase == 1){
+            if(n2.unionCase == 1){
+                result.unionCase = 1;
+                result.type._uint32 = n1.type._uint32 + n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 2;
+                result.type._int = n1.type._uint32 + n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 3;
+                result.type._float = n1.type._uint32 + n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._uint32 + n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 2){
+            if(n2.unionCase == 1){
+                result.unionCase = 2;
+                result.type._int = n1.type._int + n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 2;
+                result.type._int = n1.type._int + n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 3;
+                result.type._float = n1.type._int + n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._int + n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 3){
+            if(n2.unionCase == 1){
+                result.unionCase = 3;
+                result.type._float = n1.type._float + n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 3;
+                result.type._float = n1.type._float + n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 3;
+                result.type._float = n1.type._float + n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._float + n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 4){
+            if(n2.unionCase == 1){
+                result.unionCase = 4;
+                result.type._double = n1.type._double + n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 4;
+                result.type._double = n1.type._double + n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 4;
+                result.type._double = n1.type._double + n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._double + n2.type._double;
+                return result;
+            }
+        }
+    } else if(op == '-'){
+        if(n1.unionCase == 1){
+            if(n2.unionCase == 1){
+                result.unionCase = 1;
+                result.type._uint32 = n1.type._uint32 - n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 2;
+                result.type._int = n1.type._uint32 - n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 3;
+                result.type._float = n1.type._uint32 - n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._uint32 - n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 2){
+            if(n2.unionCase == 1){
+                result.unionCase = 2;
+                result.type._int = n1.type._int - n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 2;
+                result.type._int = n1.type._int - n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 3;
+                result.type._float = n1.type._int - n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._int - n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 3){
+            if(n2.unionCase == 1){
+                result.unionCase = 3;
+                result.type._float = n1.type._float - n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 3;
+                result.type._float = n1.type._float - n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 3;
+                result.type._float = n1.type._float - n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._float - n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 4){
+            if(n2.unionCase == 1){
+                result.unionCase = 4;
+                result.type._double = n1.type._double - n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 4;
+                result.type._double = n1.type._double - n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 4;
+                result.type._double = n1.type._double - n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._double - n2.type._double;
+                return result;
+            }
+        }
+    } else if(op == '*'){
+        if(n1.unionCase == 1){
+            if(n2.unionCase == 1){
+                result.unionCase = 1;
+                result.type._uint32 = n1.type._uint32 * n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 2;
+                result.type._int = n1.type._uint32 * n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 3;
+                result.type._float = n1.type._uint32 * n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._uint32 * n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 2){
+            if(n2.unionCase == 1){
+                result.unionCase = 2;
+                result.type._int = n1.type._int * n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 2;
+                result.type._int = n1.type._int * n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 3;
+                result.type._float = n1.type._int * n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._int * n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 3){
+            if(n2.unionCase == 1){
+                result.unionCase = 3;
+                result.type._float = n1.type._float * n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 3;
+                result.type._float = n1.type._float * n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 3;
+                result.type._float = n1.type._float * n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._float * n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 4){
+            if(n2.unionCase == 1){
+                result.unionCase = 4;
+                result.type._double = n1.type._double * n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                result.unionCase = 4;
+                result.type._double = n1.type._double * n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                result.unionCase = 4;
+                result.type._double = n1.type._double * n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                result.unionCase = 4;
+                result.type._double = n1.type._double * n2.type._double;
+                return result;
+            }
+        }
+    } else if(op == '/'){
+        if(n1.unionCase == 1){
+            if(n2.unionCase == 1){
+                if(n2.type._uint32 == 0){
+                    printf("Error: Division by zero");
+                    result.type._uint32 = 0;
+                    return result;
+                }
+                result.unionCase = 1;
+                result.type._uint32 = n1.type._uint32 / n2.type._uint32; 
+                return result;
+            } else if (n2.unionCase == 2){
+                if(n2.type._int == 0){
+                    printf("Error: Division by zero");
+                    result.type._uint32 = 0;
+                    return result;
+                }
+                result.unionCase = 2;
+                result.type._int = n1.type._uint32 / n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                if(n2.type._float == 0){
+                    printf("Error: Division by zero");
+                    result.type._uint32 = 0;
+                    return result;
+                }
+                result.unionCase = 3;
+                result.type._float = n1.type._uint32 / n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                if(n2.type._double == 0){
+                    printf("Error: Division by zero");
+                    result.type._uint32 = 0;
+                    return result;
+                }
+                result.unionCase = 4;
+                result.type._double = n1.type._uint32 / n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 2){
+            if(n2.unionCase == 1){
+                if(n2.type._uint32 == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 2;
+                result.type._int = n1.type._int / n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                if(n2.type._int == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 2;
+                result.type._int = n1.type._int / n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                if(n2.type._float == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 3;
+                result.type._float = n1.type._int / n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                if(n2.type._double == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 4;
+                result.type._double = n1.type._int / n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 3){
+            if(n2.unionCase == 1){
+                if(n2.type._uint32 == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 3;
+                result.type._float = n1.type._float / n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                if(n2.type._int == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 3;
+                result.type._float = n1.type._float / n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                if(n2.type._float == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 3;
+                result.type._float = n1.type._float / n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                if(n2.type._double == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 4;
+                result.type._double = n1.type._float / n2.type._double;
+                return result;
+            }
+        } else if(n1.unionCase == 4){
+            if(n2.unionCase == 1){
+                if(n2.type._uint32 == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 4;
+                result.type._double = n1.type._double / n2.type._uint32;
+                return result;
+            } else if (n2.unionCase == 2){
+                if(n2.type._int == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 4;
+                result.type._double = n1.type._double / n2.type._int;
+                return result;
+            } else if (n2.unionCase == 3){
+                if(n2.type._float == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 4;
+                result.type._double = n1.type._double / n2.type._float;
+                return result;
+            } else if (n2.unionCase == 4){
+                if(n2.type._double == 0){
+                    printf("Error: Division by zero");
+                    result.type._float = 0;
+                    return result;
+                }
+                result.unionCase = 4;
+                result.type._double = n1.type._double / n2.type._double;
+                return result;
+            }
+        }
+    }
+    result.type._int = 0;
+    result.unionCase = 2;
+    return result;
+}
 
 void _CONST(Expression *e)
 {
@@ -46,7 +571,12 @@ void _AND(Expression *e)
 
     //Number stores all different datatypes in the same bits
     //Double is the largest datatype, so we can get all bits by "casting" to double
-    //TODO: Test if this is correct
+    if(l1.unionCase != l2.unionCase){
+        val.type._int = 0;
+        val.unionCase = 2;
+    }
+
+
     val.type._int = l2.type._double && l1.type._double;
     val.unionCase = 2;
 
@@ -81,7 +611,15 @@ void _LT(Expression *e)
     Number l1 = pop(e->stack);
     
     Number val;
-    val.type._int = l1.type._double < l2.type._double;
+    val.unionCase = 2; // int
+
+    int res = compare(l1, l2);
+    
+    if (res == -1) {
+        val.type._int = 1;
+    } else {
+        val.type._int = 0;
+    }
 
     push(e->stack, val);
 }
@@ -92,7 +630,15 @@ void _GT(Expression *e)
     Number l1 = pop(e->stack);
     
     Number val;
-    val.type._int = l1.type._double > l2.type._double;
+    val.unionCase = 2;
+
+    int res = compare(l1, l2);
+
+    if (res == 1) {
+        val.type._int = 1;
+    } else {
+        val.type._int = 0;
+    }
 
     push(e->stack, val);
 }
@@ -103,7 +649,15 @@ void _EQ(Expression *e)
     Number l1 = pop(e->stack);
     
     Number val;
-    val.type._int = l1.type._double == l2.type._double;
+    val.unionCase = 2;
+
+    int res = compare(l1, l2);
+
+    if (res == 0) {
+        val.type._int = 1;
+    } else {
+        val.type._int = 0;
+    }
     
     push(e->stack, val);
 }
@@ -114,8 +668,9 @@ void _ADD(Expression *e)
     
     Number l2 = pop(e->stack);
     Number l1 = pop(e->stack);
-    val.type._int = l1.type._double + l2.type._double;
-    val.unionCase = 2;
+
+    val = bin_op(l1, l2, '+');
+    
     push(e->stack, val);
 }
 
@@ -125,8 +680,9 @@ void _SUB(Expression *e)
     
     Number l2 = pop(e->stack);
     Number l1 = pop(e->stack);
-    val.type._double = l1.type._double - l2.type._double;
-    val.unionCase = 4;
+
+    val = bin_op(l1, l2, '-');
+
     push(e->stack, val);
 }
 
@@ -136,22 +692,21 @@ void _MUL(Expression *e)
     
     Number l2 = pop(e->stack);
     Number l1 = pop(e->stack);
-    val.type._double = l1.type._double * l2.type._double;
-    val.unionCase = 4;
+
+    val = bin_op(l1, l2, '*');
+
     push(e->stack, val);
 }
 
 void _DIV(Expression *e)
 {
+    Number val;
+    
     Number l2 = pop(e->stack);
     Number l1 = pop(e->stack);
-    
-    Number val;
 
-    double res = l1.type._double / l2.type._double;
+    val = bin_op(l1, l2, '/');
 
-    val.type._double = res;
-    val.unionCase = 4;
     push(e->stack, val);
 }
 
@@ -237,11 +792,16 @@ void _LTEQ(Expression *e)
     Number l1 = pop(e->stack);
     
     Number val;
-
-    int res = l1.type._double <= l2.type._double;
-    
-    val.type._int = res;
     val.unionCase = 2;
+
+    int res = compare(l1, l2);
+
+    if (res == 1) {
+        val.type._int = 0;
+    } else {
+        val.type._int = 1;
+    }
+
 
     push(e->stack, val);
 }
@@ -253,10 +813,16 @@ void _GTEQ(Expression *e)
 
     Number val;
 
-    int res = l1.type._double >= l2.type._double;
+    int res = compare(l1, l2);
 
-    val.type._int = res;
-    val.unionCase = 2;
+    if (res == -1)
+    {
+        val.type._int = 0;
+    }
+    else
+    {
+        val.type._int = 1;
+    }
 
     push(e->stack, val);
 }
@@ -304,36 +870,36 @@ void execute_next(Expression *e)
     case 12:
         _MOD(e);
         break;
-    case 13:
-        _LOG(e);
-        break;
-    case 14:
-        _POW(e);
-        break;
-    case 15:
-        _SQRT(e);
-        break;
-    case 16:
-        _EXP(e);
-        break;
-    case 17:
-        _CEIL(e);
-        break;
-    case 18:
-        _FLOOR(e);
-        break;
-    case 19:
-        _ROUND(e);
-        break;
-    case 20:
-        _ABS(e);
-        break;
-    case 21:
-        _LTEQ(e);
-        break;
-    case 22:
-        _GTEQ(e);
-        break;
+    // case 13:
+    //     _LOG(e);
+    //     break;
+    // case 14:
+    //     _POW(e);
+    //     break;
+    // case 15:
+    //     _SQRT(e);
+    //     break;
+    // case 16:
+    //     _EXP(e);
+    //     break;
+    // case 17:
+    //     _CEIL(e);
+    //     break;
+    // case 18:
+    //     _FLOOR(e);
+    //     break;
+    // case 19:
+    //     _ROUND(e);
+    //     break;
+    // case 20:
+    //     _ABS(e);
+    //     break;
+    // case 21:
+    //     _LTEQ(e);
+    //     break;
+    // case 22:
+    //     _GTEQ(e);
+    //     break;
     }
 }
 

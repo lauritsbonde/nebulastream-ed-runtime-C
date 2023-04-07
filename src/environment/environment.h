@@ -1,14 +1,8 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
-#include "../stack/stack.h"
 
-typedef struct _Env
-{
-    Number *env;
-    int size;
-    Stack *stack;
-} Env;
+#include "../operators/operators.h"
 
 Env *init_env();
 void clear_env(Env *env);

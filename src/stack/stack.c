@@ -1,4 +1,5 @@
 #include "stack.h"
+#include "../operators/operators.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -37,6 +38,7 @@ void resize_stack(Stack *stack)
 
 void print_stack(Stack *stack)
 {
+    //TODO: make the print stack work with Numbers
     printf("\ntop: %d\n", stack->top);
     // printf("stack size: %d\n", stack->size);
     printf("stack: [");

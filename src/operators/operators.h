@@ -2,12 +2,34 @@
 #define OPERATORS_H
 
 #include <stdlib.h>
-#include "../environment/environment.h"
-#include "../stack/stack.h"
 
 // struct Operator {
 //   int (*call) (int *func);
 // };
+
+typedef struct _Number {
+    union {
+        uint32_t _uint32; // case 1
+        int _int;         // case 2
+        float _float;     // case 3
+        double _double;   // case 4
+    } type;
+    int unionCase;
+} Number;
+
+typedef struct _Stack
+{
+    int top;
+    int size;
+    Number *stack;
+} Stack;
+
+typedef struct _Env
+{
+    Number *env;
+    int size;
+    Stack *stack;
+} Env;
 
 typedef enum _ExpressionInstruction {
   CONST = 0,
@@ -39,12 +61,13 @@ typedef struct _Instruction
 
 typedef struct _Expression
 {
-  Instruction *program;
-  int p_size;
-  int pc;
-  Env *env;
-  Stack *stack;
+    Instruction *program;
+    int p_size;
+    int pc;
+    Env *env;
+    Stack *stack;
 } Expression;
+
 
 typedef struct _Map
 {
