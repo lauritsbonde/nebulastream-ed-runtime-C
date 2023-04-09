@@ -15,7 +15,8 @@
 		"encodeinput.h": "c",
 		"stdlib.h": "c",
 		"stack.h": "c",
-		"stack": "c"
+		"stack": "c",
+		"number.h": "c"
 	},
 	"cmake.configureOnOpen": false
 }

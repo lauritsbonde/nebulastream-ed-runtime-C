@@ -4,6 +4,8 @@
 #include "expression.h"
 #include "../operators/operators.h"
 
+#include "../number/number.h"
+
 // TODO: How do we handle functions that return doubles?
 // TODO: Fix linker errors with math.h functions.
 
@@ -535,21 +537,24 @@ void _CONST(Expression *e)
 {
     // push the next value from program as data to the stack
     Number val;
-    val.unionCase = e->program[++e->pc].unionCase;
+    Instruction currentInstruction = e->program[++e->pc];
 
     //TODO: check if 1 can be replaced with enum for instance?
-    if(val.unionCase == 1){
-        val.type._uint32 = e->program[e->pc].data._uint32;
+    if(currentInstruction.unionCase == 1){
+        val.type._uint32 = currentInstruction.data._uint32;
     }
-    else if (val.unionCase == 2){
-        val.type._int = e->program[e->pc].data._int;
+    else if (currentInstruction.unionCase == 2){
+        val.type._int = currentInstruction.data._int;
     }
-    else if (val.unionCase == 3) {
-        val.type._float = e->program[e->pc].data._float;
+    else if (currentInstruction.unionCase == 3) {
+        val.type._float = currentInstruction.data._float;
     }
-    else if (val.unionCase == 4) {
-        val.type._double = e->program[e->pc].data._double;
+    else if (currentInstruction.unionCase == 4) {
+        val.type._double = currentInstruction.data._double;
     }
+
+    val.unionCase = currentInstruction.unionCase;
+
 
     push(e->stack, val);
 }
@@ -715,6 +720,7 @@ void _MOD(Expression *e)
     Number l2 = pop(e->stack);
     Number l1 = pop(e->stack);
 
+    //TODO: allow for uint32 to be modded
     if(l1.unionCase != 2 || l2.unionCase != 2){
         return; //TODO: Throw error (not int)
     }

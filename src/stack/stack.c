@@ -1,7 +1,8 @@
-#include "stack.h"
-#include "../operators/operators.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "stack.h"
+#include "../operators/operators.h"
+#include "../number/number.h"
 
 Stack *init_stack()
 {
@@ -44,13 +45,10 @@ void print_stack(Stack *stack)
     printf("stack: [");
     for (int i = 0; i < stack->size; i++)
     {
-        if (i == stack->size - 1)
+        printNumberValue(stack->stack[i]);
+        if (i != stack->size - 1)
         {
-            printf(" %d ", stack->stack[i]);
-        }
-        else
-        {
-            printf(" %d ,", stack->stack[i]);
+            printf(", ");
         }
     }
     printf("]\n\n");

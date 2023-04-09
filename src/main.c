@@ -30,8 +30,8 @@ int main(int argc, char **argv)
   }
   init_logger(includeLogs);
 
-  while (1)
-  {
+  // while (1)
+  // {
     printf("main loop iteration\n");
 
     //Create a program
@@ -45,17 +45,17 @@ int main(int argc, char **argv)
 
     Instruction p[5] = {
         {0, 0},
-        {2.1, 4},
+        {.data._uint32 = 21, 1},
         {0, 0},
-        {1, 2},
-        {6, 0}};
+        {.data._int = 66, 2},
+        {12, 0}};
 
     exp.program = p;
     exp.p_size = 5;
 
     call(&exp);
     
-    SLEEP_SEC(3);
-  }
+    // SLEEP_SEC(3);
+  // }
   return 0;
 }

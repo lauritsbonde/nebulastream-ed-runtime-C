@@ -2,20 +2,13 @@
 #define OPERATORS_H
 
 #include <stdlib.h>
+#include "../number/number.h"
 
 // struct Operator {
 //   int (*call) (int *func);
 // };
 
-typedef struct _Number {
-    union {
-        uint32_t _uint32; // case 1
-        int _int;         // case 2
-        float _float;     // case 3
-        double _double;   // case 4
-    } type;
-    int unionCase;
-} Number;
+
 
 typedef struct _Stack
 {
