@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "./logger/logger.h"
 #include "./stack/stack.h"
@@ -11,6 +12,7 @@
 #include "./protocol/protocol.h"
 #include "./operators/operators.h"
 #include "./protocol/EncodeInput.h"
+#include "./tests/runTest.h"
 
 // Macros
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
@@ -30,6 +32,11 @@ int main(int argc, char **argv)
   }
   init_logger(includeLogs);
 
+  if (strcmp(argv[1], "test") == 0) {
+    runAllTests();
+    return 0;
+  }
+
   // while (1)
   // {
     printf("main loop iteration\n");
@@ -45,10 +52,10 @@ int main(int argc, char **argv)
 
     Instruction p[5] = {
         {0, 0},
-        {.data._uint32 = 21, 1},
+        {.data._int = 3, 2},
         {0, 0},
-        {.data._int = 66, 2},
-        {12, 0}};
+        {.data._int = 4, 2},
+        {22, 0}};
 
     exp.program = p;
     exp.p_size = 5;

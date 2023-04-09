@@ -37,7 +37,17 @@ typedef enum _ExpressionInstruction {
   SUB = 9,
   MUL = 10,
   DIV = 11,
-  MOD = 12
+  MOD = 12,
+  LOG = 13,
+  POW = 14,
+  SQRT = 15,
+  EXP = 16,
+  CEIL = 17,
+  FLOOR = 18,
+  ROUND = 19,
+  ABS = 20,
+  LTEQ = 21,
+  GTEQ = 22,
 } ExpressionInstruction;
 
 typedef struct _Instruction

@@ -57,3 +57,10 @@ buildAndRun:
 	make clean
 	make all
 	$(BUILD_DIR)/EDRuntime
+
+
+test:
+	make clean
+	make all
+	$(BUILD_DIR)/EDRuntime test
+

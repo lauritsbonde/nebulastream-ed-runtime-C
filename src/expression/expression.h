@@ -4,6 +4,6 @@
 #include "../environment/environment.h"
 #include "../operators/operators.h"
 
-int call(Expression *e);
+Number call(Expression *e);
 
 #endif /* EXPRESSION_H */

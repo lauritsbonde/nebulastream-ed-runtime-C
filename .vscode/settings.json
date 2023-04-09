@@ -16,7 +16,9 @@
 		"stdlib.h": "c",
 		"stack.h": "c",
 		"stack": "c",
-		"number.h": "c"
+		"number.h": "c",
+		"runtest.h": "c",
+		"environment.h": "c"
 	},
 	"cmake.configureOnOpen": false
 }

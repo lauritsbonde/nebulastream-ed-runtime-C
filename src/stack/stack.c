@@ -10,7 +10,6 @@ Stack *init_stack()
     stack->stack = calloc(10, sizeof(Number));
     stack->size = 10;
     stack->top = -1;
-    print_stack(stack);
     return stack;
 }
 
@@ -26,7 +25,10 @@ void push(Stack *stack, Number val)
 
 Number pop(Stack *stack)
 {
-    // TODO: What if stack is empty?
+    if(stack->top == -1) {
+        printf("Stack is empty\n");
+        return (Number){0, 2};
+    }
     return stack->stack[stack->top--];
 }
 
@@ -43,10 +45,10 @@ void print_stack(Stack *stack)
     printf("\ntop: %d\n", stack->top);
     // printf("stack size: %d\n", stack->size);
     printf("stack: [");
-    for (int i = 0; i < stack->size; i++)
+    for (int i = 0; i < stack->top+1; i++)
     {
         printNumberValue(stack->stack[i]);
-        if (i != stack->size - 1)
+        if (i != stack->top)
         {
             printf(", ");
         }

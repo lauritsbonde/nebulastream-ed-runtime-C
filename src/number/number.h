@@ -16,4 +16,8 @@ typedef struct _Number {
 void printNumberValue(Number val);
 void printNumberValueAndUcase(Number val);
 
+int compare(Number n1, Number n2);
+Number bin_op(Number n1, Number n2, char op);
+Number un_op(Number n1, char* op);
+
 #endif /* NUMBER_H */
