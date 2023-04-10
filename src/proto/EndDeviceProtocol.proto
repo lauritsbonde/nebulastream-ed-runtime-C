@@ -33,6 +33,7 @@ enum ExpressionInstructions {
     DIV = 11;
     MOD = 12;
 }
+
 message Data {
     oneof data{
         ExpressionInstructions instruction = 1;

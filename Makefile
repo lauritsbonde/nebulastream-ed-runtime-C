@@ -64,3 +64,13 @@ test:
 	make all
 	$(BUILD_DIR)/EDRuntime test
 
+testProtocol:
+	make clean
+	make all
+	$(BUILD_DIR)/EDRuntime test protocol
+
+testExpression:
+	make clean
+	make all
+	$(BUILD_DIR)/EDRuntime test expression
+

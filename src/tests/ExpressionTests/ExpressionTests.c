@@ -79,57 +79,46 @@ TestResult runExpressionTests()
   
   const int numTests = 37;
   res.total += numTests;
+  res.tests = calloc(numTests, sizeof(Test));
 
-  Test *tests = calloc(numTests, sizeof(Test));
-  tests[0] = testPushToStack();
-  tests[1] = testPushVarToStack();
-  tests[2] = testAnd1();
-  tests[3] = testAnd2();
-  tests[4] = testAnd3();
-  tests[5] = testOr1();
-  tests[6] = testOr2();
-  tests[7] = testNot1();
-  tests[8] = testNot2();
-  tests[9] = testNot3();
-  tests[10] = testNot4();
-  tests[11] = testLT1();
-  tests[12] = testLT2();
-  tests[13] = testGT1();
-  tests[14] = testGT2();
-  tests[15] = testEqual();
-  tests[16] = testAdd();
-  tests[17] = testSub();
-  tests[18] = testMul();
-  tests[19] = testDiv();
-  tests[20] = testMod();
-  tests[21] = testLog();
-  tests[22] = testPow();
-  tests[23] = testSqrt();
-  tests[24] = expValue();
-  tests[25] = ceilValue();
-  tests[26] = ceilValueBig();
-  tests[27] = floorValue();
-  tests[28] = floorValueBig();
-  tests[29] = roundUnderHalf();
-  tests[30] = roundOverHalf();
-  tests[31] = absoluteValue1();
-  tests[32] = absoluteValue2();
-  tests[33] = lessThanEqual1();
-  tests[34] = lessThanEqual2();
-  tests[35] = greaterThanEqual1();
-  tests[36] = greaterThanEqual2();
+  res.tests[0] = testPushToStack();
+  res.tests[1] = testPushVarToStack();
+  res.tests[2] = testAnd1();
+  res.tests[3] = testAnd2();
+  res.tests[4] = testAnd3();
+  res.tests[5] = testOr1();
+  res.tests[6] = testOr2();
+  res.tests[7] = testNot1();
+  res.tests[8] = testNot2();
+  res.tests[9] = testNot3();
+  res.tests[10] = testNot4();
+  res.tests[11] = testLT1();
+  res.tests[12] = testLT2();
+  res.tests[13] = testGT1();
+  res.tests[14] = testGT2();
+  res.tests[15] = testEqual();
+  res.tests[16] = testAdd();
+  res.tests[17] = testSub();
+  res.tests[18] = testMul();
+  res.tests[19] = testDiv();
+  res.tests[20] = testMod();
+  res.tests[21] = testLog();
+  res.tests[22] = testPow();
+  res.tests[23] = testSqrt();
+  res.tests[24] = expValue();
+  res.tests[25] = ceilValue();
+  res.tests[26] = ceilValueBig();
+  res.tests[27] = floorValue();
+  res.tests[28] = floorValueBig();
+  res.tests[29] = roundUnderHalf();
+  res.tests[30] = roundOverHalf();
+  res.tests[31] = absoluteValue1();
+  res.tests[32] = absoluteValue2();
+  res.tests[33] = lessThanEqual1();
+  res.tests[34] = lessThanEqual2();
+  res.tests[35] = greaterThanEqual1();
+  res.tests[36] = greaterThanEqual2();
 
-
-  
-  for(int i = 0; i < numTests; i++) {
-    if(tests[i].failed) {
-      printf("Test %s failed 🚫\n", tests[i].name);
-      printf("\t- %s\n", tests[i].message);
-    } else {
-      printf("Test %s passed ✅ \n", tests[i].name);
-      res.passed++;
-    }
-  }
   return res;
 }
 

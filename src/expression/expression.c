@@ -300,7 +300,7 @@ void _GTEQ(Expression *e)
 
 void execute_next(Expression *e)
 {
-    switch (e->program[e->pc].data.instruction)
+    switch (e->program[e->pc].data._instruction)
     {
     case 0:
         _CONST(e);

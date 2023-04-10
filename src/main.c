@@ -11,8 +11,9 @@
 #include "./proto/EndDeviceProtocol.pb-c.h"
 #include "./protocol/protocol.h"
 #include "./operators/operators.h"
-#include "./protocol/EncodeInput.h"
+#include "./protocol/encodeInput/encodeInput.h"
 #include "./tests/runTest.h"
+#include "./tests/testType.h"
 
 // Macros
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
@@ -33,7 +34,20 @@ int main(int argc, char **argv)
   init_logger(includeLogs);
 
   if (strcmp(argv[1], "test") == 0) {
-    runAllTests();
+    TestToRun tests;
+    if(argc == 2){
+      tests = ALL;
+    } else {
+      if(strcmp(argv[2], "protocol") == 0){
+        tests = PROTOCOL;
+      } else if(strcmp(argv[2], "expression") == 0){
+        tests = EXPRESSION;
+      } else {
+        tests = ALL;
+      }
+    }
+
+    runTests(tests);
     return 0;
   }
 

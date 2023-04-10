@@ -18,7 +18,9 @@
 		"stack": "c",
 		"number.h": "c",
 		"runtest.h": "c",
-		"environment.h": "c"
+		"environment.h": "c",
+		"expressiontests.h": "c",
+		"typeinfo": "c"
 	},
 	"cmake.configureOnOpen": false
 }

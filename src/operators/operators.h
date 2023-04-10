@@ -53,7 +53,7 @@ typedef enum _ExpressionInstruction {
 typedef struct _Instruction
 {
   union {
-    ExpressionInstruction instruction; // case 0
+    ExpressionInstruction _instruction; // case 0
     uint32_t _uint32;                  // case 1
     int _int;                          // case 2
     float _float;                      // case 3
@@ -76,7 +76,6 @@ typedef struct _Map
 {
   Expression *expression;
   int attribute;
-  int amount;
 } Map;
 
 typedef struct _Filter
