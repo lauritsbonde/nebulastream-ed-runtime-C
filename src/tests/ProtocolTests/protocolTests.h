@@ -23,4 +23,9 @@ Test mapGetsEncoded();
 
 Test messageGetsEncoded();
 
+Test messageGetsDecoded();
+
+
+Test outputMessageGetsEncoded();
+
 #endif // PROTOCOLTESTS_H

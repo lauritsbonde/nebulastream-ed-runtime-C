@@ -18,6 +18,6 @@ EndDeviceProtocol__Message *prepare_message(Message *message);
 void* encode_instruction (Instruction *instr);
 void* encode_expression (Expression *exp);
 void* encode_map_operation (Map *map);
-void* encode_message (Message *message);
+uint8_t* encode_message (Message *message);
 
 #endif

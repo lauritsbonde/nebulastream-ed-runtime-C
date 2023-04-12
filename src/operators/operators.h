@@ -117,7 +117,8 @@ typedef struct _QueryResponse
 
 typedef struct _OutputMessage
 {
-  QueryResponse responses;
+  QueryResponse* responses;
+  int amount;
 } OutputMessage;
 
 #endif

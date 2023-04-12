@@ -20,7 +20,8 @@
 		"runtest.h": "c",
 		"environment.h": "c",
 		"expressiontests.h": "c",
-		"typeinfo": "c"
+		"typeinfo": "c",
+		"decodeinput.h": "c"
 	},
 	"cmake.configureOnOpen": false
 }

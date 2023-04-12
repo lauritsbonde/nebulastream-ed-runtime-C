@@ -1,4 +1,4 @@
-#include <stdlib.h>
+
 #include "encodeInput.h"
 #include "../../operators/operators.h"
 #include "../../proto/EndDeviceProtocol.pb-c.h"
@@ -110,33 +110,20 @@ void cleanup(EndDeviceProtocol__Message *msg) {
   free(msg->queries);
 }
 
-void* encode_message (Message *message) {
-  void *buf;
+uint8_t* encode_message (Message *message) {
+  uint8_t *buf;
   size_t len;
 
-  printf("Encoding message\n");
   EndDeviceProtocol__Message *prepared_msg = prepare_message(message);
 
-  printf("Serializing message\n");
   len = end_device_protocol__message__get_packed_size(prepared_msg);
-  printf("Allocating %d bytes\n",len);
   buf = malloc(len);
 
-  printf("Packing message\n");
   end_device_protocol__message__pack(prepared_msg, buf);
 
   cleanup(prepared_msg);
 
-  printf("Writing %d serialized bytes\n",len); // See the length of message
-  printf("buf: ");
-
-  //1684306025248101043338342720000000000 
-  int* buffer = (int *) buf;
-  for (int i = 0; i < len; i++) {
-    printf("%d", buffer[i]);
-  }
-  printf (" - len: %d\n", len); 
-
+  
   return buf;
 }
 

@@ -4,14 +4,18 @@
 #include "../testType.h"
 #include "../../environment/environment.h"
 #include "../../protocol/encodeInput/encodeInput.h"
+#include "../../protocol/decodeInput/decodeInput.h"
+#include "../../protocol/encodeOutput/encodeOutput.h"
 
 TestResult runProtocolTests(){
   TestResult res = {0,0};
 
-  const int numTests = 9;
+  const int numTests = 11;
   res.total += numTests;
 
   res.tests = malloc(sizeof(Test) * numTests);
+  
+  //INPUT message tests
 
   res.tests[0] = prepareInstructionTest();
   res.tests[1] = prepareExpressionTest();
@@ -24,6 +28,10 @@ TestResult runProtocolTests(){
   res.tests[7] = mapGetsEncoded();
   
   res.tests[8] = messageGetsEncoded();
+  res.tests[9] = messageGetsDecoded();
+
+  //OUTPUT message tests
+  res.tests[10] = outputMessageGetsEncoded();
 
   return res;
 }
@@ -356,19 +364,175 @@ Test messageGetsEncoded(){
   message.amount = 1;
 
   // Encode the message
-  void* encodedMessage = encode_message(&message);
-  int* buffer = (int *) encodedMessage;
+  uint8_t* encodedMessage = encode_message(&message);
+  
+  const int expectedLength = 14;
 
-  int* expected = {1,6,8,4,3,0,6,0,2,5,2,4,8,1,0,1,0,4,3,3,3,8,3,4,2,7,2,0,0,0,0,0,0,0,0,0,0};
+  uint8_t expected[expectedLength] = {10,12,10,10,10,2,8,0,10,2,56,6,16,1};
+
+  for(int i = 0; i < expectedLength; i++){
+    if(encodedMessage[i] != expected[i]){
+      test.failed = 1;
+      char* msg;
+      sprintf(&msg, "Expected %d at index %d, but got %d", expected[i], i, encodedMessage[i]);
+      test.message = msg;
+      return test;
+    }
+  }
+  
+  test.failed = 0;
+  return test;
+}
+
+Test messageGetsDecoded(){
+  Test test;
+  test.name = "Message gets decoded";
+
+  const int numberOfInstructions = 2;
+
+  // Create a message
+  Instruction p1[numberOfInstructions] = {
+      {0, 0},
+      {.data._int = 3, 2}
+    };
+
+  Env *env = init_env();
+  Expression exp;
+  exp.program = p1;
+  exp.p_size = numberOfInstructions;
+  exp.env = env;
+  exp.stack = env->stack;
+
+  Map map;
+  map.expression = &exp;
+  map.attribute = 1;
+
+  Query query;
+  query.operations = &map;
+  query.amount = 1;
+
+  Message message;
+  message.queries = &query;
+  message.amount = 1;
+
+  // Encode the message
+  uint8_t* encodedMessage = encode_message(&message);
+
+  // Decode the message
+  Message decodedMessage = decodeMessage(encodedMessage, 14);
+
+
+  int expectedQueryAmount = 1;
+  int expectedOperationAmount = 1;
+  int expectedInstructionAmount = 2;
+
+  int expectedInstruction1Data = 0;
+  int expectedInstruction1UnionCase = 0;
+
+  int expectedInstruction2Data = 3;
+  int expectedInstruction2UnionCase = 2;
+
+  if(decodedMessage.amount != expectedQueryAmount) {
+    test.failed = 1;
+    char* msg;
+    sprintf(&msg, "Expected message to have %d queries, but had %d", expectedQueryAmount, decodedMessage.amount);
+    test.message = msg;
+    return test;
+  }
+
+  if(decodedMessage.queries->amount != expectedOperationAmount) {
+    test.failed = 1;
+    char* msg;
+    sprintf(&msg, "Expected query to have %d operations, but had %d", expectedOperationAmount, decodedMessage.queries->amount);
+    test.message = msg;
+    return test;
+  }
+
+  if(decodedMessage.queries->operations->expression->p_size != expectedInstructionAmount) {
+    test.failed = 1;
+    char* msg;
+    sprintf(&msg, "Expected operation to have %d instructions, but had %d", expectedInstructionAmount, decodedMessage.queries->operations->expression->p_size);
+    test.message = msg;
+    return test;
+  }
+
+  if(decodedMessage.queries->operations->expression->program[0].unionCase != expectedInstruction1UnionCase) {
+    test.failed = 1;
+    char* msg;
+    sprintf(&msg, "Expected instruction 1 to have unionCase %d, but had %d", expectedInstruction1UnionCase, decodedMessage.queries->operations->expression->program[0].unionCase);
+    test.message = msg;
+    return test;
+  }
+
+  if(decodedMessage.queries->operations->expression->program[0].data._instruction != expectedInstruction1Data) {
+    test.failed = 1;
+    char* msg;
+    sprintf(&msg, "Expected instruction 1 to have data %d, but had %d", expectedInstruction1Data, decodedMessage.queries->operations->expression->program[0].data._instruction);
+    test.message = msg;
+    return test;
+  }
+
+  if(decodedMessage.queries->operations->expression->program[1].unionCase != expectedInstruction2UnionCase) {
+    test.failed = 1;
+    char* msg;
+    sprintf(&msg, "Expected instruction 2 to have unionCase %d, but had %d", expectedInstruction2UnionCase, decodedMessage.queries->operations->expression->program[1].unionCase);
+    test.message = msg;
+    return test;
+  }
+
+  if(decodedMessage.queries->operations->expression->program[1].data._int != expectedInstruction2Data) {
+    test.failed = 1;
+    char* msg;
+    sprintf(&msg, "Expected instruction 2 to have data %d, but had %d", expectedInstruction2Data, decodedMessage.queries->operations->expression->program[1].data._int);
+    test.message = msg;
+    return test;
+  }
+
 
   // Check if the message has the correct size
-  printf("test: ");
-  for(int i = 0; i < 14; i++){
-    printf("%d -", buffer[i]);
+  test.failed = 0;
+  test.message = "Message was decoded correctly";
+
+  return test;
+}
+
+
+Test outputMessageGetsEncoded(){
+  Test test;
+  test.name = "Output message gets encoded";
+
+  Instruction p1[1] = {
+      {.data._int = 3, 2}
+    };
+
+  QueryResponse response;
+  response.id = 1;
+  response.response = p1;
+  response.amount = 1;
+
+  OutputMessage message;
+  message.responses = &response;
+  message.amount = 1;
+
+  // Encode the message
+  uint8_t* encodedMessage = encodeOutputMessage(&message);
+
+  const int expectedLength = 8;
+
+  uint8_t expected[expectedLength] = {10,6,8,1,18,2,56,6};
+
+  for(int i = 0; i < expectedLength; i++){
+    if(encodedMessage[i] != expected[i]){
+      test.failed = 1;
+      char* msg;
+      sprintf(&msg, "Expected %d at index %d, but got %d", expected[i], i, encodedMessage[i]);
+      test.message = msg;
+      return test;
+    }
   }
-  printf("\n");
 
   test.failed = 0;
 
   return test;
+
 }
