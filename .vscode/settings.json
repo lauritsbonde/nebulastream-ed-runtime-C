@@ -11,6 +11,17 @@
 		"stdio.h": "c",
 		"enddeviceprotocol.pb-c.h": "c",
 		"string": "c",
-		"string_view": "c"
-	}
+		"string_view": "c",
+		"encodeinput.h": "c",
+		"stdlib.h": "c",
+		"stack.h": "c",
+		"stack": "c",
+		"number.h": "c",
+		"runtest.h": "c",
+		"environment.h": "c",
+		"expressiontests.h": "c",
+		"typeinfo": "c",
+		"decodeinput.h": "c"
+	},
+	"cmake.configureOnOpen": false
 }

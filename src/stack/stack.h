@@ -1,16 +1,12 @@
 #ifndef STACK_H
 #define STACK_H
 
-typedef struct _Stack
-{
-    int top;
-    int size;
-    int *stack;
-} Stack;
+#include <stdlib.h>
+#include "../operators/operators.h"
 
 Stack *init_stack();
-void push(Stack *stack, int val);
-int pop(Stack *stack);
+void push(Stack *stack, Number val);
+Number pop(Stack *stack);
 void resize_stack(Stack *stack);
 void print_stack(Stack *stack);
 

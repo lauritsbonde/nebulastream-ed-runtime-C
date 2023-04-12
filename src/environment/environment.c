@@ -1,11 +1,11 @@
+#include <stdlib.h>
 #include "environment.h"
 #include "../stack/stack.h"
-#include <stdlib.h>
 
 Env *init_env()
 {
     Env *env = calloc(1, sizeof(Env));
-    env->env = calloc(10, sizeof(int));
+    env->env = calloc(10, sizeof(Number));
     env->size = 10;
     env->stack = init_stack();
     return env;
@@ -15,16 +15,19 @@ void clear_env(Env *env)
 {
     for (int i = 0; i < env->size; i++)
     {
-        env->env[i] = 0;
+        Number number;
+        number.type._int = 0;
+        number.unionCase = 1;
+        env->env[i] = number;
     }
 }
 
-int get_value(Env *env, int index)
+Number get_value(Env *env, int index)
 {
     return env->env[index];
 }
 
-void set_value(Env *env, int index, int val)
+void set_value(Env *env, int index, Number val)
 {
     env->env[index] = val;
 }
@@ -45,5 +48,5 @@ Stack *get_stack(Env *env)
 void resize_env(Env *env)
 {
     env->size += 10;
-    env->env = realloc(env->env, (env->size * sizeof(int)));
+    env->env = realloc(env->env, (env->size * sizeof(Number)));
 }

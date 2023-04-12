@@ -1,187 +1,306 @@
 #include <math.h>
+#include <stdio.h>
 #include "../stack/stack.h"
 #include "expression.h"
+#include "../operators/operators.h"
+
+#include "../number/number.h"
 
 // TODO: How do we handle functions that return doubles?
 // TODO: Fix linker errors with math.h functions.
-// TODO: Implement environment.
 
 void _CONST(Expression *e)
 {
     // push the next value from program as data to the stack
-    int val = e->program[++e->pc];
+    Number val;
+    Instruction currentInstruction = e->program[++e->pc];
+
+    //TODO: check if 1 can be replaced with enum for instance?
+    if(currentInstruction.unionCase == 1){
+        val.type._uint32 = currentInstruction.data._uint32;
+    }
+    else if (currentInstruction.unionCase == 2){
+        val.type._int = currentInstruction.data._int;
+    }
+    else if (currentInstruction.unionCase == 3) {
+        val.type._float = currentInstruction.data._float;
+    }
+    else if (currentInstruction.unionCase == 4) {
+        val.type._double = currentInstruction.data._double;
+    }
+
+    val.unionCase = currentInstruction.unionCase;
+
+
     push(e->stack, val);
 }
 
 void _VAR(Expression *e)
 {
-    int index = e->program[++e->pc];
-    int val = get_value(e->env, index);
+    //TODO: check index is an int.
+    int index = e->program[++e->pc].data._int;
+    Number val = get_value(e->env, index);
     push(e->stack, val);
 }
 
 void _AND(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l2 && l1;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+
+    Number val = bin_op(l1, l2, '&');
+
     push(e->stack, val);
 }
 
 void _OR(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l2 || l1;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val = bin_op(l1, l2, '|');
+
     push(e->stack, val);
 }
 
 void _NOT(Expression *e)
 {
-    int val = !pop(e->stack);
+    Number l1 = pop(e->stack);
+    Number val = un_op(l1, "not");
     push(e->stack, val);
 }
 
 void _LT(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 < l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val;
+    val.unionCase = 2; // int
+
+    int res = compare(l1, l2);
+    
+    if (res == -1) {
+        val.type._int = 1;
+    } else {
+        val.type._int = 0;
+    }
+
     push(e->stack, val);
 }
 
 void _GT(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 > l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val;
+    val.unionCase = 2;
+
+    int res = compare(l1, l2);
+
+    if (res == 1) {
+        val.type._int = 1;
+    } else {
+        val.type._int = 0;
+    }
+
     push(e->stack, val);
 }
 
 void _EQ(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 == l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val;
+    val.unionCase = 2;
+
+    int res = compare(l1, l2);
+
+    if (res == 0) {
+        val.type._int = 1;
+    } else {
+        val.type._int = 0;
+    }
+    
     push(e->stack, val);
 }
 
 void _ADD(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 + l2;
+    Number val;
+    
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+
+    val = bin_op(l1, l2, '+');
+    
     push(e->stack, val);
 }
 
 void _SUB(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 - l2;
+    Number val;
+    
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+
+    val = bin_op(l1, l2, '-');
+
     push(e->stack, val);
 }
 
 void _MUL(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 * l2;
+    Number val;
+    
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+
+    val = bin_op(l1, l2, '*');
+
     push(e->stack, val);
 }
 
 void _DIV(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 / l2;
+    Number val;
+    
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+
+    val = bin_op(l1, l2, '/');
+
     push(e->stack, val);
 }
 
 void _MOD(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 % l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+
+    //TODO: allow for uint32 to be modded
+    if(l1.unionCase != 2 || l2.unionCase != 2){
+        return; //TODO: Throw error (not int)
+    }
+    
+    Number val;
+
+    int res = l1.type._int % l2.type._int;
+
+    val.type._int = res;
+    val.unionCase = 2;
+    
     push(e->stack, val);
 }
 
 void _LOG(Expression *e)
 {
-    // int l1 = pop(e->stack);
-    // int val = log(l1);
-    // push(e->stack, val);
+    Number l1 = pop(e->stack);
+    Number res = un_op(l1, "log");
+    push(e->stack, res);
 }
 
 void _POW(Expression *e)
 {
-    // int l2 = pop(e->stack);
-    // int l1 = pop(e->stack);
-    // int val = pow(l1, l2);
-    // push(e->stack, val);
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    Number res = bin_op(l1, l2, '^');
+    push(e->stack, res);
 }
 
 void _SQRT(Expression *e)
 {
-    // int l1 = pop(e->stack);
-    // int val = sqrt(l1);
-    // push(e->stack, val);
+    Number l1 = pop(e->stack);
+    Number val = un_op(l1, "sqrt");
+    push(e->stack, val);
 }
 
 void _EXP(Expression *e)
 {
-    // int l1 = pop(e->stack);
-    // int val = exp(l1);
-    // push(e->stack, val);
+    Number l1 = pop(e->stack);
+    Number val = un_op(l1, "exp");
+    push(e->stack, val);
 }
 
 void _CEIL(Expression *e)
 {
-    // int l1 = pop(e->stack);
-    // int val = ceil(l1);
-    // push(e->stack, val);
+    Number l1 = pop(e->stack);
+    Number val = un_op(l1, "ceil");
+    push(e->stack, val);
 }
 
 void _FLOOR(Expression *e)
 {
-    // int l1 = pop(e->stack);
-    // int val = floor(l1);
-    // push(e->stack, val);
+    Number l1 = pop(e->stack);
+    Number val = un_op(l1, "floor");
+    push(e->stack, val);
 }
 
 void _ROUND(Expression *e)
 {
-    // int l1 = pop(e->stack);
-    // int val = round(l1);
-    // push(e->stack, val);
+    Number l1 = pop(e->stack);
+    Number val = un_op(l1, "round");
+    push(e->stack, val);
 }
 
 void _ABS(Expression *e)
 {
-    // int l1 = pop(e->stack);
-    // int val = abs(l1);
-    // push(e->stack, val);
+    Number l1 = pop(e->stack);
+    Number val = un_op(l1, "abs");
+    push(e->stack, val);
 }
 
 void _LTEQ(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 <= l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+    
+    Number val;
+    val.unionCase = 2;
+
+    int res = compare(l1, l2);
+
+    // if compare returns 1 we know that l1 is greater than l2,
+    // otherwise it is less than or equal to l2.
+    if (res == 1) {
+        val.type._int = 0;
+    } else {
+        val.type._int = 1;
+    }
+
+
     push(e->stack, val);
 }
 
 void _GTEQ(Expression *e)
 {
-    int l2 = pop(e->stack);
-    int l1 = pop(e->stack);
-    int val = l1 >= l2;
+    Number l2 = pop(e->stack);
+    Number l1 = pop(e->stack);
+
+    Number val;
+    val.unionCase = 2;
+
+    int res = compare(l1, l2);
+
+    // if compare returns -1 we know that l1 is less than l2,
+    // otherwise it is greater than or equal to l2.
+    if (res == -1)
+    {
+        val.type._int = 0;
+    }
+    else
+    {
+        val.type._int = 1;
+    }
+
     push(e->stack, val);
 }
 
 void execute_next(Expression *e)
 {
-    switch (e->program[e->pc])
+    switch (e->program[e->pc].data._instruction)
     {
     case 0:
         _CONST(e);
@@ -255,16 +374,15 @@ void execute_next(Expression *e)
     }
 }
 
-int call(Expression *e)
+Number call(Expression *e)
 {
     e->pc = 0;
     while (e->pc < e->p_size)
     {
         execute_next(e);
-        print_stack(e->stack);
         e->pc++;
     }
-    int val = pop(e->stack);
+    Number val = pop(e->stack);
     return val;
 }
 

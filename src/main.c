@@ -2,14 +2,18 @@
 #include <unistd.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "logger/logger.h"
-#include "stack/stack.h"
-#include "environment/environment.h"
-#include "expression/expression.h"
-#include "../proto/EndDeviceProtocol.pb-c.h"
-#include "protocol/protocol.h"
+#include "./logger/logger.h"
+#include "./stack/stack.h"
+#include "./environment/environment.h"
+#include "./expression/expression.h"
+#include "./proto/EndDeviceProtocol.pb-c.h"
+#include "./protocol/protocol.h"
 #include "./operators/operators.h"
+#include "./protocol/encodeInput/encodeInput.h"
+#include "./tests/runTest.h"
+#include "./tests/testType.h"
 
 // Macros
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
@@ -29,28 +33,50 @@ int main(int argc, char **argv)
   }
   init_logger(includeLogs);
 
-  while (1)
-  {
-    printf("main loop iteration\n");
-    Env *env = init_env();
-    env->env[0] = 10;
+  if (strcmp(argv[1], "test") == 0) {
+    TestToRun tests;
+    if(argc == 2){
+      tests = ALL;
+    } else {
+      if(strcmp(argv[2], "protocol") == 0){
+        tests = PROTOCOL;
+      } else if(strcmp(argv[2], "expression") == 0){
+        tests = EXPRESSION;
+      } else {
+        tests = ALL;
+      }
+    }
 
-    Expression e;
-    int p[5] = {
-        0, // CONST
-        1, // 1
-        1, // Var
-        0, // Index 0 (= 10)
-        8, // Add
-    };
-    e.program = p;
-    e.p_size = 5;
-    e.env = env;
-    e.stack = get_stack(env);
-
-    int res = call(&e);
-    printf("result: %d \n", res);
-    SLEEP_SEC(3);
+    runTests(tests);
+    return 0;
   }
+
+  // while (1)
+  // {
+    printf("main loop iteration\n");
+
+    //Create a program
+    Env *env = init_env();
+    
+    Expression exp;
+    exp.env = env;
+    exp.stack = env->stack;
+
+    Instruction i1 = {0, 0};
+
+    Instruction p[5] = {
+        {0, 0},
+        {.data._int = 3, 2},
+        {0, 0},
+        {.data._int = 4, 2},
+        {22, 0}};
+
+    exp.program = p;
+    exp.p_size = 5;
+
+    call(&exp);
+    
+    // SLEEP_SEC(3);
+  // }
   return 0;
 }

@@ -2,16 +2,8 @@
 #define EXPRESSION_H
 
 #include "../environment/environment.h"
+#include "../operators/operators.h"
 
-typedef struct _Expression
-{
-    int *program;
-    int p_size;
-    int pc;
-    Env *env;
-    Stack *stack;
-} Expression;
-
-int call(Expression *e);
+Number call(Expression *e);
 
 #endif /* EXPRESSION_H */
