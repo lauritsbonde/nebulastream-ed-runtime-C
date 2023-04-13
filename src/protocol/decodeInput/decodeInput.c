@@ -106,10 +106,13 @@ Map mapOperationToMapType(EndDeviceProtocol__MapOperation *op) {
 Query edpQueryToQueryType(EndDeviceProtocol__Query *query){
   Query q;
   q.amount = query->n_operations;
-  q.operations = malloc(sizeof(Map) * q.amount);
+  q.operations = malloc(sizeof(Operation) * q.amount);
 
   for(int i = 0; i< q.amount; i++) {
-    q.operations[i] = mapOperationToMapType(query->operations[i]);
+    Operation op;
+    op.unionCase = 1;
+    op.operation.map = malloc(sizeof(Map));
+    op.operation.map[0] = mapOperationToMapType(query->operations[i]);
   }
   return q;
 }

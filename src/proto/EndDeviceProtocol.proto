@@ -93,6 +93,7 @@ message WindowOperation {
     int32 resultAttribute = 6;
     int32 readAttribute = 7;
 }
+
 message Operation {
     oneof operation {
         MapOperation map = 1;
@@ -103,7 +104,7 @@ message Operation {
 
 message Query {
     //bytes resultType = 1; //For some reason minipb breaks if I make this a repeated enum or int32
-    repeated MapOperation operations = 1;   
+    repeated Operation operations = 1;   
 }
 
 message Message {

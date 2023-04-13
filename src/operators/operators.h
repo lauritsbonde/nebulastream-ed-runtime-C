@@ -83,22 +83,43 @@ typedef struct _Filter
   Expression *predicate;
 } Filter;
 
-// struct Operator {
-//   int* array;
-//   int arraySize;
-//   int* (*fun) (int* arr, int size);
-// };
+typedef enum _WindowAggregationType {
+  MIN,
+  MAX,
+  SUM,
+  AVG,
+  COUNT
+} WindowAggregationType;
 
-// TODO: Kig på at lave unions af Filter og Map
+typedef enum _WindowSizeType {
+  TIMEBASED,
+  COUNTBASED
+} WindowSizeType;
 
-typedef struct _Operator
+typedef struct _Window
 {
-  Expression *expression;
-} Operator;
+  int size;
+  WindowSizeType sizeType;
+  WindowAggregationType aggregationType;
+  int startAttribute;
+  int endAttribute;
+  int resultAttribute;
+  int readAttribute;
+} Window;
+
+typedef struct _Operation
+{
+  union {
+    Map *map;
+    Filter *filter;
+    Window *window;
+  } operation;
+  int unionCase;
+} Operation;
 
 typedef struct _Query
 {
-  Map *operations;
+  Operation *operations;
   int amount;
 } Query;
 

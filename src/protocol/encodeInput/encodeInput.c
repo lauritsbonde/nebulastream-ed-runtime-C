@@ -64,6 +64,72 @@ EndDeviceProtocol__MapOperation* prepare_map_operation (Map *map) {
   return storage;
 }
 
+EndDeviceProtocol__FilterOperation* prepare_filter_operation (Filter *filter){
+  EndDeviceProtocol__FilterOperation *storage = (EndDeviceProtocol__FilterOperation *) malloc(sizeof(EndDeviceProtocol__FilterOperation));
+  EndDeviceProtocol__FilterOperation op = END_DEVICE_PROTOCOL__FILTER_OPERATION__INIT;
+
+  op.predicate = calloc(filter->predicate->p_size, sizeof(EndDeviceProtocol__Data));
+  op.n_predicate = filter->predicate->p_size;
+
+  for(int i = 0; i < filter->predicate->p_size; i++) {
+    op.predicate[i] = prepare_instruction(&filter->predicate->program[i]);
+  }
+
+  storage[0] = op;
+  return storage;
+}
+
+EndDeviceProtocol__WindowOperation* prepare_window_operation (Window *window){
+  EndDeviceProtocol__WindowOperation *storage = (EndDeviceProtocol__WindowOperation *) malloc(sizeof(EndDeviceProtocol__WindowOperation));
+  EndDeviceProtocol__WindowOperation op = END_DEVICE_PROTOCOL__WINDOW_OPERATION__INIT;
+
+  op.size = window->size;
+  op.endattribute = window->endAttribute;
+  op.startattribute = window->startAttribute;
+  op.readattribute = window->readAttribute;
+  op.resultattribute = window->resultAttribute;
+
+  if (window->sizeType == TIMEBASED) {
+    op.sizetype = END_DEVICE_PROTOCOL__WINDOW_SIZE_TYPE__TIMEBASED;
+  } else if (window->sizeType == COUNTBASED) {
+    op.sizetype = END_DEVICE_PROTOCOL__WINDOW_SIZE_TYPE__COUNTBASED;
+  }
+
+  if (window->aggregationType == MIN) {
+    op.aggregationtype = END_DEVICE_PROTOCOL__WINDOW_AGGREGATION_TYPE__MIN;
+  }
+  else if (window->aggregationType == MAX)
+  {
+    op.aggregationtype = END_DEVICE_PROTOCOL__WINDOW_AGGREGATION_TYPE__MAX;
+  }
+  else if (window->aggregationType == SUM)
+  {
+    op.aggregationtype = END_DEVICE_PROTOCOL__WINDOW_AGGREGATION_TYPE__SUM;
+  }
+  else if (window->aggregationType == AVG)
+  {
+    op.aggregationtype = END_DEVICE_PROTOCOL__WINDOW_AGGREGATION_TYPE__AVG;
+  }
+  else if (window->aggregationType == COUNT)
+  {
+    op.aggregationtype = END_DEVICE_PROTOCOL__WINDOW_AGGREGATION_TYPE__COUNT;
+  }
+
+  storage[0] = op;
+  return storage;
+}
+
+EndDeviceProtocol__Operation* prepare_operation (Operation *op){
+  printf("Preparing operation, unionCase: %d\n", op->unionCase);
+  if(op->unionCase = END_DEVICE_PROTOCOL__OPERATION__OPERATION_MAP){
+    return prepare_map_operation(&op->operation.map);
+  } else if(op->unionCase = END_DEVICE_PROTOCOL__OPERATION__OPERATION_FILTER){
+    return prepare_filter_operation(&op->operation.filter);
+  } else if(op->unionCase = END_DEVICE_PROTOCOL__OPERATION__OPERATION_WINDOW){
+    return prepare_window_operation(&op->operation.window);
+  }
+}
+
 
 // TODO: Make this work with all operations. Only Map is supported
 EndDeviceProtocol__Query* prepare_query (Query *query) {
@@ -73,7 +139,7 @@ EndDeviceProtocol__Query* prepare_query (Query *query) {
   q.operations = calloc(query->amount, sizeof(EndDeviceProtocol__MapOperation));
   q.n_operations = query->amount;
   for(int i = 0; i < query->amount; i++) {
-    q.operations[i] = prepare_map_operation(&query->operations[i]);
+    q.operations[i] = prepare_operation(&query->operations[i]);
   }
 
   storage[0] = q;
@@ -94,6 +160,8 @@ EndDeviceProtocol__Message* prepare_message (Message *message) {
   return storage;
 }
 
+
+// TODO: Make work with different operations.
 void cleanup(EndDeviceProtocol__Message *msg) {
   for (int i = 0; i < msg->n_queries; i++) {
     EndDeviceProtocol__Query *q = msg->queries[i];
@@ -121,9 +189,8 @@ uint8_t* encode_message (Message *message) {
 
   end_device_protocol__message__pack(prepared_msg, buf);
 
-  cleanup(prepared_msg);
+  //cleanup(prepared_msg);
 
-  
   return buf;
 }
 
@@ -168,6 +235,36 @@ void* encode_map_operation (Map *map) {
   buf = malloc(len);
 
   end_device_protocol__map_operation__pack(prepared_map, buf);
+  
+  return buf;
+}
+
+void* encode_filter_operation (Filter *filter) {
+  void *buf;
+  size_t len;
+
+  EndDeviceProtocol__FilterOperation *prepared_filter = prepare_filter_operation(filter);
+
+  len = end_device_protocol__filter_operation__get_packed_size(prepared_filter);
+
+  buf = malloc(len);
+
+  end_device_protocol__filter_operation__pack(prepared_filter, buf);
+  
+  return buf;
+}
+
+void* encode_window_operation (Window *window) {
+  void *buf;
+  size_t len;
+
+  EndDeviceProtocol__WindowOperation *prepared_window = prepare_window_operation(window);
+
+  len = end_device_protocol__window_operation__get_packed_size(prepared_window);
+
+  buf = malloc(len);
+
+  end_device_protocol__window_operation__pack(prepared_window, buf);
   
   return buf;
 }

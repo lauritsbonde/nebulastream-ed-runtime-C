@@ -991,7 +991,7 @@ static const ProtobufCFieldDescriptor end_device_protocol__query__field_descript
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(EndDeviceProtocol__Query, n_operations),
     offsetof(EndDeviceProtocol__Query, operations),
-    &end_device_protocol__map_operation__descriptor,
+    &end_device_protocol__operation__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
