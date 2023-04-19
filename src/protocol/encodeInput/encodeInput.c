@@ -55,6 +55,7 @@ EndDeviceProtocol__MapOperation* prepare_map_operation (Map *map) {
   
   op.function = calloc(map->expression->p_size, sizeof(EndDeviceProtocol__Data));
   op.n_function = map->expression->p_size;
+  
   for (int i = 0; i < map->expression->p_size; i++) {
     op.function[i] = prepare_instruction(&map->expression->program[i]);
   }
@@ -67,7 +68,7 @@ EndDeviceProtocol__MapOperation* prepare_map_operation (Map *map) {
 EndDeviceProtocol__FilterOperation* prepare_filter_operation (Filter *filter){
   EndDeviceProtocol__FilterOperation *storage = (EndDeviceProtocol__FilterOperation *) malloc(sizeof(EndDeviceProtocol__FilterOperation));
   EndDeviceProtocol__FilterOperation op = END_DEVICE_PROTOCOL__FILTER_OPERATION__INIT;
-
+  
   op.predicate = calloc(filter->predicate->p_size, sizeof(EndDeviceProtocol__Data));
   op.n_predicate = filter->predicate->p_size;
 
@@ -120,14 +121,22 @@ EndDeviceProtocol__WindowOperation* prepare_window_operation (Window *window){
 }
 
 EndDeviceProtocol__Operation* prepare_operation (Operation *op){
-  printf("Preparing operation, unionCase: %d\n", op->unionCase);
-  if(op->unionCase = END_DEVICE_PROTOCOL__OPERATION__OPERATION_MAP){
-    return prepare_map_operation(&op->operation.map);
-  } else if(op->unionCase = END_DEVICE_PROTOCOL__OPERATION__OPERATION_FILTER){
-    return prepare_filter_operation(&op->operation.filter);
-  } else if(op->unionCase = END_DEVICE_PROTOCOL__OPERATION__OPERATION_WINDOW){
-    return prepare_window_operation(&op->operation.window);
+  EndDeviceProtocol__Operation *storage = (EndDeviceProtocol__Operation *) malloc(sizeof(EndDeviceProtocol__Operation));
+  EndDeviceProtocol__Operation o = END_DEVICE_PROTOCOL__OPERATION__INIT;
+
+  if(op->unionCase == END_DEVICE_PROTOCOL__OPERATION__OPERATION_MAP){
+    o.map = prepare_map_operation(op->operation.map);
+    o.operation_case = END_DEVICE_PROTOCOL__OPERATION__OPERATION_MAP;
+  } else if(op->unionCase == END_DEVICE_PROTOCOL__OPERATION__OPERATION_FILTER){
+    o.filter = prepare_filter_operation(op->operation.filter);
+    o.operation_case = END_DEVICE_PROTOCOL__OPERATION__OPERATION_FILTER;
+  } else if(op->unionCase == END_DEVICE_PROTOCOL__OPERATION__OPERATION_WINDOW){
+    o.window = prepare_window_operation(op->operation.window);
+    o.operation_case = END_DEVICE_PROTOCOL__OPERATION__OPERATION_WINDOW;
   }
+
+  storage[0] = o;
+  return storage;
 }
 
 
@@ -166,12 +175,30 @@ void cleanup(EndDeviceProtocol__Message *msg) {
   for (int i = 0; i < msg->n_queries; i++) {
     EndDeviceProtocol__Query *q = msg->queries[i];
     for (int j = 0; j < q->n_operations; j++) {
-      EndDeviceProtocol__MapOperation *msq = q->operations[j];
-      for (int k = 0; k < msq->n_function; k++){
-        EndDeviceProtocol__Data *data = msq->function[k];
-        free(data);
+      EndDeviceProtocol__Operation *op = q->operations[j];
+
+      if(op->operation_case == END_DEVICE_PROTOCOL__OPERATION__OPERATION_MAP){
+        EndDeviceProtocol__MapOperation *msq = op->map;
+        for (int k = 0; k < msq->n_function; k++){
+          EndDeviceProtocol__Data *data = msq->function[k];
+          free(data);
+        }
+        free(msq->function);
+
+      } else if(op->operation_case == END_DEVICE_PROTOCOL__OPERATION__OPERATION_FILTER){
+        EndDeviceProtocol__FilterOperation *fsq = op->filter;
+        for (int k = 0; k < fsq->n_predicate; k++){
+          EndDeviceProtocol__Data *data = fsq->predicate[k];
+          free(data);
+        }
+        free(fsq->predicate);
+
+      } else if(op->operation_case == END_DEVICE_PROTOCOL__OPERATION__OPERATION_WINDOW){
+        EndDeviceProtocol__WindowOperation *wsq = op->window;
+        free(wsq);
       }
-      free(msq->function);
+
+      free(op);
     }
     free(q->operations);
   }
@@ -189,7 +216,7 @@ uint8_t* encode_message (Message *message) {
 
   end_device_protocol__message__pack(prepared_msg, buf);
 
-  //cleanup(prepared_msg);
+  cleanup(prepared_msg);
 
   return buf;
 }
@@ -265,6 +292,21 @@ void* encode_window_operation (Window *window) {
   buf = malloc(len);
 
   end_device_protocol__window_operation__pack(prepared_window, buf);
+  
+  return buf;
+}
+
+void* encode_operation(Operation *op) {
+  void *buf;
+  size_t len;
+
+  EndDeviceProtocol__Operation *prepared_op = prepare_operation(op);
+
+  len = end_device_protocol__operation__get_packed_size(prepared_op);
+
+  buf = malloc(len);
+
+  end_device_protocol__operation__pack(prepared_op, buf);
   
   return buf;
 }

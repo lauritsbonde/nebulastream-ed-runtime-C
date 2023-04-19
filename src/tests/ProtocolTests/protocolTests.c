@@ -180,7 +180,6 @@ Test prepareMapTest(){
 }
 
 Test prepareFilterTest(){
-  printf("Preparing filter test\n");
   Test test;
   test.name = "Filter is prepared to EndDeviceProtocol__FilterOperation";
 
@@ -219,7 +218,6 @@ Test prepareFilterTest(){
 }
 
 Test prepareWindowTest(){
-  printf("Preparing window test\n");
   Test test;
   test.name = "Window is prepared to EndDeviceProtocol__WindowOperation";
 
@@ -297,7 +295,6 @@ Test prepareWindowTest(){
 }
 
 Test prepareOperationTestMap(){
-  printf("Preparing operation test map\n");
   Test test;
   test.name = "Operation is prepared to EndDeviceProtocol__Operation (MAP)";
 
@@ -340,7 +337,6 @@ Test prepareOperationTestMap(){
 }
 
 Test prepareOperationTestFilter(){
-  printf("Preparing operation test filter\n");
   Test test;
   test.name = "Operation is prepared to EndDeviceProtocol__Operation (FILTER)";
 
@@ -367,9 +363,7 @@ Test prepareOperationTestFilter(){
   operation.unionCase = 2;
 
   // Prepare the operation
-  printf("Preparing operation\n");
   EndDeviceProtocol__Operation *preparedOperation = prepare_operation(&operation);
-  printf("Prepared operation\n");
 
   if(preparedOperation->operation_case != END_DEVICE_PROTOCOL__OPERATION__OPERATION_FILTER){
     test.failed = 1;
@@ -384,7 +378,6 @@ Test prepareOperationTestFilter(){
 }
 
 Test prepareOperationTestWindow(){
-  printf("Preparing operation test window\n");
   Test test;
   test.name = "Operation is prepared to EndDeviceProtocol__Operation (WINDOW)";
 
@@ -406,8 +399,8 @@ Test prepareOperationTestWindow(){
 
   if(preparedOperation->operation_case != END_DEVICE_PROTOCOL__OPERATION__OPERATION_WINDOW){
     test.failed = 1;
-    char* msg;
-    sprintf(&msg, "Expected operation to have operation_case %d, but had %d", END_DEVICE_PROTOCOL__OPERATION__OPERATION_WINDOW, preparedOperation->operation_case);
+    char* msg[100];
+    snprintf(&msg,100, "Expected operation to have operation_case %d, but had %d", END_DEVICE_PROTOCOL__OPERATION__OPERATION_WINDOW, preparedOperation->operation_case);
     test.message = msg;
     return test;
   }
@@ -580,7 +573,6 @@ Test mapGetsEncoded(){
 }
 
 Test filterGetsEncoded(){
-  printf("Filter gets encoded test\n");
   Test test;
   test.name = "Filter gets encoded";
 
@@ -611,7 +603,6 @@ Test filterGetsEncoded(){
 }
 
 Test windowGetsEncoded(){
-  printf("window gets encoded test\n");
   Test test;
   test.name = "Window gets encoded";
 
@@ -633,7 +624,6 @@ Test windowGetsEncoded(){
 }
 
 Test operationGetsEncodedMap(){
-  printf("Operation gets encoded (MAP) test\n");
   Test test;
   test.name = "Operation gets encoded (MAP)";
 
@@ -656,8 +646,12 @@ Test operationGetsEncodedMap(){
   map.expression = &exp;
   map.attribute = 1;
 
+  Operation operation;
+  operation.operation.map = &map;
+  operation.unionCase = 1;
+
   // Encode the map
-  void* encodedMap = encode_map_operation(&map);
+  void* encodedMap = encode_operation(&operation);
 
   // Check if the map has the correct size
   test.failed = 0;
@@ -665,7 +659,6 @@ Test operationGetsEncodedMap(){
 }
 
 Test operationGetsEncodedFilter(){
-  printf("Operation gets encoded (FILTER) test\n");
   Test test;
   test.name = "Operation gets encoded (FILTER)";
 
@@ -687,8 +680,12 @@ Test operationGetsEncodedFilter(){
   Filter filter;
   filter.predicate = &exp;
 
-  // Encode the filter
-  void* encodedFilter = encode_filter_operation(&filter);
+  Operation op;
+  op.operation.filter = &filter;
+  op.unionCase = 2;
+
+  // Encode the operation
+  void* encodedFilter = encode_operation(&op);
 
   // Check if the filter has the correct size
   test.failed = 0;
@@ -697,7 +694,6 @@ Test operationGetsEncodedFilter(){
 }
 
 Test operationGetsEncodedWindow(){
-  printf("Operation gets encoded (WINDOW) test\n");
   Test test;
   test.name = "Operation gets encoded (WINDOW)";
 
@@ -710,8 +706,12 @@ Test operationGetsEncodedWindow(){
   window.resultAttribute = 3;
   window.readAttribute = 4;
 
-  // Encode the window
-  void* encodedWindow = encode_window_operation(&window);
+  Operation op;
+  op.operation.window = &window;
+  op.unionCase = 3;
+
+  // Encode the operation
+  void* encodedOperation = encode_operation(&op);
 
   // Check if the window has the correct size
   test.failed = 0;
@@ -741,8 +741,12 @@ Test messageGetsEncoded(){
   map.expression = &exp;
   map.attribute = 1;
 
+  Operation operation;
+  operation.operation.map = &map;
+  operation.unionCase = 1;
+
   Query query;
-  query.operations = &map;
+  query.operations = &operation;
   query.amount = 1;
 
   Message message;
@@ -752,15 +756,15 @@ Test messageGetsEncoded(){
   // Encode the message
   uint8_t* encodedMessage = encode_message(&message);
   
-  const int expectedLength = 14;
+  const int expectedLength = 16;
 
-  uint8_t expected[expectedLength] = {10,12,10,10,10,2,8,0,10,2,56,6,16,1};
+  uint8_t expected[expectedLength] = {10, 14, 10, 12, 10, 10, 10, 2, 8, 0, 10, 2, 56, 6, 16, 1};
 
   for(int i = 0; i < expectedLength; i++){
     if(encodedMessage[i] != expected[i]){
       test.failed = 1;
-      char* msg;
-      sprintf(&msg, "Expected %d at index %d, but got %d", expected[i], i, encodedMessage[i]);
+      char* msg[100];
+      sprintf(&msg, "Expected: %d, got: %d\n", expected[i], encodedMessage[i]);
       test.message = msg;
       return test;
     }
@@ -809,7 +813,7 @@ Test messageGetsDecoded(){
   uint8_t* encodedMessage = encode_message(&message);
 
   // Decode the message
-  Message decodedMessage = decodeMessage(encodedMessage, 14);
+  Message decodedMessage = decodeMessage(encodedMessage, 16);
 
 
   int expectedQueryAmount = 1;
@@ -824,56 +828,56 @@ Test messageGetsDecoded(){
 
   if(decodedMessage.amount != expectedQueryAmount) {
     test.failed = 1;
-    char* msg;
-    sprintf(&msg, "Expected message to have %d queries, but had %d", expectedQueryAmount, decodedMessage.amount);
-    test.message = msg;
+    char* msg[100];
+    snprintf(&msg, 100, "Expected message to have %d queries, but had %d", expectedQueryAmount, decodedMessage.amount);
+    test.message = msg[100];
     return test;
   }
 
   if(decodedMessage.queries->amount != expectedOperationAmount) {
     test.failed = 1;
-    char* msg;
-    sprintf(&msg, "Expected query to have %d operations, but had %d", expectedOperationAmount, decodedMessage.queries->amount);
+    char* msg[100];
+    snprintf(&msg, 100, "Expected query to have %d operations, but had %d", expectedOperationAmount, decodedMessage.queries->amount);
     test.message = msg;
     return test;
   }
 
   if(decodedMessage.queries->operations->operation.map->expression->p_size != expectedInstructionAmount) {
     test.failed = 1;
-    char* msg;
-    sprintf(&msg, "Expected operation to have %d instructions, but had %d", expectedInstructionAmount, decodedMessage.queries->operations->operation.map->expression->p_size);
+    char* msg[100];
+    snprintf(&msg, "Expected operation to have %d instructions, but had %d", expectedInstructionAmount, decodedMessage.queries->operations->operation.map->expression->p_size);
     test.message = msg;
     return test;
   }
 
   if(decodedMessage.queries->operations->operation.map->expression->program[0].unionCase != expectedInstruction1UnionCase) {
     test.failed = 1;
-    char* msg;
-    sprintf(&msg, "Expected instruction 1 to have unionCase %d, but had %d", expectedInstruction1UnionCase, decodedMessage.queries->operations->operation.map->expression->program[0].unionCase);
+    char* msg[100];
+    snprintf(&msg, "Expected instruction 1 to have unionCase %d, but had %d", expectedInstruction1UnionCase, decodedMessage.queries->operations->operation.map->expression->program[0].unionCase);
     test.message = msg;
     return test;
   }
 
   if(decodedMessage.queries->operations->operation.map->expression->program[0].data._instruction != expectedInstruction1Data) {
     test.failed = 1;
-    char* msg;
-    sprintf(&msg, "Expected instruction 1 to have data %d, but had %d", expectedInstruction1Data, decodedMessage.queries->operations->operation.map->expression->program[0].data._instruction);
+    char* msg[100];
+    snprintf(&msg, 100, "Expected instruction 1 to have data %d, but had %d", expectedInstruction1Data, decodedMessage.queries->operations->operation.map->expression->program[0].data._instruction);
     test.message = msg;
     return test;
   }
 
   if(decodedMessage.queries->operations->operation.map->expression->program[1].unionCase != expectedInstruction2UnionCase) {
     test.failed = 1;
-    char* msg;
-    sprintf(&msg, "Expected instruction 2 to have unionCase %d, but had %d", expectedInstruction2UnionCase, decodedMessage.queries->operations->operation.map->expression->program[1].unionCase);
+    char* msg[100];
+    snprintf(&msg,100, "Expected instruction 2 to have unionCase %d, but had %d", expectedInstruction2UnionCase, decodedMessage.queries->operations->operation.map->expression->program[1].unionCase);
     test.message = msg;
     return test;
   }
 
   if(decodedMessage.queries->operations->operation.map->expression->program[1].data._int != expectedInstruction2Data) {
     test.failed = 1;
-    char* msg;
-    sprintf(&msg, "Expected instruction 2 to have data %d, but had %d", expectedInstruction2Data, decodedMessage.queries->operations->operation.map->expression->program[1].data._int);
+    char* msg[100];
+    snprintf(&msg, 100, "Expected instruction 2 to have data %d, but had %d", expectedInstruction2Data, decodedMessage.queries->operations->operation.map->expression->program[1].data._int);
     test.message = msg;
     return test;
   }
