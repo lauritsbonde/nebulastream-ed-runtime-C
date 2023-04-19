@@ -103,13 +103,59 @@ Map mapOperationToMapType(EndDeviceProtocol__MapOperation *op) {
   return map;
 }
 
+Filter filterToFilterType(EndDeviceProtocol__FilterOperation *op) {
+  Filter filter;
+  filter.predicate = malloc(sizeof(Expression));
+
+  Expression *e;
+  e->p_size = op->n_predicate;
+  e->program = malloc(sizeof(Instruction) * e->p_size);
+  
+  for(int i = 0; i < e->p_size; i++) {
+    e->program[i] = dataToInstructionType(op->predicate[i]);
+  }
+
+  filter.predicate = e;
+  return filter;
+}
+
+Window windowToWindowType(EndDeviceProtocol__WindowOperation *op) {
+  Window window;
+  window.size = op->size;
+  window.sizeType = op->sizetype;
+  window.aggregationType = op->aggregationtype;
+  window.startAttribute = op->startattribute;
+  window.endAttribute = op->endattribute;
+  window.resultAttribute = op->resultattribute;
+  window.readAttribute = op->readattribute;
+  return window;
+}
+
+Operation operationToOperationType(EndDeviceProtocol__Operation *op) {
+  Operation operation;
+  if(op->operation_case == END_DEVICE_PROTOCOL__OPERATION__OPERATION_MAP) {
+    operation.unionCase = 0;
+    operation.operation.map = malloc(sizeof(Map));
+    operation.operation.map[0] = mapOperationToMapType(op->map);
+  } else if(op->operation_case == END_DEVICE_PROTOCOL__OPERATION__OPERATION_FILTER) {
+    operation.unionCase = 1;
+    operation.operation.filter = malloc(sizeof(Filter));
+    operation.operation.filter[0] = filterToFilterType(op->filter);
+  } else if(op->operation_case == END_DEVICE_PROTOCOL__OPERATION__OPERATION_WINDOW) {
+    operation.unionCase = 2;
+    operation.operation.window = malloc(sizeof(Window));
+    operation.operation.window[0] = windowToWindowType(op->window);
+  }
+  return operation;
+}
+
 Query edpQueryToQueryType(EndDeviceProtocol__Query *query){
   Query q;
   q.amount = query->n_operations;
-  q.operations = malloc(sizeof(Map) * q.amount);
+  q.operations = malloc(sizeof(Operation) * q.amount);
 
   for(int i = 0; i< q.amount; i++) {
-    q.operations[i] = mapOperationToMapType(query->operations[i]);
+    q.operations[i] = operationToOperationType(query->operations[i]);
   }
   return q;
 }

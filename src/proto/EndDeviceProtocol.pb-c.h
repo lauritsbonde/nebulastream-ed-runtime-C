@@ -203,7 +203,7 @@ struct  EndDeviceProtocol__Query
    *bytes resultType = 1; //For some reason minipb breaks if I make this a repeated enum or int32
    */
   size_t n_operations;
-  EndDeviceProtocol__MapOperation **operations;
+  EndDeviceProtocol__Operation **operations;
 };
 #define END_DEVICE_PROTOCOL__QUERY__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&end_device_protocol__query__descriptor) \

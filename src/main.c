@@ -9,7 +9,6 @@
 #include "./environment/environment.h"
 #include "./expression/expression.h"
 #include "./proto/EndDeviceProtocol.pb-c.h"
-#include "./protocol/protocol.h"
 #include "./operators/operators.h"
 #include "./protocol/encodeInput/encodeInput.h"
 #include "./tests/runTest.h"
