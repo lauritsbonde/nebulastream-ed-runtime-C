@@ -4,7 +4,7 @@
 
 #include "../operators/operators.h"
 
-Env *init_env();
+Env *init_env(void);
 void clear_env(Env *env);
 Number get_value(Env *env, int index);
 void set_value(Env *env, int index, Number val);

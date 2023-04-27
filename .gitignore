@@ -95,6 +95,7 @@ build/*
 ### Ignore log ###
 /log.txt
 
+.idea/*
 
 
 # End of https://www.toptal.com/developers/gitignore/api/c,visualstudiocode,git

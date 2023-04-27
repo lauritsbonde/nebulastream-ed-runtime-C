@@ -24,5 +24,6 @@
 		"decodeinput.h": "c",
 		"expression.h": "c"
 	},
-	"cmake.configureOnOpen": false
+	"cmake.configureOnOpen": false,
+	"cmake.sourceDirectory": "/home/kusmar/Dev/nebulastream-ed-runtime-C/external/protobuf-c/build-cmake"
 }
