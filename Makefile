@@ -29,7 +29,7 @@ all: $(BUILD_DIR)/$(TARGET_EXEC)
 
 # To build the target executable we need to link all .o files
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS) $(shell pkg-config --libs 'libprotobuf-c >= 1.0.0')
+	$(CC) $(OBJS) -o $@ $(LDFLAGS) $(shell pkg-config --libs 'libprotobuf-c >= 1.0.0') -lm
 
 # To build .o files we need to compile *.c files
 $(BUILD_DIR)/%.c.o: %.c

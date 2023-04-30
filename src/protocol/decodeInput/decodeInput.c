@@ -91,7 +91,8 @@ Map mapOperationToMapType(EndDeviceProtocol__MapOperation *op) {
   map.attribute = op->attribute;
   map.expression = malloc(sizeof(Expression));
 
-  Expression *e;
+  //TODO: figure out why the space needs to be allocated
+  Expression *e = (Expression*)malloc(sizeof(Expression));
   e->p_size = op->n_function;
   e->program = malloc(sizeof(Instruction) * e->p_size);
   
@@ -107,7 +108,8 @@ Filter filterToFilterType(EndDeviceProtocol__FilterOperation *op) {
   Filter filter;
   filter.predicate = malloc(sizeof(Expression));
 
-  Expression *e;
+  //TODO: figure out why the space needs to be allocated
+  Expression *e = (Expression*)malloc(sizeof(Expression));
   e->p_size = op->n_predicate;
   e->program = malloc(sizeof(Instruction) * e->p_size);
   
@@ -146,6 +148,7 @@ Operation operationToOperationType(EndDeviceProtocol__Operation *op) {
     operation.operation.window = malloc(sizeof(Window));
     operation.operation.window[0] = windowToWindowType(op->window);
   }
+
   return operation;
 }
 

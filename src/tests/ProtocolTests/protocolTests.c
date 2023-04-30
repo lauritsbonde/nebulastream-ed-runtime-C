@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include "protocolTests.h"
 #include "../testType.h"
 #include "../../environment/environment.h"
@@ -27,7 +28,6 @@ TestResult runProtocolTests(){
   res.tests[7] = prepareOperationTestWindow();
   res.tests[8] = prepareQueryTest();
   res.tests[9] = prepareMessageTest();
-
   res.tests[10] = instructionGetsEncoded();
   res.tests[11] = expressionGetsEncoded();
   res.tests[12] = mapGetsEncoded();
@@ -36,11 +36,10 @@ TestResult runProtocolTests(){
   res.tests[15] = operationGetsEncodedMap();
   res.tests[16] = operationGetsEncodedFilter();
   res.tests[17] = operationGetsEncodedWindow();
-  
+   
   res.tests[18] = messageGetsEncoded();
   res.tests[19] = messageGetsDecoded();
-
-  //OUTPUT message tests
+    //OUTPUT message tests
   res.tests[20] = outputMessageGetsEncoded();
 
   return res;
@@ -97,7 +96,7 @@ Test prepareExpressionTest(){
   const int numberOfInstructions = 2;
 
   //Create a program with 2 instructions
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -133,7 +132,7 @@ Test prepareMapTest(){
   const int numberOfInstructions = 2;
 
   // Create a map
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -186,7 +185,7 @@ Test prepareFilterTest(){
   const int numberOfInstructions = 2;
 
   // Create a filter
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -301,7 +300,7 @@ Test prepareOperationTestMap(){
   const int numberOfInstructions = 2;
 
   // Create a map
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -343,7 +342,7 @@ Test prepareOperationTestFilter(){
   const int numberOfInstructions = 2;
 
   // Create a map
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -416,7 +415,7 @@ Test prepareQueryTest(){
   const int numberOfInstructions = 2;
 
   // Create a query
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -458,7 +457,7 @@ Test prepareMessageTest(){
   const int numberOfInstructions = 2;
 
   // Create a message
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -519,7 +518,7 @@ Test expressionGetsEncoded(){
   const int numberOfInstructions = 2;
 
   // Create a expression
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -547,7 +546,7 @@ Test mapGetsEncoded(){
   const int numberOfInstructions = 2;
 
   // Create a map
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -579,7 +578,7 @@ Test filterGetsEncoded(){
   const int numberOfInstructions = 2;
 
   // Create a filter
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -630,7 +629,7 @@ Test operationGetsEncodedMap(){
   const int numberOfInstructions = 2;
 
   // Create a map
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -665,7 +664,7 @@ Test operationGetsEncodedFilter(){
   const int numberOfInstructions = 2;
 
   // Create a filter
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -725,7 +724,7 @@ Test messageGetsEncoded(){
   const int numberOfInstructions = 2;
 
   // Create a message
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -758,7 +757,7 @@ Test messageGetsEncoded(){
   
   const int expectedLength = 16;
 
-  uint8_t expected[expectedLength] = {10, 14, 10, 12, 10, 10, 10, 2, 8, 0, 10, 2, 56, 6, 16, 1};
+  uint8_t expected[16] = {10, 14, 10, 12, 10, 10, 10, 2, 8, 0, 10, 2, 56, 6, 16, 1};
 
   for(int i = 0; i < expectedLength; i++){
     if(encodedMessage[i] != expected[i]){
@@ -781,7 +780,7 @@ Test messageGetsDecoded(){
   const int numberOfInstructions = 2;
 
   // Create a message
-  Instruction p1[numberOfInstructions] = {
+  Instruction p1[2] = {
       {0, 0},
       {.data._int = 3, 2}
     };
@@ -913,7 +912,7 @@ Test outputMessageGetsEncoded(){
 
   const int expectedLength = 8;
 
-  uint8_t expected[expectedLength] = {10,6,8,1,18,2,56,6};
+  uint8_t expected[8] = {10,6,8,1,18,2,56,6};
 
   for(int i = 0; i < expectedLength; i++){
     if(encodedMessage[i] != expected[i]){

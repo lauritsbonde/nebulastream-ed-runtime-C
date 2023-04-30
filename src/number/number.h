@@ -2,6 +2,7 @@
 #define NUMBER_H
 
 #include <stdlib.h>
+#include <stdint.h>
 
 typedef struct _Number {
     union {
