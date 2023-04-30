@@ -32,7 +32,9 @@ int main(int argc, char **argv)
   }
   init_logger(includeLogs);
 
-  if (strcmp(argv[1], "test") == 0) {
+
+  if (argc >= 2 && strcmp(argv[argc - 1], "test") == 0) {
+    printf("run tests\n");
     TestToRun tests;
     if(argc == 2){
       tests = ALL;

@@ -22,7 +22,8 @@
 		"expressiontests.h": "c",
 		"typeinfo": "c",
 		"decodeinput.h": "c",
-		"expression.h": "c"
+		"expression.h": "c",
+		"logger.h": "c"
 	},
 	"cmake.configureOnOpen": false
 }

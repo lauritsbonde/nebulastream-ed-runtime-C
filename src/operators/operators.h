@@ -2,6 +2,7 @@
 #define OPERATORS_H
 
 #include <stdlib.h>
+#include <stdint.h>
 #include "../number/number.h"
 
 // struct Operator {
