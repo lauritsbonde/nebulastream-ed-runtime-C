@@ -1,7 +1,7 @@
 # RIOT Stuff
 APPLICATION = NSED_Runtime
 PROJECTBASE = ./src
-BOARD ?= native
+BOARD ?= arduino-mkrwan1300
 
 RIOTBASE ?= $(CURDIR)/../../RIOT
 USEMODEULE += protobuf-c
