@@ -43,10 +43,12 @@ USEMODEULE += protobuf-c
 
 include $(RIOTBASE)/Makefile.include
 
-# OTAA compile time configuration keys
-CFLAGS += -DCONFIG_LORAMAC_APP_KEY_DEFAULT=\"$(APPKEY)\"
-CFLAGS += -DCONFIG_LORAMAC_APP_EUI_DEFAULT=\"$(APPEUI)\"
-CFLAGS += -DCONFIG_LORAMAC_DEV_EUI_DEFAULT=\"$(DEVEUI)\"
+ifndef CONFIG_KCONFIG_USEMODULE_LORAWAN
+	# OTAA compile time configuration keys
+	CFLAGS += -DCONFIG_LORAMAC_APP_KEY_DEFAULT=\"$(APPKEY)\"
+	CFLAGS += -DCONFIG_LORAMAC_APP_EUI_DEFAULT=\"$(APPEUI)\"
+	CFLAGS += -DCONFIG_LORAMAC_DEV_EUI_DEFAULT=\"$(DEVEUI)\"
+endif
 
 # # shamelessly stolen and modified from https://spin.atomicobject.com/2016/08/26/
 # UNAME := $(shell uname)
