@@ -10,5 +10,9 @@ To build you must set the following variables in the `Makefile`
 - `BOARD` The specific board that riot should build for. [List of boards support by RIOT](https://doc.riot-os.org/group__boards.html).
 - `DEVEUI`, `APPEUI`and `APPKEY`. Settings for your specific LoRaWAN connection
 
+To build the application, flash to a device, and open a terminal to the flashed device, run:
+
+`$ make flash term`
+
 ## Contributors
 Laurits og Markus for Bachelor Thesis @ ITU
