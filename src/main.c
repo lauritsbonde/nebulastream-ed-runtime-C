@@ -20,6 +20,10 @@
 
 int main(int argc, char **argv)
 {
+  printf("LoRaWAN Class A low-power application\n");
+  printf("=====================================\n");
+
+  // TODO: Handle flags in Makefile. Not here
   // Check if the flag for including logs was passed
   char *includeLogs;
   if (argc == 1)
@@ -50,32 +54,12 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  // while (1)
-  // {
-    printf("main loop iteration\n");
-
-    //Create a program
-    Env *env = init_env();
-    
-    Expression exp;
-    exp.env = env;
-    exp.stack = env->stack;
-
-    Instruction i1 = {0, 0};
-
-    Instruction p[5] = {
-        {0, 0},
-        {.data._int = 3, 2},
-        {0, 0},
-        {.data._int = 4, 2},
-        {22, 0}};
-
-    exp.program = p;
-    exp.p_size = 5;
-
-    call(&exp);
-    
-    // SLEEP_SEC(3);
-  // }
+  // TODO: Look into running the main loop in a thread, and sleeping in low power mode with RIOT
+  while (1)
+  {
+    printf("Main loop iteration\n");
+    SLEEP_SEC(3);
+  }
+  
   return 0;
 }
