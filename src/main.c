@@ -4,11 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "./logger/logger.h"
 #include "./stack/stack.h"
 #include "./environment/environment.h"
 #include "./expression/expression.h"
-#include "./proto/EndDeviceProtocol.pb-c.h"
+// #include "./proto/EndDeviceProtocol.pb.h"
 #include "./operators/operators.h"
 #include "./protocol/encodeInput/encodeInput.h"
 #include "./tests/runTest.h"
@@ -22,19 +21,6 @@ int main(int argc, char **argv)
 {
   printf("LoRaWAN Class A low-power application\n");
   printf("=====================================\n");
-
-  // TODO: Handle flags in Makefile. Not here
-  // Check if the flag for including logs was passed
-  char *includeLogs;
-  if (argc == 1)
-  {
-    includeLogs = "no";
-  }
-  else
-  {
-    includeLogs = argv[1]; // argv[1] is wether or not to include logs
-  }
-  init_logger(includeLogs);
 
 
   if (argc >= 2 && strcmp(argv[argc - 1], "test") == 0) {
@@ -60,7 +46,8 @@ int main(int argc, char **argv)
   while (1)
   {
     printf("Main loop iteration\n");
-    SLEEP_SEC(3);
+    Env *s = init_env();
+    printf("%d\n",s->size);
   }
   
   return 0;

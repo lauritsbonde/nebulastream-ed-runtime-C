@@ -5,17 +5,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../../operators/operators.h"
-#include "../../proto/EndDeviceProtocol.pb-c.h"
+// #include "../../proto/EndDeviceProtocol.pb.h"
 
 // An instruction corresponds to the Data type in .proto
-EndDeviceProtocol__Data* prepare_instruction(Instruction *instruction);
-EndDeviceProtocol__Expression* prepare_expression (Expression *exp);
-EndDeviceProtocol__MapOperation* prepare_map_operation (Map *map);
-EndDeviceProtocol__FilterOperation* prepare_filter_operation (Filter *filter);
-EndDeviceProtocol__WindowOperation* prepare_window_operation (Window *window);
-EndDeviceProtocol__Operation* prepare_operation (Operation *op);
-EndDeviceProtocol__Query* prepare_query (Query *query);
-EndDeviceProtocol__Message *prepare_message(Message *message);
 
 
 void* encode_instruction (Instruction *instr);

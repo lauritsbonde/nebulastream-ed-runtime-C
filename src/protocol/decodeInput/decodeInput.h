@@ -2,7 +2,7 @@
 #define DECODEINPUT_H
 
 #include "../../operators/operators.h"
-#include "../../proto/EndDeviceProtocol.pb-c.h"
+// #include "../../proto/EndDeviceProtocol.pb.h"
 
 Instruction decodeInstructionuction(EndDeviceProtocol__Data *data);
 Message decodeMessage(uint8_t * input, int size);

@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "encodeinput.h": "c",
+        "pb_encode.h": "c",
+        "enddeviceprotocol.pb.h": "c",
+        "runtest.h": "c",
+        "operators.h": "c",
+        "pb_decode.h": "c"
+    }
+}
