@@ -766,7 +766,6 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FILECMD = @FILECMD@
 GENHTML = @GENHTML@
 GREP = @GREP@
 HAVE_CXX11 = @HAVE_CXX11@
@@ -916,7 +915,7 @@ protobuf_c_libprotobuf_c_la_SOURCES = \
 
 protobuf_c_libprotobuf_c_la_LDFLAGS = $(AM_LDFLAGS) -version-info \
 	$(LIBPROTOBUF_C_CURRENT):$(LIBPROTOBUF_C_REVISION):$(LIBPROTOBUF_C_AGE) \
-	$(am__append_1) $(am__append_2)
+	-no-undefined $(am__append_1) $(am__append_2)
 @BUILD_COMPILER_TRUE@protoc_c_protoc_gen_c_SOURCES = \
 @BUILD_COMPILER_TRUE@	protoc-c/c_bytes_field.cc \
 @BUILD_COMPILER_TRUE@	protoc-c/c_bytes_field.h \

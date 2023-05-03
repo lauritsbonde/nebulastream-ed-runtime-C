@@ -50,7 +50,8 @@ protobuf_c_libprotobuf_c_la_SOURCES = \
 	protobuf-c/protobuf-c.h
 
 protobuf_c_libprotobuf_c_la_LDFLAGS = $(AM_LDFLAGS) \
-	-version-info $(LIBPROTOBUF_C_CURRENT):$(LIBPROTOBUF_C_REVISION):$(LIBPROTOBUF_C_AGE) 
+	-version-info $(LIBPROTOBUF_C_CURRENT):$(LIBPROTOBUF_C_REVISION):$(LIBPROTOBUF_C_AGE) \
+	-no-undefined
 
 if HAVE_LD_VERSION_SCRIPT
 protobuf_c_libprotobuf_c_la_LDFLAGS += \
