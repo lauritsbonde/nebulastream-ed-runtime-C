@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "environment.h"
-#include "stack/stack.h"
+#include "stack.h"
 
 Env *init_env(void)
 {

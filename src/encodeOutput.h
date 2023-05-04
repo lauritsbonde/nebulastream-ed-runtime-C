@@ -2,9 +2,9 @@
 #define PROTOCOL_H
 
 // #include "../../proto/EndDeviceProtocol.pb.h"
-#include "../../operators/operators.h"
+#include "operators.h"
 
 
-uint8_t *encodeOutputMessage(OutputMessage *msg);
+// uint8_t *encodeOutputMessage(OutputMessage *msg);
 
 #endif

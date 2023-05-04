@@ -6,7 +6,7 @@
 
 void printNumberValue(Number val){
     if(val.unionCase == 1){
-        printf("%d", val.type._uint32);
+        printf("%lu", val.type._uint32);
     } else if(val.unionCase == 2){
         printf("%d", val.type._int);
     } else if(val.unionCase == 3){
@@ -20,7 +20,7 @@ void printNumberValue(Number val){
 
 void printNumberValueAndUcase(Number val){
     if(val.unionCase == 1){
-      printf("val: %d - unionCase: %d (uint)", val.type._uint32, val.unionCase);
+      printf("val: %lu - unionCase: %d (uint)", val.type._uint32, val.unionCase);
     } else if(val.unionCase == 2){
       printf("val: %d - unionCase: %d (int)", val.type._int, val.unionCase);
     } else if(val.unionCase == 3){
@@ -43,9 +43,9 @@ int compare(Number n1, Number n2){
                 return 0;
             }
         } else if (n2.unionCase == 2){
-            if(n1.type._uint32 > n2.type._int){
+            if((int)(n1.type._uint32) > n2.type._int){
                 return 1;
-            } else if (n1.type._uint32 < n2.type._int){
+            } else if ((int)(n1.type._uint32) < n2.type._int){
                 return -1;
             } else {
                 return 0;
@@ -73,9 +73,9 @@ int compare(Number n1, Number n2){
             if(n1.type._int < 0){
                 return -1;
             }
-            if(n1.type._int > n2.type._uint32){
+            if(n1.type._int > (int)(n2.type._uint32)){
                 return 1;
-            } else if (n1.type._int < n2.type._uint32){
+            } else if (n1.type._int < (int)(n2.type._uint32)){
                 return -1;
             } else {
                 return 0;
@@ -712,7 +712,7 @@ Number bin_op(Number n1, Number n2, char op){
 // TODO: Can we be more efficient than strcmp?
 Number un_op(Number n1, char* op){
     Number result;
-    double val;
+    double val = 0.0;
 
     if (n1.unionCase == 1) {
         val = (double) n1.type._uint32;

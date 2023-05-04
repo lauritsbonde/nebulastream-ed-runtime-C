@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
-#include "../number/number.h"
+#include "number.h"
 
 // struct Operator {
 //   int (*call) (int *func);

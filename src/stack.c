@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "stack.h"
-#include "../operators/operators.h"
-#include "../number/number.h"
+#include "operators.h"
+#include "number.h"
 
-Stack *init_stack()
+Stack *init_stack(void)
 {
     Stack *stack = calloc(1, sizeof(Stack));
     stack->stack = calloc(10, sizeof(Number));
@@ -27,7 +27,7 @@ Number pop(Stack *stack)
 {
     if(stack->top == -1) {
         printf("Stack is empty\n");
-        return (Number){0, 2};
+        return (Number){{CONST}, 2};
     }
     return stack->stack[stack->top--];
 }

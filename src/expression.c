@@ -2,10 +2,10 @@
 #include <stdio.h>
 
 #include "expression.h"
-#include "../stack/stack.h"
-#include "../operators/operators.h"
-#include "../environment/environment.h"
-#include "../number/number.h"
+#include "stack.h"
+#include "operators.h"
+#include "environment.h"
+#include "number.h"
 
 // TODO: How do we handle functions that return doubles?
 // TODO: Fix linker errors with math.h functions.

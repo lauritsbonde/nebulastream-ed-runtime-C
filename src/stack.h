@@ -2,7 +2,7 @@
 #define STACK_H
 
 #include <stdlib.h>
-#include "../operators/operators.h"
+#include "operators.h"
 
 Stack *init_stack(void);
 void push(Stack *stack, Number val);

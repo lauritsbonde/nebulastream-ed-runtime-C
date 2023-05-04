@@ -4,16 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "./stack/stack.h"
+#include "stack.h"
 #include "environment.h"
-#include "./stack/stack.h"
-#include "./expression/expression.h"
+#include "expression.h"
 // #include "./proto/EndDeviceProtocol.pb.h"
-#include "./operators/operators.h"
-#include "./number/number.h"
-#include "./protocol/encodeInput/encodeInput.h"
-#include "./tests/runTest.h"
-#include "./tests/testType.h"
+#include "operators.h"
+#include "number.h"
+#include "encodeInput.h"
+// #include "./tests/runTest.h"
+// #include "./tests/testType.h"
 
 // Macros
 // #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))

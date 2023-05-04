@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "../../operators/operators.h"
+#include "operators.h"
 // #include "../../proto/EndDeviceProtocol.pb.h"
 
 // An instruction corresponds to the Data type in .proto

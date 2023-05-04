@@ -5,6 +5,21 @@
         "enddeviceprotocol.pb.h": "c",
         "runtest.h": "c",
         "operators.h": "c",
-        "pb_decode.h": "c"
+        "pb_decode.h": "c",
+        "expression.h": "c",
+        "compare": "c",
+        "exception": "c",
+        "type_traits": "c",
+        "*.tcc": "c",
+        "algorithm": "c",
+        "initializer_list": "c",
+        "istream": "c",
+        "mutex": "c",
+        "ostream": "c",
+        "numeric": "c",
+        "stop_token": "c",
+        "streambuf": "c",
+        "thread": "c",
+        "functional": "c"
     }
 }
