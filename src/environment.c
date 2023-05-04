@@ -1,8 +1,9 @@
 #include <stdlib.h>
-#include "environment.h"
-#include "../stack/stack.h"
 
-Env *init_env()
+#include "environment.h"
+#include "stack/stack.h"
+
+Env *init_env(void)
 {
     Env *env = calloc(1, sizeof(Env));
     env->env = calloc(10, sizeof(Number));

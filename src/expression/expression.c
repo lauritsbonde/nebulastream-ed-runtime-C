@@ -1,9 +1,10 @@
 #include <math.h>
 #include <stdio.h>
-#include "../stack/stack.h"
-#include "expression.h"
-#include "../operators/operators.h"
 
+#include "expression.h"
+#include "../stack/stack.h"
+#include "../operators/operators.h"
+#include "../environment/environment.h"
 #include "../number/number.h"
 
 // TODO: How do we handle functions that return doubles?

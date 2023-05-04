@@ -2,7 +2,7 @@
 #define ENVIRONMENT_H
 
 
-#include "../operators/operators.h"
+#include "operators/operators.h"
 
 Env *init_env(void);
 void clear_env(Env *env);
