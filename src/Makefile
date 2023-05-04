@@ -33,6 +33,10 @@ CFLAGS += -DUSE_OTAA
 USEPKG += nanopb
 PROTOBUF_PATH = $(CURDIR)/proto
 
+# Timer stuff
+USEMODULE += ztimer
+USEMODULE += ztimer_sec
+
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
 # development process:
