@@ -1,67 +1,83 @@
+// Standard library includes
 #include <stdio.h>
 #include <unistd.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "./logger/logger.h"
-#include "./stack/stack.h"
-#include "./environment/environment.h"
-#include "./expression/expression.h"
-#include "./proto/EndDeviceProtocol.pb-c.h"
-#include "./operators/operators.h"
-#include "./protocol/encodeInput/encodeInput.h"
-#include "./tests/runTest.h"
-#include "./tests/testType.h"
+// Local includes
+#include "stack.h"
+#include "environment.h"
+#include "expression.h"
+#include "operators.h"
+#include "number.h"
+#include "encodeInput.h"
+#include "lora.h"
+
+// RIOT includes
+#include "EndDeviceProtocol.pb.h"
+#include "ztimer.h"
+
 
 // Macros
-#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
-#define SLEEP_SEC(t) (usleep(t * (int)pow(10, 6))) // sleep in seconds
+//#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
 
-int main(int argc, char **argv)
+int main(void)
 {
-  printf("LoRaWAN Class A low-power application\n");
-  printf("=====================================\n");
+  puts("NebulaStream End Decive Runtime");
+  puts("=====================================");
 
-  // TODO: Handle flags in Makefile. Not here
-  // Check if the flag for including logs was passed
-  char *includeLogs;
-  if (argc == 1)
-  {
-    includeLogs = "no";
-  }
-  else
-  {
-    includeLogs = argv[1]; // argv[1] is wether or not to include logs
-  }
-  init_logger(includeLogs);
+  // if (argc >= 2 && strcmp(argv[argc - 1], "test") == 0) {
+  //   printf("run tests\n");
+  //   TestToRun tests;
+  //   if(argc == 2){
+  //     tests = ALL;
+  //   } else {
+  //     if(strcmp(argv[2], "protocol") == 0){
+  //       tests = PROTOCOL;
+  //     } else if(strcmp(argv[2], "expression") == 0){
+  //       tests = EXPRESSION;
+  //     } else {
+  //       tests = ALL;
+  //     }
+  //   }
 
+  //   runTests(tests);
+  //   return 0;
+  // }
 
-  if (argc >= 2 && strcmp(argv[argc - 1], "test") == 0) {
-    printf("run tests\n");
-    TestToRun tests;
-    if(argc == 2){
-      tests = ALL;
-    } else {
-      if(strcmp(argv[2], "protocol") == 0){
-        tests = PROTOCOL;
-      } else if(strcmp(argv[2], "expression") == 0){
-        tests = EXPRESSION;
-      } else {
-        tests = ALL;
-      }
-    }
-
-    runTests(tests);
-    return 0;
-  }
+  // Test lorawan
+  connect_lorawan();
+  uint8_t msg[2] = {(uint8_t) 5, (uint8_t) 0};
+  uint8_t len = (uint8_t) 2;   
+  send_message(msg, len);
 
   // TODO: Look into running the main loop in a thread, and sleeping in low power mode with RIOT
-  while (1)
-  {
-    printf("Main loop iteration\n");
-    SLEEP_SEC(3);
-  }
+  while (1) {
+    puts("Main loop iteration");
+
+    Env *e = init_env();
+
+    printf("size: %d\n", e->size);
+
+    // Construct example expression to be evaluated (5+5)
+    Expression exp;
+    Instruction i1 = {{CONST}, 0};
+    Instruction i2 = {.data._int=5, 2};
+    Instruction i3 = {{CONST}, 0};
+    Instruction i4 = {.data._int=5, 2};
+    Instruction i5 = {{ADD}, 0};
+    Instruction program[5] = {i1, i2, i3, i4, i5};
+    exp.p_size = 5;
+    exp.program = program;
+    exp.env = e;
+    exp.stack = e->stack;
+
+    Number res = call(&exp);
+    printf("5 + 5 = %d\n",res.type._int);
+    
+    ztimer_sleep(ZTIMER_SEC, 5);
+  }  
   
   return 0;
 }
