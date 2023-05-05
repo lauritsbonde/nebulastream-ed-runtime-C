@@ -1,28 +1,31 @@
+// Standard library includes
 #include <stdio.h>
 #include <unistd.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
+// Local includes
 #include "stack.h"
 #include "environment.h"
 #include "expression.h"
-#include "EndDeviceProtocol.pb.h"
 #include "operators.h"
 #include "number.h"
 #include "encodeInput.h"
+#include "lora.h"
+
+// RIOT includes
+#include "EndDeviceProtocol.pb.h"
 #include "ztimer.h"
 
+
 // Macros
-// #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
-// #define SLEEP_SEC(t) (usleep(t * (int)pow(10, 6))) // sleep in seconds
+//#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
 
 int main(void)
 {
-  puts("LoRaWAN Class A low-power application");
+  puts("NebulaStream End Decive Runtime");
   puts("=====================================");
-  char n;
-  scanf("%c", &n);
 
   // if (argc >= 2 && strcmp(argv[argc - 1], "test") == 0) {
   //   printf("run tests\n");
@@ -42,6 +45,12 @@ int main(void)
   //   runTests(tests);
   //   return 0;
   // }
+
+  // Test lorawan
+  connect_lorawan();
+  uint8_t msg[2] = {(uint8_t) 5, (uint8_t) 0};
+  uint8_t len = (uint8_t) 2;   
+  send_message(msg, len);
 
   // TODO: Look into running the main loop in a thread, and sleeping in low power mode with RIOT
   while (1) {
@@ -68,9 +77,7 @@ int main(void)
     printf("5 + 5 = %d\n",res.type._int);
     
     ztimer_sleep(ZTIMER_SEC, 5);
-  }
-
-  
+  }  
   
   return 0;
 }

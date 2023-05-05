@@ -1,10 +1,9 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
-// #include "../../proto/EndDeviceProtocol.pb.h"
+#include "EndDeviceProtocol.pb.h"
 #include "operators.h"
 
-
-// uint8_t *encodeOutputMessage(OutputMessage *msg);
+bool QueryResponse_callback(pb_istream_t *istream, pb_ostream_t *ostream, const pb_field_iter_t *field);
 
 #endif
