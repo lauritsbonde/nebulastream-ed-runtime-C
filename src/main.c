@@ -1,3 +1,4 @@
+#define LOG_LEVEL LOG_DEBUG
 // Standard library includes
 #include <stdio.h>
 #include <unistd.h>
@@ -12,10 +13,12 @@
 #include "operators.h"
 #include "number.h"
 #include "encodeInput.h"
+#include "encodeOutput.h"
 #include "lora.h"
 
 // RIOT includes
 #include "EndDeviceProtocol.pb.h"
+#include "pb_encode.h"
 #include "ztimer.h"
 
 
@@ -24,60 +27,51 @@
 
 int main(void)
 {
-  puts("NebulaStream End Decive Runtime");
-  puts("=====================================");
+  uint8_t buffer[128];
+  // size_t message_length;
+  bool status;
 
-  // if (argc >= 2 && strcmp(argv[argc - 1], "test") == 0) {
-  //   printf("run tests\n");
-  //   TestToRun tests;
-  //   if(argc == 2){
-  //     tests = ALL;
-  //   } else {
-  //     if(strcmp(argv[2], "protocol") == 0){
-  //       tests = PROTOCOL;
-  //     } else if(strcmp(argv[2], "expression") == 0){
-  //       tests = EXPRESSION;
-  //     } else {
-  //       tests = ALL;
-  //     }
-  //   }
+  Instruction i;
+  i.data._int = 22;
+  i.unionCase = 2;
 
-  //   runTests(tests);
+  pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+
+  // status = encode_data(i, &stream);
+
+  // if(!status){
+  //   printf("Encoding failed");
   //   return 0;
   // }
 
-  // Test lorawan
-  connect_lorawan();
-  uint8_t msg[2] = {(uint8_t) 5, (uint8_t) 0};
-  uint8_t len = (uint8_t) 2;   
-  send_message(msg, len);
+  // message_length = stream.bytes_written;
 
-  // TODO: Look into running the main loop in a thread, and sleeping in low power mode with RIOT
-  while (1) {
-    puts("Main loop iteration");
-
-    Env *e = init_env();
-
-    printf("size: %d\n", e->size);
-
-    // Construct example expression to be evaluated (5+5)
-    Expression exp;
-    Instruction i1 = {{CONST}, 0};
-    Instruction i2 = {.data._int=5, 2};
-    Instruction i3 = {{CONST}, 0};
-    Instruction i4 = {.data._int=5, 2};
-    Instruction i5 = {{ADD}, 0};
-    Instruction program[5] = {i1, i2, i3, i4, i5};
-    exp.p_size = 5;
-    exp.program = program;
-    exp.env = e;
-    exp.stack = e->stack;
-
-    Number res = call(&exp);
-    printf("5 + 5 = %d\n",res.type._int);
-    
-    ztimer_sleep(ZTIMER_SEC, 5);
-  }  
+  // printf("Encoding successfull, message length: %d\n", message_length);
   
+  // decode_data(buffer, message_length);
+
+  QueryResponse query;
+  query.response = &i;
+  query.amount = 1;
+  query.id = 1;
+
+  status = encode_query_response(&stream, &query);
+
+  if (!status) {
+    printf("encode failed: %s\n", PB_GET_ERROR(&stream));
+  }  
+
+  message_length = stream.bytes_written;
+
+  printf("Success: %zu written\n", message_length);
+  for (size_t i = 0; i < message_length; ++i) {
+      printf("%02hhx", buffer[i]);
+  }
+  printf("\n");
+
+  pb_istream_t stream = pb_istream_from_buffer(buffer, length);
+
+  decode_query_response(&stream);
+
   return 0;
 }

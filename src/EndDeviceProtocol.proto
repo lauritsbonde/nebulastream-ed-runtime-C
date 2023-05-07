@@ -51,11 +51,12 @@ message Data {
 }
 
 message Output {
-    message QueryResponse {
-        int32 id = 1;
-        repeated Data response = 2;
-    }
     repeated QueryResponse responses = 1;
+}
+
+message QueryResponse {
+    int32 id = 1;
+    repeated Data response = 2;
 }
 
 message Expression {

@@ -61,10 +61,10 @@ typedef struct _EndDeviceProtocol_Output {
     pb_callback_t responses;
 } EndDeviceProtocol_Output;
 
-typedef struct _EndDeviceProtocol_Output_QueryResponse {
+typedef struct _EndDeviceProtocol_QueryResponse {
     int32_t id;
     pb_callback_t response;
-} EndDeviceProtocol_Output_QueryResponse;
+} EndDeviceProtocol_QueryResponse;
 
 typedef struct _EndDeviceProtocol_Expression {
     pb_callback_t instructions;
@@ -142,7 +142,7 @@ extern "C" {
 /* Initializer values for message structs */
 #define EndDeviceProtocol_Data_init_default      {0, {_EndDeviceProtocol_ExpressionInstructions_MIN}}
 #define EndDeviceProtocol_Output_init_default    {{{NULL}, NULL}}
-#define EndDeviceProtocol_Output_QueryResponse_init_default {0, {{NULL}, NULL}}
+#define EndDeviceProtocol_QueryResponse_init_default {0, {{NULL}, NULL}}
 #define EndDeviceProtocol_Expression_init_default {{{NULL}, NULL}}
 #define EndDeviceProtocol_MapOperation_init_default {{{NULL}, NULL}, 0}
 #define EndDeviceProtocol_FilterOperation_init_default {{{NULL}, NULL}}
@@ -152,7 +152,7 @@ extern "C" {
 #define EndDeviceProtocol_Message_init_default   {{{NULL}, NULL}}
 #define EndDeviceProtocol_Data_init_zero         {0, {_EndDeviceProtocol_ExpressionInstructions_MIN}}
 #define EndDeviceProtocol_Output_init_zero       {{{NULL}, NULL}}
-#define EndDeviceProtocol_Output_QueryResponse_init_zero {0, {{NULL}, NULL}}
+#define EndDeviceProtocol_QueryResponse_init_zero {0, {{NULL}, NULL}}
 #define EndDeviceProtocol_Expression_init_zero   {{{NULL}, NULL}}
 #define EndDeviceProtocol_MapOperation_init_zero {{{NULL}, NULL}, 0}
 #define EndDeviceProtocol_FilterOperation_init_zero {{{NULL}, NULL}}
@@ -174,8 +174,8 @@ extern "C" {
 #define EndDeviceProtocol_Data__float_tag        10
 #define EndDeviceProtocol_Data__double_tag       11
 #define EndDeviceProtocol_Output_responses_tag   1
-#define EndDeviceProtocol_Output_QueryResponse_id_tag 1
-#define EndDeviceProtocol_Output_QueryResponse_response_tag 2
+#define EndDeviceProtocol_QueryResponse_id_tag   1
+#define EndDeviceProtocol_QueryResponse_response_tag 2
 #define EndDeviceProtocol_Expression_instructions_tag 1
 #define EndDeviceProtocol_MapOperation_function_tag 1
 #define EndDeviceProtocol_MapOperation_attribute_tag 2
@@ -213,14 +213,14 @@ X(a, STATIC,   ONEOF,    DOUBLE,   (data,_double,data._double),  11)
 X(a, CALLBACK, REPEATED, MESSAGE,  responses,         1)
 #define EndDeviceProtocol_Output_CALLBACK pb_default_field_callback
 #define EndDeviceProtocol_Output_DEFAULT NULL
-#define EndDeviceProtocol_Output_responses_MSGTYPE EndDeviceProtocol_Output_QueryResponse
+#define EndDeviceProtocol_Output_responses_MSGTYPE EndDeviceProtocol_QueryResponse
 
-#define EndDeviceProtocol_Output_QueryResponse_FIELDLIST(X, a) \
+#define EndDeviceProtocol_QueryResponse_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, INT32,    id,                1) \
 X(a, CALLBACK, REPEATED, MESSAGE,  response,          2)
-#define EndDeviceProtocol_Output_QueryResponse_CALLBACK pb_default_field_callback
-#define EndDeviceProtocol_Output_QueryResponse_DEFAULT NULL
-#define EndDeviceProtocol_Output_QueryResponse_response_MSGTYPE EndDeviceProtocol_Data
+#define EndDeviceProtocol_QueryResponse_CALLBACK pb_default_field_callback
+#define EndDeviceProtocol_QueryResponse_DEFAULT NULL
+#define EndDeviceProtocol_QueryResponse_response_MSGTYPE EndDeviceProtocol_Data
 
 #define EndDeviceProtocol_Expression_FIELDLIST(X, a) \
 X(a, CALLBACK, REPEATED, MESSAGE,  instructions,      1)
@@ -276,7 +276,7 @@ X(a, CALLBACK, REPEATED, MESSAGE,  queries,           1)
 
 extern const pb_msgdesc_t EndDeviceProtocol_Data_msg;
 extern const pb_msgdesc_t EndDeviceProtocol_Output_msg;
-extern const pb_msgdesc_t EndDeviceProtocol_Output_QueryResponse_msg;
+extern const pb_msgdesc_t EndDeviceProtocol_QueryResponse_msg;
 extern const pb_msgdesc_t EndDeviceProtocol_Expression_msg;
 extern const pb_msgdesc_t EndDeviceProtocol_MapOperation_msg;
 extern const pb_msgdesc_t EndDeviceProtocol_FilterOperation_msg;
@@ -288,7 +288,7 @@ extern const pb_msgdesc_t EndDeviceProtocol_Message_msg;
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
 #define EndDeviceProtocol_Data_fields &EndDeviceProtocol_Data_msg
 #define EndDeviceProtocol_Output_fields &EndDeviceProtocol_Output_msg
-#define EndDeviceProtocol_Output_QueryResponse_fields &EndDeviceProtocol_Output_QueryResponse_msg
+#define EndDeviceProtocol_QueryResponse_fields &EndDeviceProtocol_QueryResponse_msg
 #define EndDeviceProtocol_Expression_fields &EndDeviceProtocol_Expression_msg
 #define EndDeviceProtocol_MapOperation_fields &EndDeviceProtocol_MapOperation_msg
 #define EndDeviceProtocol_FilterOperation_fields &EndDeviceProtocol_FilterOperation_msg
@@ -299,7 +299,7 @@ extern const pb_msgdesc_t EndDeviceProtocol_Message_msg;
 
 /* Maximum encoded size of messages (where known) */
 /* EndDeviceProtocol_Output_size depends on runtime parameters */
-/* EndDeviceProtocol_Output_QueryResponse_size depends on runtime parameters */
+/* EndDeviceProtocol_QueryResponse_size depends on runtime parameters */
 /* EndDeviceProtocol_Expression_size depends on runtime parameters */
 /* EndDeviceProtocol_MapOperation_size depends on runtime parameters */
 /* EndDeviceProtocol_FilterOperation_size depends on runtime parameters */
