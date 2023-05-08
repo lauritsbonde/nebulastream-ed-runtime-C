@@ -6,123 +6,102 @@
 #include "encodeOutput.h"
 #include "EndDeviceProtocol.pb.h"
 
-EndDeviceProtocol_MapOperation *init_map_operation(Map *map){
-  EndDeviceProtocol_MapOperation *storage = (EndDeviceProtocol_MapOperation *) malloc(sizeof(EndDeviceProtocol_MapOperation));
-  EndDeviceProtocol_MapOperation current = EndDeviceProtocol_MapOperation_init_zero;
-  
-  for(int i = 0; i < map->expression->p_size; i++){
-    current.function[i] = *(init_data(map->expression->program[i]));
+void init_map_operation(Map map, EndDeviceProtocol_MapOperation *out){
+  for(int i = 0; i < map.expression->p_size; i++){
+    EndDeviceProtocol_Data current = EndDeviceProtocol_Data_init_zero;
+    init_data(map.expression->program[i], &current);
+    out->function[i] = current;
   }
   
-  current.attribute = map->attribute;
-  current.function_count = map->expression->p_size;
-
-  storage[0] = current;
-  return storage;
+  out->attribute = map.attribute;
+  out->function_count = map.expression->p_size;
 }
 
-EndDeviceProtocol_FilterOperation *init_filter_operation(Filter *filter) {
-  EndDeviceProtocol_FilterOperation *storage = (EndDeviceProtocol_FilterOperation *) malloc(sizeof(EndDeviceProtocol_FilterOperation));
-  EndDeviceProtocol_FilterOperation current = EndDeviceProtocol_FilterOperation_init_zero;
-  
-  for (int i = 0; i < filter->predicate->p_size; i++) {
-    current.predicate[i] = *(init_data(filter->predicate->program[i]));
+void init_filter_operation(Filter filter, EndDeviceProtocol_FilterOperation *out) {
+  for (int i = 0; i < filter.predicate->p_size; i++) {
+    EndDeviceProtocol_Data current = EndDeviceProtocol_Data_init_zero;
+    init_data(filter.predicate->program[i], &current);
+    out->predicate[i] = current;
   }
-  current.predicate_count = filter->predicate->p_size;
-  
-  storage[0] = current;
-  return storage;
+  out->predicate_count = filter.predicate->p_size;
 }
 
-EndDeviceProtocol_WindowOperation *init_window_operation(Window *window){
-  EndDeviceProtocol_WindowOperation *storage = (EndDeviceProtocol_WindowOperation *) malloc(sizeof(EndDeviceProtocol_WindowOperation));
-  EndDeviceProtocol_WindowOperation current = EndDeviceProtocol_WindowOperation_init_zero;
-
-  current.size = window->size;
-  if(window->sizeType == TIMEBASED){
-    current.sizeType = EndDeviceProtocol_WindowSizeType_TIMEBASED;
-  } else if (window->sizeType == COUNTBASED){
-    current.sizeType = EndDeviceProtocol_WindowSizeType_COUNTBASED;
+void init_window_operation(Window window, EndDeviceProtocol_WindowOperation *out){
+  out->size = window.size;
+  if(window.sizeType == TIMEBASED){
+    out->sizeType = EndDeviceProtocol_WindowSizeType_TIMEBASED;
+  } else if (window.sizeType == COUNTBASED){
+    out->sizeType = EndDeviceProtocol_WindowSizeType_COUNTBASED;
   } else {
     printf("unknown window sizetype!\n");
   }
 
-  if(window->aggregationType == MIN){
-    current.aggregationType = EndDeviceProtocol_WindowAggregationType_MIN;
-  } else if(window->aggregationType == MAX){
-    current.aggregationType = EndDeviceProtocol_WindowAggregationType_MAX;
-  } else if(window->aggregationType == SUM){
-    current.aggregationType = EndDeviceProtocol_WindowAggregationType_SUM;
-  } else if(window->aggregationType == AVG){
-    current.aggregationType = EndDeviceProtocol_WindowAggregationType_AVG;
-  } else if(window->aggregationType == COUNT){
-    current.aggregationType = EndDeviceProtocol_WindowAggregationType_COUNT;
+  if(window.aggregationType == MIN){
+    out->aggregationType = EndDeviceProtocol_WindowAggregationType_MIN;
+  } else if(window.aggregationType == MAX){
+    out->aggregationType = EndDeviceProtocol_WindowAggregationType_MAX;
+  } else if(window.aggregationType == SUM){
+    out->aggregationType = EndDeviceProtocol_WindowAggregationType_SUM;
+  } else if(window.aggregationType == AVG){
+    out->aggregationType = EndDeviceProtocol_WindowAggregationType_AVG;
+  } else if(window.aggregationType == COUNT){
+    out->aggregationType = EndDeviceProtocol_WindowAggregationType_COUNT;
   } else {
     printf("Unkown window aggregation type!\n");
   }
   
-  current.startAttribute = window->startAttribute;
-  current.endAttribute = window->endAttribute;
-  current.resultAttribute = window->resultAttribute;
-  current.readAttribute = window->readAttribute;
-
-  storage[0] = current;
-  return storage;
+  out->startAttribute = window.startAttribute;
+  out->endAttribute = window.endAttribute;
+  out->resultAttribute = window.resultAttribute;
+  out->readAttribute = window.readAttribute;
 }
 
-EndDeviceProtocol_Operation *init_operation(Operation *op){
-  EndDeviceProtocol_Operation *storage = (EndDeviceProtocol_Operation *) malloc(sizeof(EndDeviceProtocol_Operation));
-  EndDeviceProtocol_Operation current = EndDeviceProtocol_Operation_init_zero;
-
-  if(op->unionCase == 0){
-    current.operation.map = *(init_map_operation(op->operation.map));
-    current.which_operation = EndDeviceProtocol_Operation_map_tag;
-  } else if(op->unionCase == 1){
-    current.operation.filter = *(init_filter_operation(op->operation.filter));
-    current.which_operation = EndDeviceProtocol_Operation_filter_tag;
-  } else if(op->unionCase == 2){
-    current.operation.window = *(init_window_operation(op->operation.window));
-    current.which_operation = EndDeviceProtocol_Operation_window_tag;
+void init_operation(Operation op, EndDeviceProtocol_Operation *out){
+  if(op.unionCase == 0){
+    EndDeviceProtocol_MapOperation current = EndDeviceProtocol_MapOperation_init_zero;
+    init_map_operation(*op.operation.map, &current);
+    out->operation.map = current;
+    out->which_operation = EndDeviceProtocol_Operation_map_tag;
+  } else if(op.unionCase == 1){
+    EndDeviceProtocol_FilterOperation current = EndDeviceProtocol_FilterOperation_init_zero;
+    init_filter_operation(*op.operation.filter, &current);
+    out->operation.filter = current;
+    out->which_operation = EndDeviceProtocol_Operation_filter_tag;
+  } else if(op.unionCase == 2){
+    EndDeviceProtocol_WindowOperation current = EndDeviceProtocol_WindowOperation_init_zero;
+    init_window_operation(*op.operation.window, &current);
+    out->operation.window = current;
+    out->which_operation = EndDeviceProtocol_Operation_window_tag;
   } else {
     printf("Unkonwn operation type!");
   }
-
-  storage[0] = current;
-  return storage;
 }
 
-EndDeviceProtocol_Query *init_query(Query *query){
-  EndDeviceProtocol_Query *storage = (EndDeviceProtocol_Query *) malloc(sizeof(EndDeviceProtocol_Query));
-  EndDeviceProtocol_Query current = EndDeviceProtocol_Query_init_zero;
-
-  for(int i = 0; i < query->amount; i++){
-    current.operations[i] = *(init_operation(&query->operations[i]));
+ void init_query(Query query, EndDeviceProtocol_Query *out){
+  for(int i = 0; i < query.amount; i++){
+    EndDeviceProtocol_Operation current = EndDeviceProtocol_Operation_init_zero;
+    init_operation(query.operations[i], &current);
+    out->operations[i] = current;
   }
 
-  current.operations_count = query->amount;
-
-  storage[0] = current;
-  return storage;
+  out->operations_count = query.amount;
 }
 
-EndDeviceProtocol_Message *init_message(Message *msg) {
-  EndDeviceProtocol_Message * storage = (EndDeviceProtocol_Message *) malloc(sizeof(EndDeviceProtocol_Message));
-  EndDeviceProtocol_Message message = EndDeviceProtocol_Message_init_zero;
-
-  for (int i = 0; i < msg->amount; i++) {
-    Query q = msg->queries[i];
-    message.queries[i] = *(init_query(&q));
+void init_message(Message msg, EndDeviceProtocol_Message *out) {
+  for (int i = 0; i < msg.amount; i++) {
+    EndDeviceProtocol_Query current = EndDeviceProtocol_Query_init_zero;
+    init_query(msg.queries[i], &current);
+    out->queries[i] = current;
   }
 
-  message.queries_count = msg->amount;
-  storage[0] = message;
-  return storage;  
+  out->queries_count = msg.amount;
 }
 
 bool encode_message(pb_ostream_t *stream, Message message){
   bool status;
-  
-  EndDeviceProtocol_Message msg = *init_message(message);
+
+  EndDeviceProtocol_Message msg = EndDeviceProtocol_Message_init_zero;
+  init_message(message, &msg);
   
   status = pb_encode(stream, EndDeviceProtocol_Message_fields, &msg);
   

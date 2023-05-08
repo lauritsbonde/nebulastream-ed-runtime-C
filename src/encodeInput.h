@@ -8,14 +8,14 @@
 #include "operators.h"
 
 // An instruction corresponds to the Data type in .proto
-bool encode_message(pb_ostream_t *stream, Message *message);
+bool encode_message(pb_ostream_t *stream, Message message);
 bool decode_input_message(pb_istream_t *stream);
 
-EndDeviceProtocol_Message * init_message(Message *msg);
-EndDeviceProtocol_Query *init_query(Query *query);
-EndDeviceProtocol_Operation *init_operation(Operation *op);
-EndDeviceProtocol_WindowOperation *init_window_operation(Window *window);
-EndDeviceProtocol_FilterOperation *init_filter_operation(Filter *filter);
-EndDeviceProtocol_MapOperation *init_map_operation(Map *map);
+void init_message(Message msg, EndDeviceProtocol_Message *out);
+void init_query(Query query, EndDeviceProtocol_Query *out);
+void init_operation(Operation op, EndDeviceProtocol_Operation *out);
+void init_window_operation(Window window, EndDeviceProtocol_WindowOperation *out);
+void init_filter_operation(Filter filter, EndDeviceProtocol_FilterOperation *out);
+void init_map_operation(Map map, EndDeviceProtocol_MapOperation *out);
 
 #endif

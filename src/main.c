@@ -39,6 +39,15 @@ int main(void)
   puts("Test encode input");
   test_encode_input();
 
+  
+  printf("before sleep\n");
+  printf("after sleep\n");
+
+  puts("");
+  puts("Test encode input again");
+  test_encode_input();
+
+
   return 0;
 }
 
