@@ -6,7 +6,7 @@
 #include "pb_encode.h"
 
 void init_data(Instruction instr, EndDeviceProtocol_Data *out);
-void init_query_response(QueryResponse query, EndDeviceProtocol_QueryResponse *out);
+void init_query_response(QueryResponse query, EndDeviceProtocol_Output_QueryResponse *out);
 void init_output(OutputMessage *_output, EndDeviceProtocol_Output *out);
 
 bool encode_output_message(pb_ostream_t * stream, OutputMessage msg);

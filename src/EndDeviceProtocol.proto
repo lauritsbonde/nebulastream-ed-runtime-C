@@ -52,12 +52,11 @@ message Data {
 }
 
 message Output {
+    message QueryResponse {
+        int32 id = 1;
+        repeated Data response = 2 [(nanopb).max_count = 50];
+    }
     repeated QueryResponse responses = 1 [(nanopb).max_count = 3];
-}
-
-message QueryResponse {
-    int32 id = 1;
-    repeated Data response = 2 [(nanopb).max_count = 50];
 }
 
 message Expression {

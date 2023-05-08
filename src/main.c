@@ -15,6 +15,9 @@
 #include "encodeInput.h"
 #include "encodeOutput.h"
 #include "lora.h"
+//Testing
+#include "runTest.h"
+#include "testType.h"
 
 // RIOT includes
 #include "EndDeviceProtocol.pb.h"
@@ -31,6 +34,9 @@ void test_encode_output(void);
 
 int main(void)
 {
+  //Run Tests
+  runTests(EXPRESSION);
+
   // Setup
   puts("Test encode output");
   test_encode_output();
@@ -43,9 +49,11 @@ int main(void)
   printf("before sleep\n");
   printf("after sleep\n");
 
+
   puts("");
   puts("Test encode input again");
   test_encode_input();
+
 
 
   return 0;

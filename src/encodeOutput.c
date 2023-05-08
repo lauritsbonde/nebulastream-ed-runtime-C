@@ -79,7 +79,7 @@ void init_data(Instruction instr, EndDeviceProtocol_Data *out){
   }
 }
 
-void init_query_response(QueryResponse query, EndDeviceProtocol_QueryResponse *out){
+void init_query_response(QueryResponse query, EndDeviceProtocol_Output_QueryResponse *out){
   for(int i = 0; i < query.amount; i++){
     EndDeviceProtocol_Data current = EndDeviceProtocol_Data_init_zero;
     init_data(query.response[i], &current);
@@ -93,7 +93,7 @@ void init_query_response(QueryResponse query, EndDeviceProtocol_QueryResponse *o
 
 void init_output(OutputMessage _output, EndDeviceProtocol_Output *out) {
   for (int i = 0; i < _output.amount; i++) {
-    EndDeviceProtocol_QueryResponse current = EndDeviceProtocol_QueryResponse_init_zero;
+    EndDeviceProtocol_Output_QueryResponse current = EndDeviceProtocol_Output_QueryResponse_init_zero;
     init_query_response(_output.responses[i], &current);
     out->responses[i] = current;
   }
