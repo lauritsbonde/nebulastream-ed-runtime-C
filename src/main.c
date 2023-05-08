@@ -24,6 +24,9 @@
 
 int main(void)
 {
+
+  ztimer_sleep(ZTIMER_SEC, 5);
+
   puts("NebulaStream End Decive Runtime");
   puts("=====================================");
 

@@ -11,8 +11,8 @@ RIOTBASE ?= $(CURDIR)/../../RIOT
 ACTIVATION_MODE ?= otaa
 
 APPEUI ?= 0000000000000000
-DEVEUI ?= 70B3D57ED005D48F
-APPKEY ?= 4485F8CB42F3F8FC3B3D10094BE1303C
+DEVEUI ?= 70b3d57ed005d48f
+APPKEY ?= 4485f8cb42f3f8fc3b3d10094be1303c
 
 # # Send a message every 20s after joining the network
 SEND_PERIOD_S ?= 20
@@ -20,9 +20,12 @@ SEND_PERIOD_S ?= 20
 LORA_REGION ?= EU868
 
 # Include the Semtech-loramac package
-USEMODULE += sx1276
+USEMODULE += saul_default
+USEMODULE += netdev_default
+DRIVER ?= sx1276
 USEPKG += semtech-loramac
 USEMODULE += auto_init_loramac
+USEMODULE += semtech_loramac_rx
 
 USEMODULE += $(DRIVER)
 USEMODULE += fmt
