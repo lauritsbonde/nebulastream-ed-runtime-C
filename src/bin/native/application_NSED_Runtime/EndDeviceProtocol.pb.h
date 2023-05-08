@@ -69,16 +69,19 @@ typedef struct _EndDeviceProtocol_Output {
 } EndDeviceProtocol_Output;
 
 typedef struct _EndDeviceProtocol_Expression {
-    pb_callback_t instructions;
+    pb_size_t instructions_count;
+    EndDeviceProtocol_Data instructions[50];
 } EndDeviceProtocol_Expression;
 
 typedef struct _EndDeviceProtocol_MapOperation {
-    pb_callback_t function;
+    pb_size_t function_count;
+    EndDeviceProtocol_Data function[50];
     int32_t attribute;
 } EndDeviceProtocol_MapOperation;
 
 typedef struct _EndDeviceProtocol_FilterOperation {
-    pb_callback_t predicate;
+    pb_size_t predicate_count;
+    EndDeviceProtocol_Data predicate[50];
 } EndDeviceProtocol_FilterOperation;
 
 typedef struct _EndDeviceProtocol_WindowOperation {
@@ -102,11 +105,13 @@ typedef struct _EndDeviceProtocol_Operation {
 
 typedef struct _EndDeviceProtocol_Query {
     /* bytes resultType = 1; //For some reason minipb breaks if I make this a repeated enum or int32 */
-    pb_callback_t operations;
+    pb_size_t operations_count;
+    EndDeviceProtocol_Operation operations[5];
 } EndDeviceProtocol_Query;
 
 typedef struct _EndDeviceProtocol_Message {
-    pb_callback_t queries;
+    pb_size_t queries_count;
+    EndDeviceProtocol_Query queries[3];
 } EndDeviceProtocol_Message;
 
 
@@ -145,23 +150,23 @@ extern "C" {
 #define EndDeviceProtocol_Data_init_default      {0, {_EndDeviceProtocol_ExpressionInstructions_MIN}}
 #define EndDeviceProtocol_Output_init_default    {0, {EndDeviceProtocol_QueryResponse_init_default, EndDeviceProtocol_QueryResponse_init_default, EndDeviceProtocol_QueryResponse_init_default}}
 #define EndDeviceProtocol_QueryResponse_init_default {0, 0, {EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default}}
-#define EndDeviceProtocol_Expression_init_default {{{NULL}, NULL}}
-#define EndDeviceProtocol_MapOperation_init_default {{{NULL}, NULL}, 0}
-#define EndDeviceProtocol_FilterOperation_init_default {{{NULL}, NULL}}
+#define EndDeviceProtocol_Expression_init_default {0, {EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default}}
+#define EndDeviceProtocol_MapOperation_init_default {0, {EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default}, 0}
+#define EndDeviceProtocol_FilterOperation_init_default {0, {EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default}}
 #define EndDeviceProtocol_WindowOperation_init_default {0, _EndDeviceProtocol_WindowSizeType_MIN, _EndDeviceProtocol_WindowAggregationType_MIN, 0, 0, 0, 0}
 #define EndDeviceProtocol_Operation_init_default {0, {EndDeviceProtocol_MapOperation_init_default}}
-#define EndDeviceProtocol_Query_init_default     {{{NULL}, NULL}}
-#define EndDeviceProtocol_Message_init_default   {{{NULL}, NULL}}
+#define EndDeviceProtocol_Query_init_default     {0, {EndDeviceProtocol_Operation_init_default, EndDeviceProtocol_Operation_init_default, EndDeviceProtocol_Operation_init_default, EndDeviceProtocol_Operation_init_default, EndDeviceProtocol_Operation_init_default}}
+#define EndDeviceProtocol_Message_init_default   {0, {EndDeviceProtocol_Query_init_default, EndDeviceProtocol_Query_init_default, EndDeviceProtocol_Query_init_default}}
 #define EndDeviceProtocol_Data_init_zero         {0, {_EndDeviceProtocol_ExpressionInstructions_MIN}}
 #define EndDeviceProtocol_Output_init_zero       {0, {EndDeviceProtocol_QueryResponse_init_zero, EndDeviceProtocol_QueryResponse_init_zero, EndDeviceProtocol_QueryResponse_init_zero}}
 #define EndDeviceProtocol_QueryResponse_init_zero {0, 0, {EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero}}
-#define EndDeviceProtocol_Expression_init_zero   {{{NULL}, NULL}}
-#define EndDeviceProtocol_MapOperation_init_zero {{{NULL}, NULL}, 0}
-#define EndDeviceProtocol_FilterOperation_init_zero {{{NULL}, NULL}}
+#define EndDeviceProtocol_Expression_init_zero   {0, {EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero}}
+#define EndDeviceProtocol_MapOperation_init_zero {0, {EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero}, 0}
+#define EndDeviceProtocol_FilterOperation_init_zero {0, {EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero}}
 #define EndDeviceProtocol_WindowOperation_init_zero {0, _EndDeviceProtocol_WindowSizeType_MIN, _EndDeviceProtocol_WindowAggregationType_MIN, 0, 0, 0, 0}
 #define EndDeviceProtocol_Operation_init_zero    {0, {EndDeviceProtocol_MapOperation_init_zero}}
-#define EndDeviceProtocol_Query_init_zero        {{{NULL}, NULL}}
-#define EndDeviceProtocol_Message_init_zero      {{{NULL}, NULL}}
+#define EndDeviceProtocol_Query_init_zero        {0, {EndDeviceProtocol_Operation_init_zero, EndDeviceProtocol_Operation_init_zero, EndDeviceProtocol_Operation_init_zero, EndDeviceProtocol_Operation_init_zero, EndDeviceProtocol_Operation_init_zero}}
+#define EndDeviceProtocol_Message_init_zero      {0, {EndDeviceProtocol_Query_init_zero, EndDeviceProtocol_Query_init_zero, EndDeviceProtocol_Query_init_zero}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define EndDeviceProtocol_Data_instruction_tag   1
@@ -225,21 +230,21 @@ X(a, STATIC,   REPEATED, MESSAGE,  response,          2)
 #define EndDeviceProtocol_QueryResponse_response_MSGTYPE EndDeviceProtocol_Data
 
 #define EndDeviceProtocol_Expression_FIELDLIST(X, a) \
-X(a, CALLBACK, REPEATED, MESSAGE,  instructions,      1)
-#define EndDeviceProtocol_Expression_CALLBACK pb_default_field_callback
+X(a, STATIC,   REPEATED, MESSAGE,  instructions,      1)
+#define EndDeviceProtocol_Expression_CALLBACK NULL
 #define EndDeviceProtocol_Expression_DEFAULT NULL
 #define EndDeviceProtocol_Expression_instructions_MSGTYPE EndDeviceProtocol_Data
 
 #define EndDeviceProtocol_MapOperation_FIELDLIST(X, a) \
-X(a, CALLBACK, REPEATED, MESSAGE,  function,          1) \
+X(a, STATIC,   REPEATED, MESSAGE,  function,          1) \
 X(a, STATIC,   SINGULAR, INT32,    attribute,         2)
-#define EndDeviceProtocol_MapOperation_CALLBACK pb_default_field_callback
+#define EndDeviceProtocol_MapOperation_CALLBACK NULL
 #define EndDeviceProtocol_MapOperation_DEFAULT NULL
 #define EndDeviceProtocol_MapOperation_function_MSGTYPE EndDeviceProtocol_Data
 
 #define EndDeviceProtocol_FilterOperation_FIELDLIST(X, a) \
-X(a, CALLBACK, REPEATED, MESSAGE,  predicate,         1)
-#define EndDeviceProtocol_FilterOperation_CALLBACK pb_default_field_callback
+X(a, STATIC,   REPEATED, MESSAGE,  predicate,         1)
+#define EndDeviceProtocol_FilterOperation_CALLBACK NULL
 #define EndDeviceProtocol_FilterOperation_DEFAULT NULL
 #define EndDeviceProtocol_FilterOperation_predicate_MSGTYPE EndDeviceProtocol_Data
 
@@ -265,14 +270,14 @@ X(a, STATIC,   ONEOF,    MESSAGE,  (operation,window,operation.window),   3)
 #define EndDeviceProtocol_Operation_operation_window_MSGTYPE EndDeviceProtocol_WindowOperation
 
 #define EndDeviceProtocol_Query_FIELDLIST(X, a) \
-X(a, CALLBACK, REPEATED, MESSAGE,  operations,        1)
-#define EndDeviceProtocol_Query_CALLBACK pb_default_field_callback
+X(a, STATIC,   REPEATED, MESSAGE,  operations,        1)
+#define EndDeviceProtocol_Query_CALLBACK NULL
 #define EndDeviceProtocol_Query_DEFAULT NULL
 #define EndDeviceProtocol_Query_operations_MSGTYPE EndDeviceProtocol_Operation
 
 #define EndDeviceProtocol_Message_FIELDLIST(X, a) \
-X(a, CALLBACK, REPEATED, MESSAGE,  queries,           1)
-#define EndDeviceProtocol_Message_CALLBACK pb_default_field_callback
+X(a, STATIC,   REPEATED, MESSAGE,  queries,           1)
+#define EndDeviceProtocol_Message_CALLBACK NULL
 #define EndDeviceProtocol_Message_DEFAULT NULL
 #define EndDeviceProtocol_Message_queries_MSGTYPE EndDeviceProtocol_Query
 
@@ -300,15 +305,15 @@ extern const pb_msgdesc_t EndDeviceProtocol_Message_msg;
 #define EndDeviceProtocol_Message_fields &EndDeviceProtocol_Message_msg
 
 /* Maximum encoded size of messages (where known) */
-/* EndDeviceProtocol_Expression_size depends on runtime parameters */
-/* EndDeviceProtocol_MapOperation_size depends on runtime parameters */
-/* EndDeviceProtocol_FilterOperation_size depends on runtime parameters */
-/* EndDeviceProtocol_Operation_size depends on runtime parameters */
-/* EndDeviceProtocol_Query_size depends on runtime parameters */
-/* EndDeviceProtocol_Message_size depends on runtime parameters */
 #define EndDeviceProtocol_Data_size              11
+#define EndDeviceProtocol_Expression_size        650
+#define EndDeviceProtocol_FilterOperation_size   650
+#define EndDeviceProtocol_MapOperation_size      661
+#define EndDeviceProtocol_Message_size           10014
+#define EndDeviceProtocol_Operation_size         664
 #define EndDeviceProtocol_Output_size            1992
 #define EndDeviceProtocol_QueryResponse_size     661
+#define EndDeviceProtocol_Query_size             3335
 #define EndDeviceProtocol_WindowOperation_size   59
 
 #ifdef __cplusplus

@@ -15,25 +15,25 @@ PB_BIND(EndDeviceProtocol_Output, EndDeviceProtocol_Output, 2)
 PB_BIND(EndDeviceProtocol_QueryResponse, EndDeviceProtocol_QueryResponse, 2)
 
 
-PB_BIND(EndDeviceProtocol_Expression, EndDeviceProtocol_Expression, AUTO)
+PB_BIND(EndDeviceProtocol_Expression, EndDeviceProtocol_Expression, 2)
 
 
-PB_BIND(EndDeviceProtocol_MapOperation, EndDeviceProtocol_MapOperation, AUTO)
+PB_BIND(EndDeviceProtocol_MapOperation, EndDeviceProtocol_MapOperation, 2)
 
 
-PB_BIND(EndDeviceProtocol_FilterOperation, EndDeviceProtocol_FilterOperation, AUTO)
+PB_BIND(EndDeviceProtocol_FilterOperation, EndDeviceProtocol_FilterOperation, 2)
 
 
 PB_BIND(EndDeviceProtocol_WindowOperation, EndDeviceProtocol_WindowOperation, AUTO)
 
 
-PB_BIND(EndDeviceProtocol_Operation, EndDeviceProtocol_Operation, AUTO)
+PB_BIND(EndDeviceProtocol_Operation, EndDeviceProtocol_Operation, 2)
 
 
-PB_BIND(EndDeviceProtocol_Query, EndDeviceProtocol_Query, AUTO)
+PB_BIND(EndDeviceProtocol_Query, EndDeviceProtocol_Query, 2)
 
 
-PB_BIND(EndDeviceProtocol_Message, EndDeviceProtocol_Message, AUTO)
+PB_BIND(EndDeviceProtocol_Message, EndDeviceProtocol_Message, 4)
 
 
 

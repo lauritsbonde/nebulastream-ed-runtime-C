@@ -22,13 +22,28 @@
 #include "pb_decode.h"
 #include "ztimer.h"
 
-
 // Macros
-//#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
+// #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
+
+void test_encode_input(void);
+void test_encode_output(void);
+
 
 int main(void)
 {
   // Setup
+  puts("Test encode output");
+  test_encode_output();
+
+  puts("");
+  puts("Test encode input");
+  test_encode_input();
+
+  return 0;
+}
+
+void test_encode_output(void)
+{
   uint8_t buffer[1024];
   size_t message_length;
   pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
@@ -51,8 +66,9 @@ int main(void)
   message_length = stream.bytes_written;
   printf("Encode status: %d\n", status);
   printf("Success: %zu written\n", message_length);
-  for (size_t i = 0; i < message_length; ++i) {
-      printf("%02hhx", buffer[i]);
+  for (size_t i = 0; i < message_length; ++i)
+  {
+    printf("%02hhx", buffer[i]);
   }
   printf("\n");
 
@@ -62,6 +78,58 @@ int main(void)
   status = decode_output_message(&istream);
 
   printf("decode status: %d\n", status);
+}
 
-  return 0;
+void test_encode_input(void)
+{
+  uint8_t buffer[1024];
+  size_t message_length;
+  pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+
+
+  Instruction p[5] = {{{CONST}, 0}, {.data._int = 1, 2}, {{CONST}, 0}, {.data._int = 1, 2}, {{ADD}, 0}};
+
+  Expression exp;
+  exp.program = p;
+  exp.p_size = 5;
+
+  Map map;
+  map.expression = &exp;
+  map.attribute = 1;
+
+  Operation op;
+  op.operation.map = &map;
+  op.unionCase = 0;
+
+  Operation ops[1];
+  ops[0] = op;
+
+  Query q;
+  q.operations = ops;
+  q.amount = 1;
+
+  Query queries[1];
+  queries[0] = q;
+
+  Message msg;
+  msg.amount = 1;
+  msg.queries = queries;
+
+  printf("%d\n", msg.queries[0].operations[0].operation.map->expression->program[4].data._instruction);
+  bool status = encode_message(&stream, msg);
+  message_length = stream.bytes_written;
+  printf("Encode status: %d\n", status);
+  printf("Success: %zu written\n", message_length);
+  for (size_t i = 0; i < message_length; ++i)
+  {
+    printf("%02hhx", buffer[i]);
+  }
+  printf("\n");
+
+  // Decode
+  pb_istream_t istream = pb_istream_from_buffer(buffer, message_length);
+
+  status = decode_input_message(&istream);
+
+  printf("Decode status: %d\n", status);
 }
