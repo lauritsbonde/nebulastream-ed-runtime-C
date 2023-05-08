@@ -1,6 +1,7 @@
 // This file is a direct copy of: https://github.com/FlapKap/nebulastream-ed-runtime/blob/main/proto/EndDeviceProtocol.proto
 
 syntax = "proto3";
+import "nanopb.proto";
 
 package EndDeviceProtocol;
 
@@ -51,12 +52,12 @@ message Data {
 }
 
 message Output {
-    repeated QueryResponse responses = 1;
+    repeated QueryResponse responses = 1 [(nanopb).max_count = 3];
 }
 
 message QueryResponse {
     int32 id = 1;
-    repeated Data response = 2;
+    repeated Data response = 2 [(nanopb).max_count = 50];
 }
 
 message Expression {

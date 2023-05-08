@@ -6,86 +6,148 @@
 #include "EndDeviceProtocol.pb.h"
 #include "operators.h"
 
-//This is for just encoding a single Instruction/data
-bool encode_data(Instruction i, pb_ostream_t *stream){
-  size_t message_length;
+
+
+bool encode_output_message(pb_ostream_t * stream) {
   bool status;
 
-  EndDeviceProtocol_Data data;
-  // TODO: check the values and set the proper one!
-  data.data._int16 = i.data._int;
-
-  status = pb_encode(stream, EndDeviceProtocol_Data_fields, &data);
-  message_length = stream->bytes_written;
-
-  if(!status){
-    printf("Encoding failed: %s\n", PB_GET_ERROR(stream));
-    return false;
-  }
-
-  printf("Message size: %d\n", message_length);
-  return true;
-}
-
-//This is for encoding repeated Data as a submessage
-bool data_encode(pb_ostream_t *stream, const pb_field_t *field, void *const *arg) {
-  const EndDeviceProtocol_Data *data = *arg;
-
-  if (!pb_encode_tag_for_field(stream, field)) {
-      return false;
-  }
-
-  return pb_encode_submessage(stream, EndDeviceProtocol_Data_fields, data);
-}
-
-bool encode_query_response(pb_ostream_t *stream, QueryResponse *arg) {
-  QueryResponse *_response = arg;
-
-  EndDeviceProtocol_Data data[_response->amount];
-
-  for(int i = 0; i < _response->amount; i++){
-    EndDeviceProtocol_Data current = EndDeviceProtocol_Data_init_zero;
-    // TODO: check unioncase and set the correct data and stuff
-    current.data._int16 = _response->response[i].data._int;
-    current.which_data = EndDeviceProtocol_Data__int16_tag;
-    data[i] = current;
-  }
+  EndDeviceProtocol_Output output = EndDeviceProtocol_Output_init_zero;
   
-  EndDeviceProtocol_QueryResponse response = EndDeviceProtocol_QueryResponse_init_zero;
-  response.id = _response->id;
-  response.response.funcs.encode = &data_encode;
-  response.response.arg = data;
+  EndDeviceProtocol_QueryResponse qr = EndDeviceProtocol_QueryResponse_init_zero;
 
-  return pb_encode(stream, EndDeviceProtocol_QueryResponse_fields, &response);
-}
+  EndDeviceProtocol_Data d1 = EndDeviceProtocol_Data_init_zero;
+  d1.data._int16 = (int16_t) 10;
+  d1.which_data = EndDeviceProtocol_Data__int16_tag;
+  
+  qr.id = 1;
+  qr.response[0] = d1;
+  qr.response_count = 1;
 
+  output.responses[0] = qr;
+  output.responses_count = 1;
+  
+  status = pb_encode(stream, EndDeviceProtocol_Output_fields, &output);
+  
+  if (!status)
+  {
+    printf("Encoding failed: %s\n", PB_GET_ERROR(stream));
+  }
 
-bool decode_data(pb_istream_t *stream, const pb_field_t *field, void **arg){
-
-  EndDeviceProtocol_Data 
-
-
-}
-
-bool decode_query_response(pb_istream_t *stream) {
-  QueryResponse _response;
-  Instruction data[]; 
-
-  EndDeviceProtocol_QueryResponse response = EndDeviceProtocol_QueryResponse_init_zero;
-
-  response.response.funcs.decode = &decode_data;
-  response.response.funcs.arg = data;
-
-  bool status = pb_decode(&stream, EndDeviceProtocol_Data_fields, &response);
   return status;
 }
 
+bool decode_output_message(pb_istream_t *stream) {
+  EndDeviceProtocol_Output output = EndDeviceProtocol_Output_init_zero;
+  
+  bool status = pb_decode(stream, EndDeviceProtocol_Output_fields, &output);
 
-// struct repeated {
-//   void **repeated_f;
+  printf("Decoded int16 %d\n", (int)output.responses[0].response[0].data._int16);
+  return status;
+}
+
+//This is for just encoding a single Instruction/data
+// bool encode_data(Instruction i, pb_ostream_t *stream){
+//   size_t message_length;
+//   bool status;
+
+//   EndDeviceProtocol_Data data = EndDeviceProtocol_Data_init_zero;
+//   // TODO: check the values and set the proper one!
+//   data.data._int16 = i.data._int;
+//   data.which_data = EndDeviceProtocol_Data__int16_tag;
+//   printf("data: %d\n", i.data._int);
+
+//   status = pb_encode(stream, EndDeviceProtocol_Data_fields, &data);
+//   message_length = stream->bytes_written;
+
+//   if(!status){
+//     printf("Encoding failed: %s\n", PB_GET_ERROR(stream));
+//     return false;
+//   }
+
+//   printf("Message size: %d\n", message_length);
+//   return true;
+// }
+
+// typedef struct {
+//   EndDeviceProtocol_Data *data;
 //   int index;
-//   size_t max_size;
-// };
+//   int max_size;
+// } repeated_data;
+
+// //This is for encoding repeated Data as a submessage
+// bool data_encode(pb_ostream_t *stream, const pb_field_t *field, void *const *arg) {
+//   repeated_data *data = *arg;
+
+//   if(data->index > data->max_size){
+//     return false;
+//   }
+  
+//   if (!pb_encode_tag_for_field(stream, field)) {
+//     return false;
+//   }
+
+//   return pb_encode_submessage(stream, EndDeviceProtocol_Data_fields, &data->data[data->index++]);
+// }
+
+// bool encode_query_response(pb_ostream_t *stream, QueryResponse *arg) {
+//   QueryResponse *_response = arg;
+
+//   EndDeviceProtocol_Data data[_response->amount];
+
+//   for(int i = 0; i < _response->amount; i++){
+//     EndDeviceProtocol_Data current = EndDeviceProtocol_Data_init_zero;
+//     // TODO: check unioncase and set the correct data and stuff
+//     current.data._int16 = _response->response[i].data._int;
+//     current.which_data = EndDeviceProtocol_Data__int16_tag;
+//     data[i] = current;
+//   }
+
+//   repeated_data list;
+//   list.data = data;
+//   list.index = 0;
+//   list.max_size = _response->amount;
+  
+//   EndDeviceProtocol_QueryResponse response = EndDeviceProtocol_QueryResponse_init_zero;
+//   response.id = _response->id;
+//   response.response.funcs.encode = &data_encode;
+//   response.response.arg = &list;
+
+//   return pb_encode(stream, EndDeviceProtocol_QueryResponse_fields, &response);
+// }
+
+
+// bool decode_data(pb_istream_t *stream, const pb_field_t *field, void **arg){
+//   (void)field;
+//   (void)arg;
+//   printf("data, Bytes left: %zu\n", stream->bytes_left);
+//   EndDeviceProtocol_Data data = EndDeviceProtocol_Data_init_zero;
+
+//   printf("Decoding data\n");
+//   printf("stream error: %s\n", PB_GET_ERROR(stream));
+
+//   bool status = pb_decode(stream, EndDeviceProtocol_Data_fields, &data);
+//   printf("stream error: %s\n", PB_GET_ERROR(stream));
+
+//   printf("decoded data: %d\n", data.data._int16);
+
+//   return status;
+// }
+
+// bool decode_query_response(pb_istream_t *stream) {
+//   //QueryResponse _response;
+
+//   EndDeviceProtocol_QueryResponse response = EndDeviceProtocol_QueryResponse_init_zero;
+//   printf("decode, Bytes left: %zu\n", stream->bytes_left);
+
+//   response.response.funcs.decode = &decode_data;
+//   bool status = pb_decode(stream, EndDeviceProtocol_Data_fields, &response);
+
+//   printf("stream error: %s\n", PB_GET_ERROR(stream));
+
+//   printf("Decoded Query Response. Status: %d\n", status);
+
+//   return status;
+// }
 
 // bool query_response_encode(pb_ostream_t *stream, const pb_field_t *field, void *const *arg){
 //   struct repeated *req = *arg;
@@ -174,18 +236,18 @@ bool decode_query_response(pb_istream_t *stream) {
 // }
 
 
-bool decode_one_data(uint8_t *buffer, int length){
-  EndDeviceProtocol_Data data = EndDeviceProtocol_Data_init_zero;
+// bool decode_one_data(uint8_t *buffer, int length){
+//   EndDeviceProtocol_Data data = EndDeviceProtocol_Data_init_zero;
 
-  pb_istream_t stream = pb_istream_from_buffer(buffer, length);
+//   pb_istream_t stream = pb_istream_from_buffer(buffer, length);
 
-  bool status = pb_decode(&stream, EndDeviceProtocol_Data_fields, &data);
+//   bool status = pb_decode(&stream, EndDeviceProtocol_Data_fields, &data);
 
-  if(!status){
-    printf("Decoding failed: %s\n", PB_GET_ERROR(&stream));
-    return false;
-  }
+//   if(!status){
+//     printf("Decoding failed: %s\n", PB_GET_ERROR(&stream));
+//     return false;
+//   }
 
-  printf("Decoded data value (_int16) is: %d\n", data.data._int16);
-  return true;
-}
+//   printf("Decoded data value (_int16) is: %d\n", data.data._int16);
+//   return true;
+// }

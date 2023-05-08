@@ -9,10 +9,10 @@
 PB_BIND(EndDeviceProtocol_Data, EndDeviceProtocol_Data, AUTO)
 
 
-PB_BIND(EndDeviceProtocol_Output, EndDeviceProtocol_Output, AUTO)
+PB_BIND(EndDeviceProtocol_Output, EndDeviceProtocol_Output, 2)
 
 
-PB_BIND(EndDeviceProtocol_QueryResponse, EndDeviceProtocol_QueryResponse, AUTO)
+PB_BIND(EndDeviceProtocol_QueryResponse, EndDeviceProtocol_QueryResponse, 2)
 
 
 PB_BIND(EndDeviceProtocol_Expression, EndDeviceProtocol_Expression, AUTO)

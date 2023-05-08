@@ -57,14 +57,16 @@ typedef struct _EndDeviceProtocol_Data {
     } data;
 } EndDeviceProtocol_Data;
 
-typedef struct _EndDeviceProtocol_Output {
-    pb_callback_t responses;
-} EndDeviceProtocol_Output;
-
 typedef struct _EndDeviceProtocol_QueryResponse {
     int32_t id;
-    pb_callback_t response;
+    pb_size_t response_count;
+    EndDeviceProtocol_Data response[50];
 } EndDeviceProtocol_QueryResponse;
+
+typedef struct _EndDeviceProtocol_Output {
+    pb_size_t responses_count;
+    EndDeviceProtocol_QueryResponse responses[3];
+} EndDeviceProtocol_Output;
 
 typedef struct _EndDeviceProtocol_Expression {
     pb_callback_t instructions;
@@ -141,8 +143,8 @@ extern "C" {
 
 /* Initializer values for message structs */
 #define EndDeviceProtocol_Data_init_default      {0, {_EndDeviceProtocol_ExpressionInstructions_MIN}}
-#define EndDeviceProtocol_Output_init_default    {{{NULL}, NULL}}
-#define EndDeviceProtocol_QueryResponse_init_default {0, {{NULL}, NULL}}
+#define EndDeviceProtocol_Output_init_default    {0, {EndDeviceProtocol_QueryResponse_init_default, EndDeviceProtocol_QueryResponse_init_default, EndDeviceProtocol_QueryResponse_init_default}}
+#define EndDeviceProtocol_QueryResponse_init_default {0, 0, {EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default, EndDeviceProtocol_Data_init_default}}
 #define EndDeviceProtocol_Expression_init_default {{{NULL}, NULL}}
 #define EndDeviceProtocol_MapOperation_init_default {{{NULL}, NULL}, 0}
 #define EndDeviceProtocol_FilterOperation_init_default {{{NULL}, NULL}}
@@ -151,8 +153,8 @@ extern "C" {
 #define EndDeviceProtocol_Query_init_default     {{{NULL}, NULL}}
 #define EndDeviceProtocol_Message_init_default   {{{NULL}, NULL}}
 #define EndDeviceProtocol_Data_init_zero         {0, {_EndDeviceProtocol_ExpressionInstructions_MIN}}
-#define EndDeviceProtocol_Output_init_zero       {{{NULL}, NULL}}
-#define EndDeviceProtocol_QueryResponse_init_zero {0, {{NULL}, NULL}}
+#define EndDeviceProtocol_Output_init_zero       {0, {EndDeviceProtocol_QueryResponse_init_zero, EndDeviceProtocol_QueryResponse_init_zero, EndDeviceProtocol_QueryResponse_init_zero}}
+#define EndDeviceProtocol_QueryResponse_init_zero {0, 0, {EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero, EndDeviceProtocol_Data_init_zero}}
 #define EndDeviceProtocol_Expression_init_zero   {{{NULL}, NULL}}
 #define EndDeviceProtocol_MapOperation_init_zero {{{NULL}, NULL}, 0}
 #define EndDeviceProtocol_FilterOperation_init_zero {{{NULL}, NULL}}
@@ -173,9 +175,9 @@ extern "C" {
 #define EndDeviceProtocol_Data__int64_tag        9
 #define EndDeviceProtocol_Data__float_tag        10
 #define EndDeviceProtocol_Data__double_tag       11
-#define EndDeviceProtocol_Output_responses_tag   1
 #define EndDeviceProtocol_QueryResponse_id_tag   1
 #define EndDeviceProtocol_QueryResponse_response_tag 2
+#define EndDeviceProtocol_Output_responses_tag   1
 #define EndDeviceProtocol_Expression_instructions_tag 1
 #define EndDeviceProtocol_MapOperation_function_tag 1
 #define EndDeviceProtocol_MapOperation_attribute_tag 2
@@ -210,15 +212,15 @@ X(a, STATIC,   ONEOF,    DOUBLE,   (data,_double,data._double),  11)
 #define EndDeviceProtocol_Data_DEFAULT NULL
 
 #define EndDeviceProtocol_Output_FIELDLIST(X, a) \
-X(a, CALLBACK, REPEATED, MESSAGE,  responses,         1)
-#define EndDeviceProtocol_Output_CALLBACK pb_default_field_callback
+X(a, STATIC,   REPEATED, MESSAGE,  responses,         1)
+#define EndDeviceProtocol_Output_CALLBACK NULL
 #define EndDeviceProtocol_Output_DEFAULT NULL
 #define EndDeviceProtocol_Output_responses_MSGTYPE EndDeviceProtocol_QueryResponse
 
 #define EndDeviceProtocol_QueryResponse_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, INT32,    id,                1) \
-X(a, CALLBACK, REPEATED, MESSAGE,  response,          2)
-#define EndDeviceProtocol_QueryResponse_CALLBACK pb_default_field_callback
+X(a, STATIC,   REPEATED, MESSAGE,  response,          2)
+#define EndDeviceProtocol_QueryResponse_CALLBACK NULL
 #define EndDeviceProtocol_QueryResponse_DEFAULT NULL
 #define EndDeviceProtocol_QueryResponse_response_MSGTYPE EndDeviceProtocol_Data
 
@@ -298,8 +300,6 @@ extern const pb_msgdesc_t EndDeviceProtocol_Message_msg;
 #define EndDeviceProtocol_Message_fields &EndDeviceProtocol_Message_msg
 
 /* Maximum encoded size of messages (where known) */
-/* EndDeviceProtocol_Output_size depends on runtime parameters */
-/* EndDeviceProtocol_QueryResponse_size depends on runtime parameters */
 /* EndDeviceProtocol_Expression_size depends on runtime parameters */
 /* EndDeviceProtocol_MapOperation_size depends on runtime parameters */
 /* EndDeviceProtocol_FilterOperation_size depends on runtime parameters */
@@ -307,6 +307,8 @@ extern const pb_msgdesc_t EndDeviceProtocol_Message_msg;
 /* EndDeviceProtocol_Query_size depends on runtime parameters */
 /* EndDeviceProtocol_Message_size depends on runtime parameters */
 #define EndDeviceProtocol_Data_size              11
+#define EndDeviceProtocol_Output_size            1992
+#define EndDeviceProtocol_QueryResponse_size     661
 #define EndDeviceProtocol_WindowOperation_size   59
 
 #ifdef __cplusplus
