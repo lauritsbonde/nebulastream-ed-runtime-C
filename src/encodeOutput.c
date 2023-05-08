@@ -11,12 +11,10 @@
 void init_data(Instruction instr, EndDeviceProtocol_Data *out){
   if(instr.unionCase == 0){
     ExpressionInstruction einstr = instr.data._instruction;
-    if (einstr == CONST)
-    {
+    if (einstr == CONST){
       out->data.instruction = EndDeviceProtocol_ExpressionInstructions_CONST;
     } else if (einstr == VAR){
       out->data.instruction = EndDeviceProtocol_ExpressionInstructions_VAR;
-
     } else if (einstr == AND) {
       out->data.instruction = EndDeviceProtocol_ExpressionInstructions_AND;
     } else if (einstr == OR) {
@@ -117,11 +115,8 @@ bool encode_output_message(pb_ostream_t * stream, OutputMessage msg) {
   return status;
 }
 
-bool decode_output_message(pb_istream_t *stream) {
-  EndDeviceProtocol_Output output = EndDeviceProtocol_Output_init_zero;
+bool decode_output_message(pb_istream_t *stream, EndDeviceProtocol_Output *output) {
+  bool status = pb_decode(stream, EndDeviceProtocol_Output_fields, output);
   
-  bool status = pb_decode(stream, EndDeviceProtocol_Output_fields, &output);
-
-  printf("Decoded int16 %f\n", output.responses[0].response[0].data._float);
   return status;
 }

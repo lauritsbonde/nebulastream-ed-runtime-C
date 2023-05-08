@@ -35,7 +35,7 @@ void test_encode_output(void);
 int main(void)
 {
   //Run Tests
-  runTests(EXPRESSION);
+  runTests(ALL);
 
   // Setup
   puts("Test encode output");
@@ -91,8 +91,9 @@ void test_encode_output(void)
 
   // Decode
   pb_istream_t istream = pb_istream_from_buffer(buffer, message_length);
+  EndDeviceProtocol_Output output = EndDeviceProtocol_Output_init_zero;
 
-  status = decode_output_message(&istream);
+  status = decode_output_message(&istream, &output);
 
   printf("decode status: %d\n", status);
 }
