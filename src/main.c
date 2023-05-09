@@ -14,7 +14,7 @@
 #include "number.h"
 #include "encodeInput.h"
 #include "encodeOutput.h"
-//#include "lora.h"
+#include "lora.h"
 //Testing
 #include "runTest.h"
 #include "testType.h"
@@ -25,9 +25,6 @@
 #include "pb_decode.h"
 #include "ztimer.h"
 
-// Macros
-// #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
-
 void test_encode_input(void);
 void test_encode_output(void);
 
@@ -35,6 +32,7 @@ void test_encode_output(void);
 int main(void)
 {
   ztimer_sleep(ZTIMER_SEC, 5);
+  
   //Run Tests
   runTests(ALL);
 
@@ -46,9 +44,41 @@ int main(void)
   puts("Test encode input");
   test_encode_input();
 
-  while (1)
-  {
-    puts("main loop iteration. Going to sleep");
+  ztimer_sleep(ZTIMER_SEC, 5);
+
+  puts("NebulaStream End Decive Runtime");
+  puts("=====================================");
+
+  // Test lorawan
+  connect_lorawan();
+  uint8_t msg[2] = {(uint8_t) 5, (uint8_t) 0};
+  uint8_t len = (uint8_t) 2;   
+  send_message(msg, len);
+
+  // TODO: Look into running the main loop in a thread, and sleeping in low power mode with RIOT
+  while (1) {
+    puts("Main loop iteration");
+
+    Env *e = init_env();
+
+    printf("size: %d\n", e->size);
+
+    // Construct example expression to be evaluated (5+5)
+    Expression exp;
+    Instruction i1 = {{CONST}, 0};
+    Instruction i2 = {.data._int=5, 2};
+    Instruction i3 = {{CONST}, 0};
+    Instruction i4 = {.data._int=5, 2};
+    Instruction i5 = {{ADD}, 0};
+    Instruction program[5] = {i1, i2, i3, i4, i5};
+    exp.p_size = 5;
+    exp.program = program;
+    exp.env = e;
+    exp.stack = e->stack;
+
+    Number res = call(&exp);
+    printf("5 + 5 = %d\n",res.type._int);
+    
     ztimer_sleep(ZTIMER_SEC, 5);
   }
   

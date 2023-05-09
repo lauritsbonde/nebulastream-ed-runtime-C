@@ -35,41 +35,47 @@
 //     return msg;
 // }
 
-// int connect_lorawan(void)
-// {
-//     /* Convert identifiers and keys strings to byte arrays */
-//     fmt_hex_bytes(deveui, CONFIG_LORAMAC_DEV_EUI_DEFAULT);
-//     fmt_hex_bytes(appeui, CONFIG_LORAMAC_APP_EUI_DEFAULT);
-//     fmt_hex_bytes(appkey, CONFIG_LORAMAC_APP_KEY_DEFAULT);
-//     semtech_loramac_set_deveui(&loramac, deveui);
-//     semtech_loramac_set_appeui(&loramac, appeui);
-//     semtech_loramac_set_appkey(&loramac, appkey);
+int connect_lorawan(void)
+{
+    /* Convert identifiers and keys strings to byte arrays */
+    fmt_hex_bytes(deveui, CONFIG_LORAMAC_DEV_EUI_DEFAULT);
+    fmt_hex_bytes(appeui, CONFIG_LORAMAC_APP_EUI_DEFAULT);
+    int res = fmt_hex_bytes(appkey, CONFIG_LORAMAC_APP_KEY_DEFAULT);
+    printf("%d\n", res);
 
-//     /* Use a fast datarate, e.g. BW125/SF7 in EU868 */
-//     semtech_loramac_set_dr(&loramac, LORAMAC_DR_5);
+    char out[8];
+    fmt_bytes_hex(out, deveui, 8);
+    printf("%s\n", out);
 
-//     /* Join the network if not already joined */
-//     if (!semtech_loramac_is_mac_joined(&loramac)) {
-//         /* Start the Over-The-Air Activation (OTAA) procedure to retrieve the
-//          * generated device address and to get the network and application session
-//          * keys.
-//          */
-//         printf("Starting join procedure\n");
-//         if (semtech_loramac_join(&loramac, LORAMAC_JOIN_OTAA) != SEMTECH_LORAMAC_JOIN_SUCCEEDED) {
-//             printf("Join procedure failed\n");
-//             return 1;
-//         }
+    for (size_t i = 0; i < LORAMAC_DEVEUI_LEN; ++i) {
+        printf("%02x", deveui[i]);
+    }
+    printf("\n");
 
-//     }
-//     printf("Join procedure succeeded");
+    semtech_loramac_set_deveui(&loramac, deveui);
+    semtech_loramac_set_appeui(&loramac, appeui);
+    semtech_loramac_set_appkey(&loramac, appkey);
 
-//     /* trigger the first send */
-//     msg_t msg;
-//     kernel_pid_t sender_pid = thread_getpid();
-//     msg_send(&msg, sender_pid);
-//     return 0;
-// }
+    /* Use a fast datarate, e.g. BW125/SF7 in EU868 */
+    semtech_loramac_set_dr(&loramac, LORAMAC_DR_5);
 
-void removeMe(void){
-  printf("removeme\n");
+    /* Join the network if not already joined */
+    if (!semtech_loramac_is_mac_joined(&loramac)) {
+        /* Start the Over-The-Air Activation (OTAA) procedure to retrieve the
+         * generated device address and to get the network and application session
+         * keys.
+         */
+        printf("Starting join procedure\n");
+        if (semtech_loramac_join(&loramac, LORAMAC_JOIN_OTAA) != SEMTECH_LORAMAC_JOIN_SUCCEEDED) {
+            printf("Join procedure failed\n");
+            return 1;
+        }
+    }
+    printf("Join procedure succeeded");
+
+    /* trigger the first send */
+    msg_t msg;
+    kernel_pid_t sender_pid = thread_getpid();
+    msg_send(&msg, sender_pid);
+    return 0;
 }
