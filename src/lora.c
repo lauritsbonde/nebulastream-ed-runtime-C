@@ -1,4 +1,4 @@
-// #include <stdio.h>
+#include <stdio.h>
 // #include <string.h>
 // #include <stdlib.h>
 // #include <time.h>
@@ -69,3 +69,7 @@
 //     msg_send(&msg, sender_pid);
 //     return 0;
 // }
+
+void removeMe(void){
+  printf("removeme\n");
+}

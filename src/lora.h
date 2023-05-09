@@ -10,4 +10,6 @@
 // msg_t receive_message(void);
 // int connect_lorawan(void);
 
+void remove(void);
+
 // #endif /* LORA_H */

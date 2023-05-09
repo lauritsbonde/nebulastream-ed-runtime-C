@@ -130,24 +130,30 @@ bool decode_input_message(pb_istream_t *stream, Message *out) {
 
 void decoded_input_to_message(EndDeviceProtocol_Message decoded, Message *out){
   out->amount = decoded.queries_count;
-  out->queries = malloc(sizeof(Query) * out->amount);
+
+  Query queries[out->amount];
 
   for(int i = 0; i < decoded.queries_count; i++){
     Query current;
     decoded_input_to_query(decoded.queries[i], &current);
-    out->queries[i] = current;
+    queries[i] = current;
   }
+
+  out->queries = queries;
 }
 
 void decoded_input_to_query(EndDeviceProtocol_Query decoded, Query *out){
   out->amount = decoded.operations_count;
-  out->operations = malloc(sizeof(Operation) * out->amount);
+
+  Operation operations[out->amount];
 
   for(int i = 0; i < decoded.operations_count; i++){
     Operation current;
     decoded_input_to_operation(decoded.operations[i], &current);
-    out->operations[i] = current;
+    operations[i] = current;
   }
+
+  out->operations = operations;
 }
 
 void decoded_input_to_operation(EndDeviceProtocol_Operation decoded, Operation *out){
@@ -204,29 +210,36 @@ void decoded_input_to_window_operation(EndDeviceProtocol_WindowOperation decoded
 void decoded_input_to_filter_operation(EndDeviceProtocol_FilterOperation decoded, Filter *out){
   Expression submessage;
   submessage.p_size = decoded.predicate_count;
-  submessage.program = malloc(sizeof(Instruction) * submessage.p_size);
+  
+  Instruction instructions[decoded.predicate_count];
 
   for(int i = 0; i < decoded.predicate_count; i++){
     Instruction current;
     decoded_input_to_instruction(decoded.predicate[i], &current);
-    submessage.program[i] = current;
+    instructions[i] = current;
   }
+
+  submessage.program = instructions;
 
   out->predicate = &submessage;
 }
 
 void decoded_input_to_map_operation(EndDeviceProtocol_MapOperation decoded, Map *out){
+  printf("map\n");
   out->attribute = decoded.attribute;
 
   Expression submessage;
   submessage.p_size = decoded.function_count;
-  submessage.program = malloc(sizeof(Instruction) * submessage.p_size);
+  
+  Instruction instructions[decoded.function_count];
   
   for(int i = 0; i < decoded.function_count; i++){
     Instruction current;
     decoded_input_to_instruction(decoded.function[i], &current);
-    submessage.program[i] = current;
+    instructions[i] = current;
   }
+
+  submessage.program = instructions;
 
   out->expression = &submessage;
 }

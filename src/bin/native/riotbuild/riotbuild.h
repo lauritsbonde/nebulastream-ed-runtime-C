@@ -1,6 +1,4 @@
 /* Generated file do not edit */
-#define SEND_PERIOD_S 
-#define USE_OTAA 1
 #define DEVELHELP 1
 #undef _FORTIFY_SOURCE
 #define DEBUG_ASSERT_VERBOSE 1
@@ -29,7 +27,6 @@
 #define MODULE_CORE_PANIC 1
 #define MODULE_CORE_THREAD 1
 #define MODULE_CPU 1
-#define MODULE_FMT 1
 #define MODULE_FRAC 1
 #define MODULE_LIBC 1
 #define MODULE_NANOPB 1

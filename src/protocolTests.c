@@ -921,26 +921,44 @@ Test message_gets_decoded(void){
 
   // Create outputstream
   uint8_t buffer[1024];
-  // int message_length;
+  int message_length;
   pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
 
   // Encode message
   encode_message(&stream, message);
-  // message_length = stream.bytes_written;
+  message_length = stream.bytes_written;
 
-  // // Create inputstream
-  // pb_istream_t istream = pb_istream_from_buffer(buffer, message_length);
+  // Create inputstream
+  pb_istream_t istream = pb_istream_from_buffer(buffer, message_length);
 
   // Decode message
-  // Message decoded;
-  // status = decode_input_message(&istream, &decoded);
+  Message decoded;
+  bool status = decode_input_message(&istream, &decoded);
 
-  // // Check if it was decoded correctly
-  // if(!status) {
-  //   test.failed = 1;
-  //   test.message = "output message could not be decoded";
-  //   return test;
-  // }
+  // Check if it was decoded correctly
+  if(!status) {
+    test.failed = 1;
+    test.message = "output message could not be decoded";
+    return test;
+  }
+
+  if(message.amount != 1){
+    test.failed = 1;
+    test.message = "output message amount is not 1";
+    return test;
+  }
+
+  if(message.queries[0].amount != 1){
+    test.failed = 1;
+    test.message = "output message.query[0] amount is not 1";
+    return test;
+  }
+
+  if(message.queries[0].operations[0].unionCase != 0){
+    test.failed = 1;
+    test.message = "output message.queries[0].operations[0].unioncase != 1";
+    return test;
+  }
 
   return test;
 }

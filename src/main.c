@@ -14,7 +14,7 @@
 #include "number.h"
 #include "encodeInput.h"
 #include "encodeOutput.h"
-#include "lora.h"
+//#include "lora.h"
 //Testing
 #include "runTest.h"
 #include "testType.h"
