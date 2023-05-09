@@ -147,7 +147,9 @@ void test_encode_input(void)
   // Decode
   pb_istream_t istream = pb_istream_from_buffer(buffer, message_length);
 
-  status = decode_input_message(&istream);
+  Message message;
+
+  status = decode_input_message(&istream, &message);
 
   printf("Decode status: %d\n", status);
 }

@@ -113,13 +113,187 @@ bool encode_message(pb_ostream_t *stream, Message message){
   return status;
 }
 
-bool decode_input_message(pb_istream_t *stream) {
+bool decode_input_message(pb_istream_t *stream, Message *out) {
   EndDeviceProtocol_Message message = EndDeviceProtocol_Message_init_zero;
   
   bool status = pb_decode(stream, EndDeviceProtocol_Message_fields, &message);
 
-  printf("Message amount: %d\n", message.queries_count);
+  if (!status) {
+    printf("Decoding failed: %s\n", PB_GET_ERROR(stream));
+    return false;
+  }
 
-  printf("Decoded value: %d\n", message.queries[0].operations[0].operation.map.function[4].data.instruction);
+  decoded_input_to_message(message, out);
+
   return status;
+}
+
+void decoded_input_to_message(EndDeviceProtocol_Message decoded, Message *out){
+  out->amount = decoded.queries_count;
+  out->queries = malloc(sizeof(Query) * out->amount);
+
+  for(int i = 0; i < decoded.queries_count; i++){
+    Query current;
+    decoded_input_to_query(decoded.queries[i], &current);
+    out->queries[i] = current;
+  }
+}
+
+void decoded_input_to_query(EndDeviceProtocol_Query decoded, Query *out){
+  out->amount = decoded.operations_count;
+  out->operations = malloc(sizeof(Operation) * out->amount);
+
+  for(int i = 0; i < decoded.operations_count; i++){
+    Operation current;
+    decoded_input_to_operation(decoded.operations[i], &current);
+    out->operations[i] = current;
+  }
+}
+
+void decoded_input_to_operation(EndDeviceProtocol_Operation decoded, Operation *out){
+  if(decoded.which_operation == EndDeviceProtocol_Operation_map_tag){
+    Map current;
+    decoded_input_to_map_operation(decoded.operation.map, &current);
+    out->operation.map = &current;
+    out->unionCase = 0;
+  } else if(decoded.which_operation == EndDeviceProtocol_Operation_filter_tag){
+    Filter current;
+    decoded_input_to_filter_operation(decoded.operation.filter, &current);
+    out->operation.filter = &current;
+    out->unionCase = 1;
+  } else if(decoded.which_operation == EndDeviceProtocol_Operation_window_tag){
+    Window current;
+    decoded_input_to_window_operation(decoded.operation.window, &current);
+    out->operation.window = &current;
+    out->unionCase = 2;
+  } else {
+    printf("Unkown operation type!\n");
+  }
+}
+
+void decoded_input_to_window_operation(EndDeviceProtocol_WindowOperation decoded, Window *out){
+  out->size = decoded.size;
+  if(decoded.sizeType == EndDeviceProtocol_WindowSizeType_COUNTBASED){
+    out->sizeType = COUNTBASED;
+  } else if(decoded.sizeType == EndDeviceProtocol_WindowSizeType_TIMEBASED){
+    out->sizeType = TIMEBASED;
+  } else {
+    printf("Unkown window size type!\n");
+  }
+
+  if(decoded.aggregationType == EndDeviceProtocol_WindowAggregationType_MIN){
+    out->aggregationType = MIN;
+  } else if(decoded.aggregationType == EndDeviceProtocol_WindowAggregationType_MAX){
+    out->aggregationType = MAX;
+  } else if(decoded.aggregationType == EndDeviceProtocol_WindowAggregationType_SUM){
+    out->aggregationType = SUM;
+  } else if(decoded.aggregationType == EndDeviceProtocol_WindowAggregationType_AVG){
+    out->aggregationType = AVG;
+  } else if(decoded.aggregationType == EndDeviceProtocol_WindowAggregationType_COUNT){
+    out->aggregationType = COUNT;
+  } else {
+    printf("Unkown window aggregation type!\n");
+  }
+
+  out->startAttribute = decoded.startAttribute;
+  out->endAttribute = decoded.endAttribute;
+  out->resultAttribute = decoded.resultAttribute;
+  out->readAttribute = decoded.readAttribute;
+}
+
+void decoded_input_to_filter_operation(EndDeviceProtocol_FilterOperation decoded, Filter *out){
+  Expression submessage;
+  submessage.p_size = decoded.predicate_count;
+  submessage.program = malloc(sizeof(Instruction) * submessage.p_size);
+
+  for(int i = 0; i < decoded.predicate_count; i++){
+    Instruction current;
+    decoded_input_to_instruction(decoded.predicate[i], &current);
+    submessage.program[i] = current;
+  }
+
+  out->predicate = &submessage;
+}
+
+void decoded_input_to_map_operation(EndDeviceProtocol_MapOperation decoded, Map *out){
+  out->attribute = decoded.attribute;
+
+  Expression submessage;
+  submessage.p_size = decoded.function_count;
+  submessage.program = malloc(sizeof(Instruction) * submessage.p_size);
+  
+  for(int i = 0; i < decoded.function_count; i++){
+    Instruction current;
+    decoded_input_to_instruction(decoded.function[i], &current);
+    submessage.program[i] = current;
+  }
+
+  out->expression = &submessage;
+}
+
+void decoded_input_to_instruction(EndDeviceProtocol_Data decoded, Instruction *out){
+  if(decoded.which_data == EndDeviceProtocol_Data_instruction_tag){
+    if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_CONST){
+      out->data._instruction = CONST;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_VAR){
+      out->data._instruction = VAR;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_AND){
+      out->data._instruction = AND;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_OR){
+      out->data._instruction = OR;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_NOT){
+      out->data._instruction = NOT;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_LT){
+      out->data._instruction = LT;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_GT){
+      out->data._instruction = GT;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_EQ){
+      out->data._instruction = EQ;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_ADD){
+      out->data._instruction = ADD;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_SUB){
+      out->data._instruction = SUB;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_MUL){
+      out->data._instruction = MUL;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_DIV){
+      out->data._instruction = DIV;
+    } else if(decoded.data.instruction == EndDeviceProtocol_ExpressionInstructions_MOD){
+      out->data._instruction = MOD;
+    } else {
+      printf("Unkown instruction type!\n");
+    }
+    out->unionCase = 0;
+  } else if (decoded.which_data == EndDeviceProtocol_Data__uint8_tag){
+    out->data._uint32 = decoded.data._uint8;
+    out->unionCase = 1;
+  } else if (decoded.which_data == EndDeviceProtocol_Data__uint16_tag){
+    out->data._uint32 = decoded.data._uint16;
+    out->unionCase = 1;
+  } else if (decoded.which_data == EndDeviceProtocol_Data__uint32_tag){
+    out->data._uint32 = decoded.data._uint32;
+    out->unionCase = 1;
+  } else if (decoded.which_data == EndDeviceProtocol_Data__uint64_tag){
+    out->data._uint32 = decoded.data._uint32;
+    out->unionCase = 1;
+  } else if (decoded.which_data == EndDeviceProtocol_Data__int8_tag){
+    out->data._int = decoded.data._int8;
+    out->unionCase = 2;
+  } else if (decoded.which_data == EndDeviceProtocol_Data__int16_tag){
+    out->data._int = decoded.data._int16;
+    out->unionCase = 2;
+  } else if (decoded.which_data == EndDeviceProtocol_Data__int32_tag){
+    out->data._int = decoded.data._int32;
+    out->unionCase = 2;
+  } else if (decoded.which_data == EndDeviceProtocol_Data__int64_tag){
+    out->data._int = decoded.data._int32;
+    out->unionCase = 2;
+  } else if (decoded.which_data == EndDeviceProtocol_Data__float_tag){
+    out->data._float = decoded.data._float;
+    out->unionCase = 3;
+  } else if (decoded.which_data == EndDeviceProtocol_Data__double_tag){
+    out->data._double = decoded.data._double;
+    out->unionCase = 4;
+  } else {
+    printf("Unkown data type!\n");
+  }
 }
