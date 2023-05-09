@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../../stack/stack.h"
-#include "../../environment/environment.h"
-#include "../../expression/expression.h"
+#include "stack.h"
+#include "environment.h"
+#include "expression.h"
 #include "ExpressionTests.h"
-#include "../testType.h"
+#include "testType.h"
 
 void beforeEach(Expression *exp, Instruction *program, int p_size)
 {
@@ -21,7 +21,7 @@ void assert_int_equals(int actual, int expected, Test *test)
   if (actual != expected)
   {
     test->failed = 1;
-    char *msg;
+    char msg[341];
     sprintf(msg, "Expected %d, got %d", expected, actual);
     test->message = msg;
   }
@@ -36,7 +36,7 @@ void assert_double_equals(double actual, double expected, Test *test)
   if (actual != expected)
   {
     test->failed = 1;
-    char *msg;
+    char msg[341];
     sprintf(msg, "Expected %f, got %f", expected, actual);
     test->message = msg;
   }
@@ -51,7 +51,7 @@ void assert_true(int actual, Test * test) {
     test->failed = 0;
   } else {
     test->failed = 1;
-    char *msg;
+    char msg[341];
     sprintf(msg, "Expected True, got %d", actual);
     test->message = msg;
   }
@@ -65,20 +65,21 @@ void assert_false(int actual, Test *test)
   } else
   {
     test->failed = 1;
-    char *msg;
+    char msg[341];
     sprintf(msg, "Expected False, got %d", actual);
     test->message = msg;
   }
 }
 
-TestResult runExpressionTests()
+TestResult runExpressionTests(void)
 {
   printf("Testing the expression module\n");
 
-  TestResult res = {0, 0};
+  TestResult res;
   
   const int numTests = 37;
-  res.total += numTests;
+  res.total = numTests;
+  res.passed = 0;
   res.tests = calloc(numTests, sizeof(Test));
 
   res.tests[0] = testPushToStack();
@@ -123,14 +124,12 @@ TestResult runExpressionTests()
 }
 
 // Test Adding a const to the stack
-Test testPushToStack() {
+Test testPushToStack(void){
   // Arrange
   Test res;
   res.name = "Push Const to Stack";
-  Instruction p1[2] = {
-      {0, 0},
-      {.data._int = 3, 2}
-    };
+
+  Instruction p1[2] = {{{CONST}, 0},{.data._int = 3, 2}};
   Expression exp1;
   beforeEach(&exp1, p1, 2);
   
@@ -141,20 +140,18 @@ Test testPushToStack() {
   // Assert
   assert_int_equals(actual, expected, &res);
   return res;
-};
+}
 
 // Test pushing var from env to stack
-Test testPushVarToStack() {
+Test testPushVarToStack(void){
   // Arrange
   Test res;
   res.name = "Push Var to Stack";
-  Instruction p[2] = {
-    {1, 0},
-    {.data._int = 0, 2}
-  };
+  Instruction p[2] = {{{VAR}, 0},{.data._int = 0, 2}};
+
   Expression exp;
   beforeEach(&exp, p, 2);
-  Number val = {10, 2};
+  Number val = {{10}, 2};
   set_value(exp.env, 0, val);
 
   // Act
@@ -167,17 +164,12 @@ Test testPushVarToStack() {
   return res;
 }
 
-Test testAnd1() {
+Test testAnd1(void){
   // Arrange
   Test test;
   test.name = "1 AND 1 returns true";
-  Instruction p[5] = {
-    {0, 0},
-    {.data._int = 1, 2},
-    {0, 0},
-    {.data._int = 1, 2},
-    {2, 0}
-  };
+
+  Instruction p[5] = {{{CONST}, 0},{.data._int = 1, 2},{{CONST}, 0},{.data._int = 1, 2},{{AND}, 0}};
   Expression exp;
   beforeEach(&exp, p, 5);
   
@@ -190,18 +182,14 @@ Test testAnd1() {
   return test;
 }
 
-Test testAnd2() {
+Test testAnd2(void){
   // Arrange
   Test test;
   test.name = "1 AND 0 returns false";
-  Instruction p[5] = {
-    {0, 0},
-    {.data._int = 1, 2},
-    {0, 0},
-    {.data._int = 0, 2},
-    {2, 0}
-  };
+
+  Instruction p[5] = {{{CONST}, 0},{.data._int = 1, 2},{{CONST}, 0},{.data._int = 0, 2},{{AND}, 0}};
   Expression exp;
+
   beforeEach(&exp, p, 5);
   
   // Act
@@ -213,18 +201,11 @@ Test testAnd2() {
   return test;
 }
 
-Test testAnd3()
-{
+Test testAnd3(void){
   // Arrange
   Test test;
   test.name = "0 AND 0 returns false";
-  Instruction p[5] = {
-      {0, 0},
-      {.data._int = 0, 2},
-      {0, 0},
-      {.data._int = 0, 2},
-      {2, 0}
-  };
+  Instruction p[5] = {{{CONST}, 0},{.data._int = 0, 2},{{CONST}, 0},{.data._int = 0, 2},{{AND}, 0}};
 
   Expression exp;
   beforeEach(&exp, p, 5);
@@ -238,18 +219,11 @@ Test testAnd3()
   return test;
 }
 
-Test testOr1()
-{
+Test testOr1(void){
   // Arrange
   Test test;
   test.name = "1 or 0 returns true";
-  Instruction p[5] = {
-      {0, 0},
-      {.data._int = 1, 2},
-      {0, 0},
-      {.data._int = 0, 2},
-      {3, 0}
-  };
+  Instruction p[5] = {{{CONST}, 0},{.data._int = 1, 2},{{CONST}, 0},{.data._int = 0, 2},{{OR}, 0}};
 
   Expression exp;
   beforeEach(&exp, p, 5);
@@ -263,17 +237,11 @@ Test testOr1()
   return test;
 }
 
-Test testOr2() {
+Test testOr2(void){
   // Arrange
   Test test;
   test.name = "0 or 0 returns false";
-  Instruction p[5] = {
-      {0, 0},
-      {.data._int = 0, 2},
-      {0, 0},
-      {.data._int = 0, 2},
-      {3, 0}
-  };
+  Instruction p[5] = {{{CONST}, 0},{.data._int = 0, 2},{{CONST}, 0},{.data._int = 0, 2},{{OR}, 0}};
 
   Expression exp;
   beforeEach(&exp, p, 5);
@@ -287,15 +255,11 @@ Test testOr2() {
   return test;
 }
 
-Test testNot1() {
+Test testNot1(void){
   // Arrange
   Test test;
   test.name = "Not 0 returns true";
-  Instruction p[3] = {
-      {0, 0},
-      {.data._int = 0, 2},
-      {4, 0}
-  };
+  Instruction p[3] = {{{CONST}, 0},{.data._int = 0, 2},{{NOT}, 0}};
 
   Expression exp;
   beforeEach(&exp, p, 3);
@@ -309,15 +273,11 @@ Test testNot1() {
   return test;
 }
 
-Test testNot2() {
+Test testNot2(void){
   // Arrange
   Test test;
   test.name = "Not 0.0 returns true";
-  Instruction p[3] = {
-      {0, 0},
-      {.data._double = 0.0, 4},
-      {4, 0}
-  };
+  Instruction p[3] = {{{CONST}, 0},{.data._double = 0.0, 4},{{NOT}, 0}};
 
   Expression exp;
   beforeEach(&exp, p, 3);
@@ -331,16 +291,11 @@ Test testNot2() {
   return test;
 }
 
-Test testNot3()
-{
+Test testNot3(void){
   // Arrange
   Test test;
   test.name = "Not uint 5 returns false";
-  Instruction p[3] = {
-      {0, 0},
-      {.data._uint32 = 5, 1},
-      {4, 0}
-  };
+  Instruction p[3] = {{{CONST}, 0},{.data._uint32 = 5, 1},{{NOT}, 0}};
 
   Expression exp;
   beforeEach(&exp, p, 3);
@@ -354,16 +309,11 @@ Test testNot3()
   return test;
 }
 
-Test testNot4()
-{
+Test testNot4(void){
   // Arrange
   Test test;
   test.name = "Not int 1 returns false";
-  Instruction p[3] = {
-      {0, 0},
-      {.data._int = 1, 2},
-      {4, 0}
-  };
+  Instruction p[3] = {{{CONST}, 0},{.data._int = 1, 2},{{NOT}, 0}};
 
   Expression exp;
   beforeEach(&exp, p, 3);
@@ -377,17 +327,11 @@ Test testNot4()
   return test;
 }
 
-Test testLT1() {
+Test testLT1(void){
   // Arrange
   Test test;
   test.name = "1.0 < 5 returns true";
-  Instruction p[5] = {
-      {0, 0},
-      {.data._double = 1.0, 4},
-      {0, 0},
-      {.data._int = 5, 2},
-      {5, 0}
-  };
+  Instruction p[5] = {{{CONST}, 0},{.data._double = 1.0, 4},{{CONST}, 0},{.data._int = 5, 2},{{LT}, 0}};
 
   Expression exp;
   beforeEach(&exp, p, 5);
@@ -401,17 +345,11 @@ Test testLT1() {
   return test;
 }
 
-Test testLT2() {
+Test testLT2(void){
   // Arrange
   Test test;
   test.name = "uint 7 < 3.4f returns false";
-  Instruction p[5] = {
-      {0, 0},
-      {.data._uint32 = 7, 1},
-      {0, 0},
-      {.data._float = 3.4f, 3},
-      {5, 0}
-  };
+  Instruction p[5] = {{{CONST}, 0},{.data._uint32 = 7, 1},{{CONST}, 0},{.data._float = 3.4f, 3},{{LT}, 0}};
 
   Expression exp;
   beforeEach(&exp, p, 5);
@@ -425,18 +363,12 @@ Test testLT2() {
   return test;
 }
 
-Test testGT1() {
+Test testGT1(void){
   // Arrange
   Test test;
   test.name = "-3 > uint 5 returns false";
 
-  Instruction p[5] = {
-      {0, 0},
-      {.data._int = -3, 2},
-      {0, 0},
-      {.data._uint32 = 5, 1},
-      {6, 0}
-  };
+  Instruction p[5] = {{{CONST}, 0},{.data._int = -3, 2},{{CONST}, 0},{.data._uint32 = 5, 1},{{GT}, 0}};
 
   Expression exp;
   beforeEach(&exp, p, 5);
@@ -450,17 +382,11 @@ Test testGT1() {
   return test;
 }
 
-Test testGT2()
-{
+Test testGT2(void){
   // Arrange
   Test test;
   test.name = "3.14 > 0 returns true";
-  Instruction p[5] = {
-      {0, 0},
-      {.data._double = 3.14, 4},
-      {0, 0},
-      {.data._int = 0, 2},
-      {6, 0}};
+  Instruction p[5] = {{{CONST}, 0},{.data._double = 3.14, 4},{{CONST}, 0},{.data._int = 0, 2},{{GT}, 0}};
   Expression exp;
   beforeEach(&exp, p, 5);
 
@@ -473,17 +399,11 @@ Test testGT2()
   return test;
 }
 
-Test testEqual(){
+Test testEqual(void){
   Test res;
   res.name = "Equal 10 == 10";
 
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 10, 2},
-      {0, 0},
-      {.data._int = 10, 2},
-      {7,0}
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 10, 2},{{CONST}, 0},{.data._int = 10, 2},{{EQ},0}};
     
   Expression exp1;
   beforeEach(&exp1, p1, 5);
@@ -496,17 +416,11 @@ Test testEqual(){
   return res;
 }
 
-Test testAdd(){
+Test testAdd(void){
   Test res;
   res.name = "Add 10 + 3 = 13";
 
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 10, 2},
-      {0, 0},
-      {.data._int = 3, 2},
-      {8,0}
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 10, 2},{{CONST}, 0},{.data._int = 3, 2},{{ADD},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 5);
@@ -520,17 +434,11 @@ Test testAdd(){
   return res;
 }
 
-Test testSub(){
+Test testSub(void){
   Test res;
   res.name = "Sub 10 - 3 = 7";
 
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 10, 2},
-      {0, 0},
-      {.data._int = 3, 2},
-      {9,0}
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 10, 2},{{CONST}, 0},{.data._int = 3, 2},{{SUB},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 5);
@@ -545,17 +453,11 @@ Test testSub(){
 
 }
 
-Test testMul(){
+Test testMul(void){
   Test res;
   res.name = "Mul 10 * 3 = 30";
   
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 10, 2},
-      {0, 0},
-      {.data._int = 3, 2},
-      {10,0}
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 10, 2},{{CONST}, 0},{.data._int = 3, 2},{{MUL},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 5);
@@ -569,17 +471,11 @@ Test testMul(){
   return res;
 }
 
-Test testDiv(){
+Test testDiv(void){
   Test res;
   res.name = "Div 10 / 3 = 3";
   
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 10, 2},
-      {0, 0},
-      {.data._int = 3, 2},
-      {11,0}
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 10, 2},{{CONST}, 0},{.data._int = 3, 2},{{DIV},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 5);
@@ -593,17 +489,11 @@ Test testDiv(){
   return res;
 }
 
-Test testMod(){
+Test testMod(void){
   Test res;
   res.name = "Mod 10 % 3 = 1";
   
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 10, 2},
-      {0, 0},
-      {.data._int = 3, 2},
-      {12,0}
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 10, 2},{{CONST}, 0},{.data._int = 3, 2},{{MOD},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 5);
@@ -617,15 +507,11 @@ Test testMod(){
   return res;
 }
 
-Test testLog(){
+Test testLog(void){
   Test res;
   res.name = "Log 10";
   
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._double = 10, 4},
-      {13,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._double = 10, 4},{{LOG},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -639,17 +525,11 @@ Test testLog(){
   return res;
 }
 
-Test testPow(){
+Test testPow(void){
   Test res;
   res.name = "2 to the power of 3";
 
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 2, 2},
-      {0, 0},
-      {.data._int = 3, 2},
-      {14,0}
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 2, 2},{{CONST}, 0},{.data._int = 3, 2},{{POW},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 5);
@@ -664,15 +544,11 @@ Test testPow(){
 }
 
 
-Test testSqrt(){
+Test testSqrt(void){
   Test res;
   res.name = "Sqrt 4 to 2";
 
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._int = 4, 2},
-      {15,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._int = 4, 2},{{SQRT},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -687,15 +563,11 @@ Test testSqrt(){
 }
 
 
-Test expValue() {
+Test expValue(void){
   Test res;
   res.name = "1 to the power of euler's number";
 
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._int = 1, 2},
-      {16,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._int = 1, 2},{{EXP},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -709,15 +581,11 @@ Test expValue() {
   return res;
 }
 
-Test ceilValue(){
+Test ceilValue(void){
   Test res;
   res.name = "Ceil 1.4 to 2";
 
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._double = 1.4, 4},
-      {17,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._double = 1.4, 4},{{CEIL},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -731,15 +599,11 @@ Test ceilValue(){
   return res;
 }
 
-Test ceilValueBig(){
+Test ceilValueBig(void){
   Test res;
   res.name = "Ceil 1.9 to 2";
 
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._double = 1.9, 4},
-      {17,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._double = 1.9, 4},{{CEIL},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -754,15 +618,11 @@ Test ceilValueBig(){
 }
 
 
-Test floorValue(){
+Test floorValue(void){
   Test res;
   res.name = "Floor 1.4 to 1";
 
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._double = 1.4, 4},
-      {18,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._double = 1.4, 4},{{FLOOR},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -776,15 +636,11 @@ Test floorValue(){
   return res;
 }
 
-Test floorValueBig(){
+Test floorValueBig(void){
   Test res;
   res.name = "Floor 1.9 to 1";
 
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._double = 1.9, 4},
-      {18,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._double = 1.9, 4},{{FLOOR},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -798,15 +654,11 @@ Test floorValueBig(){
   return res;
 }
 
-Test roundUnderHalf(){
+Test roundUnderHalf(void){
   Test res;
   res.name = "Round 1.4 to 1";
 
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._double = 1.4, 4},
-      {19,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._double = 1.4, 4},{{ROUND},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -820,15 +672,11 @@ Test roundUnderHalf(){
   return res;
 }
 
-Test roundOverHalf(){
+Test roundOverHalf(void){
   Test res;
   res.name = "Round 1.6 to 2";
 
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._double = 1.6, 4},
-      {19,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._double = 1.6, 4},{{ROUND},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -843,15 +691,11 @@ Test roundOverHalf(){
 }
 
 
-Test absoluteValue1(){
+Test absoluteValue1(void){
   Test res;
   res.name = "Absolute value of 5";
   
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._int = 5, 2},
-      {20,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._int = 5, 2},{{ABS},0}};
   
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -863,7 +707,7 @@ Test absoluteValue1(){
   // Assert
   if(actual.type._double != expected) {
     res.failed = 1;
-    char* msg;
+    char msg[341];
     sprintf(msg, "Expected %lf, got %lf",expected, actual.type._double);
     res.message = msg;
   } else {
@@ -873,15 +717,11 @@ Test absoluteValue1(){
   return res;
 }
 
-Test absoluteValue2(){
+Test absoluteValue2(void){
   Test res;
   res.name = "Absolute value of -5";
 
-  Instruction p1[3] = {
-      {0, 0},
-      {.data._int = -5, 2},
-      {20,0}
-    };
+  Instruction p1[3] = {{{CONST}, 0},{.data._int = -5, 2},{{ABS},0}};
   
   Expression exp1;
   beforeEach(&exp1, p1, 3);
@@ -893,7 +733,7 @@ Test absoluteValue2(){
   // Assert
   if(actual.type._double != expected) {
     res.failed = 1;
-    char* msg;
+    char msg[341];
     sprintf(msg, "Expected %lf, got %lf",expected, actual.type._double);
     res.message = msg;
   } else {
@@ -903,17 +743,11 @@ Test absoluteValue2(){
   return res;
 }
 
-Test lessThanEqual1(){
+Test lessThanEqual1(void){
   Test res;
   res.name = "Less than or equal (less than)";
   
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 2, 2},
-      {0,0},
-      {.data._int = 3, 2},
-      {21,0},
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 2, 2},{{CONST},0},{.data._int = 3, 2},{{LTEQ},0}};
 
   Expression exp1;
   beforeEach(&exp1, p1, 5);
@@ -927,16 +761,10 @@ Test lessThanEqual1(){
   return res;
 }
 
-Test lessThanEqual2(){
+Test lessThanEqual2(void){
   Test res;
   res.name = "Less than or equal (equal)";
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 3, 2},
-      {0,0},
-      {.data._int = 3, 2},
-      {21,0},
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 3, 2},{{CONST},0},{.data._int = 3, 2},{{LTEQ},0}};
   Expression exp1;
   beforeEach(&exp1, p1, 5);
   
@@ -950,16 +778,10 @@ Test lessThanEqual2(){
 }
 
 
-Test greaterThanEqual1(){
+Test greaterThanEqual1(void){
   Test res;
   res.name = "Greater than or equal (greater than)";
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 4, 2},
-      {0,0},
-      {.data._int = 3, 2},
-      {22,0},
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 4, 2},{{CONST},0},{.data._int = 3, 2},{{GTEQ},0}};
   Expression exp1;
   beforeEach(&exp1, p1, 5);
   
@@ -972,16 +794,10 @@ Test greaterThanEqual1(){
   return res;
 }
 
-Test greaterThanEqual2(){
+Test greaterThanEqual2(void){
   Test res;
   res.name = "Greater than or equal (equal)";
-  Instruction p1[5] = {
-      {0, 0},
-      {.data._int = 3, 2},
-      {0,0},
-      {.data._int = 3, 2},
-      {22,0},
-    };
+  Instruction p1[5] = {{{CONST}, 0},{.data._int = 3, 2},{{CONST},0},{.data._int = 3, 2},{{GTEQ},0}};
   Expression exp1;
   beforeEach(&exp1, p1, 5);
   

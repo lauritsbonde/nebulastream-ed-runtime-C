@@ -6,7 +6,7 @@
 
 void printNumberValue(Number val){
     if(val.unionCase == 1){
-        printf("%lu", val.type._uint32);
+        printf("%u", val.type._uint32);
     } else if(val.unionCase == 2){
         printf("%d", val.type._int);
     } else if(val.unionCase == 3){
@@ -20,7 +20,7 @@ void printNumberValue(Number val){
 
 void printNumberValueAndUcase(Number val){
     if(val.unionCase == 1){
-      printf("val: %lu - unionCase: %d (uint)", val.type._uint32, val.unionCase);
+      printf("val: %u - unionCase: %d (uint)", val.type._uint32, val.unionCase);
     } else if(val.unionCase == 2){
       printf("val: %d - unionCase: %d (int)", val.type._int, val.unionCase);
     } else if(val.unionCase == 3){

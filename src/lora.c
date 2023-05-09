@@ -1,39 +1,39 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
+// #include <string.h>
+// #include <stdlib.h>
+// #include <time.h>
 
-#include "lora.h"
+// #include "lora.h"
 
-#include "thread.h"
-#include "msg.h"
-#include "fmt.h"
-#include "net/loramac.h"
-#include "semtech_loramac.h"
+// #include "thread.h"
+// #include "msg.h"
+// #include "fmt.h"
+// #include "net/loramac.h"
+// #include "semtech_loramac.h"
 
-extern semtech_loramac_t loramac;
+// extern semtech_loramac_t loramac;
 
-static uint8_t deveui[LORAMAC_DEVEUI_LEN];
-static uint8_t appeui[LORAMAC_APPEUI_LEN];
-static uint8_t appkey[LORAMAC_APPKEY_LEN];
+// static uint8_t deveui[LORAMAC_DEVEUI_LEN];
+// static uint8_t appeui[LORAMAC_APPEUI_LEN];
+// static uint8_t appkey[LORAMAC_APPKEY_LEN];
 
-void send_message(uint8_t* serializedData, uint8_t len)
-{
-    printf("Sending: %s\n", serializedData);
-    /* Try to send the message */
-    uint8_t ret = semtech_loramac_send(&loramac,serializedData, len);
-    if (ret != SEMTECH_LORAMAC_TX_DONE) {
-        printf("Cannot send message, ret code: %d\n", ret);
-        return;
-    }
-}
+// void send_message(uint8_t* serializedData, uint8_t len)
+// {
+//     printf("Sending: %s\n", serializedData);
+//     /* Try to send the message */
+//     uint8_t ret = semtech_loramac_send(&loramac,serializedData, len);
+//     if (ret != SEMTECH_LORAMAC_TX_DONE) {
+//         printf("Cannot send message, ret code: %d\n", ret);
+//         return;
+//     }
+// }
 
-msg_t receive_message(void) {
-    msg_t msg;
-    msg_receive(&msg);
+// msg_t receive_message(void) {
+//     msg_t msg;
+//     msg_receive(&msg);
 
-    return msg;
-}
+//     return msg;
+// }
 
 int connect_lorawan(void)
 {

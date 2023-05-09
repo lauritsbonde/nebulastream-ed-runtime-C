@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include "runTest.h"
-#include "./ExpressionTests/ExpressionTests.h"
-#include "./ProtocolTests/protocolTests.h"
+#include "ExpressionTests.h"
+#include "protocolTests.h"
 #include "testType.h"
 
 
 void runTests(TestToRun testToRun) {
-  TestResult res = {0,0};
+  TestResult res;
+  res.total = 0;
+  res.passed = 0;
   printf("Running tests\n\n");
 
   if(testToRun == ALL || testToRun == EXPRESSION) executeExpressionTests(&res);

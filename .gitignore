@@ -71,6 +71,7 @@ dkms.conf
 *_REMOTE_*.txt
 
 ### VisualStudioCode ###
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -115,6 +116,10 @@ build/*
 # Ignore all local history of files
 .history
 .ionide
+
+# All in bin and build
+src/bin/*
+src/build/*
 
 
 # End of https://www.toptal.com/developers/gitignore/api/c,visualstudiocode,git

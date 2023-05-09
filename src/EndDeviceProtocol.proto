@@ -1,6 +1,7 @@
 // This file is a direct copy of: https://github.com/FlapKap/nebulastream-ed-runtime/blob/main/proto/EndDeviceProtocol.proto
 
 syntax = "proto3";
+import "nanopb.proto";
 
 package EndDeviceProtocol;
 
@@ -53,22 +54,22 @@ message Data {
 message Output {
     message QueryResponse {
         int32 id = 1;
-        repeated Data response = 2;
+        repeated Data response = 2 [(nanopb).max_count = 50];
     }
-    repeated QueryResponse responses = 1;
+    repeated QueryResponse responses = 1 [(nanopb).max_count = 3];
 }
 
 message Expression {
-    repeated Data instructions = 1;
+    repeated Data instructions = 1 [(nanopb).max_count = 50];
 }
 
 message MapOperation {
-    repeated Data function = 1;
+    repeated Data function = 1 [(nanopb).max_count = 50];
     int32 attribute = 2;
 }
 
 message FilterOperation {
-    repeated Data predicate = 1;
+    repeated Data predicate = 1 [(nanopb).max_count = 50];
 }
 
 enum WindowAggregationType {
@@ -104,9 +105,9 @@ message Operation {
 
 message Query {
     //bytes resultType = 1; //For some reason minipb breaks if I make this a repeated enum or int32
-    repeated Operation operations = 1;   
+    repeated Operation operations = 1 [(nanopb).max_count = 5];   
 }
 
 message Message {
-    repeated Query queries = 1;
+    repeated Query queries = 1 [(nanopb).max_count = 3];
 }
