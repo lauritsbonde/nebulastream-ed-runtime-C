@@ -9,27 +9,27 @@ RIOTBASE ?= $(CURDIR)/../../RIOT
 # LoRaWAN Stuff
 
 # Assuming that we use OTAA activation mode
-ACTIVATION_MODE ?= otaa
+# ACTIVATION_MODE ?= otaa
 
-APPEUI ?= 0000000000000000
-DEVEUI ?= 70B3D57ED005D48F
-APPKEY ?= 4485F8CB42F3F8FC3B3D10094BE1303C
+# APPEUI ?= 0000000000000000
+# DEVEUI ?= 70B3D57ED005D48F
+# APPKEY ?= 4485F8CB42F3F8FC3B3D10094BE1303C
 
-# # # Send a message every 20s after joining the network
-SEND_PERIOD_S ?= 20
+# # # # Send a message every 20s after joining the network
+# SEND_PERIOD_S ?= 20
 
-LORA_REGION ?= EU868
+# LORA_REGION ?= EU868
 
-# # Include the Semtech-loramac package
-USEMODULE += sx1276
-USEPKG += semtech-loramac
-USEMODULE += auto_init_loramac
+# # # Include the Semtech-loramac package
+# USEMODULE += sx1276
+# USEPKG += semtech-loramac
+# USEMODULE += auto_init_loramac
 
-USEMODULE += $(DRIVER)
-USEMODULE += fmt
+# USEMODULE += $(DRIVER)
+# USEMODULE += fmt
 
-CFLAGS += -DSEND_PERIOD_S=$(SEND_PERIOD_S)
-CFLAGS += -DUSE_OTAA
+# CFLAGS += -DSEND_PERIOD_S=$(SEND_PERIOD_S)
+# CFLAGS += -DUSE_OTAA
 
 # Nanopb stuff
 USEPKG += nanopb

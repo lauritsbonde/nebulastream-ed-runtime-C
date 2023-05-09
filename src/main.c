@@ -35,22 +35,16 @@ void test_encode_output(void);
 int main(void)
 {
   ztimer_sleep(ZTIMER_SEC, 5);
-  // Run Tests
-  // runTests(ALL);
+  //Run Tests
+  runTests(ALL);
 
-  // Setup
-  // puts("Test encode output");
-  // test_encode_output();
-
-  // puts("");
-  // puts("Test encode input");
-  // test_encode_input();
+  //Setup
+  puts("Test encode output");
+  test_encode_output();
 
   puts("");
-  puts("Test lora");
-  connect_lorawan();
-  uint8_t msg[2] = {(uint8_t)1, (uint8_t)2};
-  send_message(msg, (uint8_t) 2);
+  puts("Test encode input");
+  test_encode_input();
 
   while (1)
   {
