@@ -34,27 +34,30 @@ void test_encode_output(void);
 
 int main(void)
 {
-  //Run Tests
-  runTests(ALL);
+  ztimer_sleep(ZTIMER_SEC, 5);
+  // Run Tests
+  // runTests(ALL);
 
   // Setup
-  puts("Test encode output");
-  test_encode_output();
+  // puts("Test encode output");
+  // test_encode_output();
+
+  // puts("");
+  // puts("Test encode input");
+  // test_encode_input();
 
   puts("");
-  puts("Test encode input");
-  test_encode_input();
+  puts("Test lora");
+  connect_lorawan();
+  uint8_t msg[2] = {(uint8_t)1, (uint8_t)2};
+  send_message(msg, (uint8_t) 2);
 
+  while (1)
+  {
+    puts("main loop iteration. Going to sleep");
+    ztimer_sleep(ZTIMER_SEC, 5);
+  }
   
-  printf("before sleep\n");
-  printf("after sleep\n");
-
-
-  puts("");
-  puts("Test encode input again");
-  test_encode_input();
-
-
 
   return 0;
 }
