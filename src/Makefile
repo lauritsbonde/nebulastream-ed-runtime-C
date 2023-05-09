@@ -11,22 +11,22 @@ RIOTBASE ?= $(CURDIR)/../../RIOT
 # Assuming that we use OTAA activation mode
 # ACTIVATION_MODE ?= otaa
 
-APPEUI ?= 0000000000000000
-DEVEUI ?= 70b3d57ed005d48f
-APPKEY ?= 4485f8cb42f3f8fc3b3d10094be1303c
+# APPEUI ?= 0000000000000000
+# DEVEUI ?= 70b3d57ed005d48f
+# APPKEY ?= 4485f8cb42f3f8fc3b3d10094be1303c
 
-# # # # Send a message every 20s after joining the network
+# Send a message every 20s after joining the network
 # SEND_PERIOD_S ?= 20
 
 # LORA_REGION ?= EU868
 
 # Include the Semtech-loramac package
-USEMODULE += saul_default
-USEMODULE += netdev_default
-DRIVER ?= sx1276
-USEPKG += semtech-loramac
-USEMODULE += auto_init_loramac
-USEMODULE += semtech_loramac_rx
+# USEMODULE += saul_default
+# USEMODULE += netdev_default
+# DRIVER ?= sx1276
+# USEPKG += semtech-loramac
+# USEMODULE += auto_init_loramac
+# USEMODULE += semtech_loramac_rx
 
 # USEMODULE += $(DRIVER)
 # USEMODULE += fmt
@@ -56,4 +56,4 @@ include $(RIOTBASE)/Makefile.include
 CFLAGS += -DCONFIG_LORAMAC_APP_KEY_DEFAULT=\"$(APPKEY)\"
 CFLAGS += -DCONFIG_LORAMAC_APP_EUI_DEFAULT=\"$(APPEUI)\"
 CFLAGS += -DCONFIG_LORAMAC_DEV_EUI_DEFAULT=\"$(DEVEUI)\"
-CFLAGS += -DTHREAD_STACKSIZE_MAIN='(40 * 1024)'
+CFLAGS += -DTHREAD_STACKSIZE_MAIN='(50 * 1024)'
