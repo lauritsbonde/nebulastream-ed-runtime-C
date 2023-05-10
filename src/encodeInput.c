@@ -9,7 +9,7 @@
 void init_map_operation(Map map, EndDeviceProtocol_MapOperation *out){
   for(int i = 0; i < map.expression->p_size; i++){
     EndDeviceProtocol_Data current = EndDeviceProtocol_Data_init_zero;
-    init_data(map.expression->program[i], &current);
+    init_data(&map.expression->program[i], &current);
     out->function[i] = current;
   }
   
@@ -20,7 +20,7 @@ void init_map_operation(Map map, EndDeviceProtocol_MapOperation *out){
 void init_filter_operation(Filter filter, EndDeviceProtocol_FilterOperation *out) {
   for (int i = 0; i < filter.predicate->p_size; i++) {
     EndDeviceProtocol_Data current = EndDeviceProtocol_Data_init_zero;
-    init_data(filter.predicate->program[i], &current);
+    init_data(&filter.predicate->program[i], &current);
     out->predicate[i] = current;
   }
   out->predicate_count = filter.predicate->p_size;

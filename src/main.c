@@ -15,7 +15,9 @@
 #include "number.h"
 #include "encodeInput.h"
 #include "encodeOutput.h"
-//#include "lora.h"
+#ifndef BOARD_NATIVE
+#include "lora.h"
+#endif
 
 //Testing
 #include "runTest.h"
@@ -38,13 +40,12 @@ int main(void)
   puts("=====================================");
   
   //Run Tests
-  // runTests(ALL);
-
-  // Possibly put the gloabel env here
+  //runTests(ALL);
 
   // Connect lorawan and receive first message
-  // connect_lorawan();
-  // receive_message();
+#ifndef BOARD_NATIVE
+  connect_lorawan();
+#endif
   
   // Mock message: Map operation with 1 + 1 expression 
   uint8_t message[] = {0x0a, 0x18, 0x0a, 0x16, 0x0a, 0x14, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x08};
@@ -61,18 +62,12 @@ int main(void)
   OutputMessage out;
   executeQueries(msg, &out, global_env);
 
-  // Verify result of the single map operation of the first query
-  Instruction i = out.responses[0].response[0];
-  printf("Result: %d\n", i.data._int);
-  printf("Result amount: %d\n", out.responses[0].amount);
-  printf("result amount2: %d\n", out.responses[0].response[0].unionCase);
-
-  printf("out amount: %d\n", out.amount);
   // Encode output
   uint8_t buffer[128];
   pb_ostream_t ostream = pb_ostream_from_buffer(buffer, sizeof(buffer));
-  printf("out.responses[0].amount: %d\n", out.responses[0].amount);
-  encode_output_message(&ostream, out);
+  printf("uc before encode: %d\n", out.responses[0].response[0].unionCase);
+
+  encode_output_message(&ostream, &out);
   int message_length = ostream.bytes_written;
   
   // Verify that output message gets encoded
@@ -87,10 +82,16 @@ int main(void)
 
   printf("amount1: %d\n", response.responses_count);
   printf("amount: %d\n", response.responses[0].response_count);
-  printf("value: %d\n", response.responses[0].response[0].data._int16);
-
+  #ifdef BOARD_NATIVE
+  printf("value: %d\n", response.responses[0].response[0].data._int8);
+  #else
+  printf("value: %ld\n", response.responses[0].response[0].data._int16);
+  #endif
   while (1) {
     puts("Main loop iteration");
+#ifndef BOARD_NATIVE
+    send_message(message, sizeof(message));
+#endif
     ztimer_sleep(ZTIMER_SEC, 5);
   }
   

@@ -8,9 +8,9 @@
 
 
 
-void init_data(Instruction instr, EndDeviceProtocol_Data *out){
-  if(instr.unionCase == 0){
-    ExpressionInstruction einstr = instr.data._instruction;
+void init_data(Instruction * instr, EndDeviceProtocol_Data *out){
+  if(instr->unionCase == 0){
+    ExpressionInstruction einstr = instr->data._instruction;
     if (einstr == CONST){
       out->data.instruction = EndDeviceProtocol_ExpressionInstructions_CONST;
     } else if (einstr == VAR){
@@ -60,54 +60,51 @@ void init_data(Instruction instr, EndDeviceProtocol_Data *out){
     //   out->data.instruction = EndDeviceProtocol_ExpressionInstructions_GTEQ;
     // }
     out->which_data = EndDeviceProtocol_Data_instruction_tag;
-  } else if (instr.unionCase == 1){
-    out->data._uint32 = instr.data._uint32;
+  } else if (instr->unionCase == 1){
+    out->data._uint32 = instr->data._uint32;
     out->which_data = EndDeviceProtocol_Data__int32_tag;
-  } else if (instr.unionCase == 2){
-    out->data._int16 = instr.data._int;
+  } else if (instr->unionCase == 2){
+    out->data._int16 = instr->data._int;
     out->which_data = EndDeviceProtocol_Data__int16_tag;
-  } else if (instr.unionCase == 3){
-    out->data._float = instr.data._float;
+  } else if (instr->unionCase == 3){
+    out->data._float = instr->data._float;
     out->which_data = EndDeviceProtocol_Data__float_tag;
-  } else if (instr.unionCase == 4){
-    out->data._double = instr.data._double;
+  } else if (instr->unionCase == 4){
+    out->data._double = instr->data._double;
     out->which_data = EndDeviceProtocol_Data__double_tag;
   } else {
     printf("Unknown unioncase encode output!\n");
   }
 }
 
-void init_query_response(QueryResponse query, EndDeviceProtocol_Output_QueryResponse *out){
-  for(int i = 0; i < query.amount; i++){
+void init_query_response(QueryResponse * query, EndDeviceProtocol_Output_QueryResponse *out){
+  for(int i = 0; i < query->amount; i++){
+    printf("iteration %d, unioncase: %d\n", i, query->response[i].unionCase);
     EndDeviceProtocol_Data current = EndDeviceProtocol_Data_init_zero;
-    init_data(query.response[i], &current);
+    init_data(&query->response[i], &current);
     out->response[i] = current;
   }
-  printf("query amount: %d\n", query.amount);
 
-  out->response_count = query.amount;
-  out->id = query.id;
+  out->response_count = query->amount;
+  out->id = query->id;
 }
 
 
-void init_output(OutputMessage _output, EndDeviceProtocol_Output *out) {
-  printf("_output.responses[0].amount: %d\n", _output.responses[0].amount);
-  for (int i = 0; i < _output.amount; i++) {
+void init_output(OutputMessage *_output, EndDeviceProtocol_Output *out) {
+  for (int i = 0; i < _output->amount; i++) {
     EndDeviceProtocol_Output_QueryResponse current = EndDeviceProtocol_Output_QueryResponse_init_zero;
-    printf("_output.responses: %d\n", _output.responses[i].amount);
-    init_query_response(_output.responses[i], &current);
+    init_query_response(&_output->responses[i], &current);
     out->responses[i] = current;
   }
-  printf("output amount: %d\n", _output.amount);
-
-  out->responses_count = _output.amount;
+  out->responses_count = _output->amount;
 }
 
-bool encode_output_message(pb_ostream_t * stream, OutputMessage msg) {
+EndDeviceProtocol_Output output = EndDeviceProtocol_Output_init_zero;
+
+bool encode_output_message(pb_ostream_t *stream, OutputMessage * msg) {
+  printf("UC in encode: %d\n", msg->responses[0].response[0].unionCase);
   bool status;
 
-  EndDeviceProtocol_Output output = EndDeviceProtocol_Output_init_zero;
-  printf("msg.responses[0].amount: %d\n", msg.responses[0].amount);
   init_output(msg, &output);
 
   printf("outputlength: %d\n", output.responses_count);
@@ -117,6 +114,12 @@ bool encode_output_message(pb_ostream_t * stream, OutputMessage msg) {
   if (!status)
   {
     printf("Encoding failed: %s\n", PB_GET_ERROR(stream));
+  }
+
+  for (int i = 0; i < msg->amount; i++) {
+    for (int j = 0; j < msg->responses[i].amount; j++) {
+      free(msg->responses[i].response); 
+    }
   }
 
   return status;
