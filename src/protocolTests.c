@@ -1004,3 +1004,28 @@ Test message_gets_decoded(void){
 
   return test;
 }
+
+Test og_decode_map(void){
+  Test test;
+  test.name = "Decoding map from original testsuite input";
+  test.failed = 0;ƒ
+
+  uint8_t message[] = {0x12,0x10,0x0e,0x02,0x08,0x00,0x02,0x10,0x08,0x02,0x08,0x10,0x01};
+  pb_istream_t istream = pb_istream_from_buffer(message, sizeof(message));
+
+
+  Message msg;
+  bool status = decode_input_message(&istream, &msg);
+
+  if(status != true) {
+    test.failed = 1;
+    test.message = "Decoding failed";
+    return test;
+  }
+
+  if(msg.queries[0]->operations[0]->operation.map->expression->program[0].data._instruction != CONST){
+    test.failed = 1;
+    test.message = "First instruction is not CONST";
+    return test;
+  }
+}
