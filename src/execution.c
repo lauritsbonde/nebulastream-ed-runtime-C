@@ -5,7 +5,7 @@
 #include "environment.h"
 
 void executeQueries(Message message, OutputMessage *out, Env * env){
-  QueryResponse responses[message.amount];
+  QueryResponse * responses = calloc(message.amount, sizeof(QueryResponse));
 
   for (int i = 0; i < message.amount; i++) {
     QueryResponse current;

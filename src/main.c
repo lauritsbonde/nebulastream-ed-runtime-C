@@ -68,6 +68,8 @@ int main(void)
     OutputMessage out;
     executeQueries(msg, &out, global_env);
 
+    printf("out.responses[0].amount: %d\n", out.responses[0].amount);
+
     if (out.amount > 0) {
       puts("encoding and sending output");
       uint8_t buffer[256];
@@ -75,8 +77,10 @@ int main(void)
       encode_output_message(&ostream, &out);
       send_message(buffer, (uint8_t)256);
     }
-    uint8_t empty[5];
-    send_message(empty, (uint8_t)5);
+
+    uint8_t test[5];
+    send_message(test, (uint8_t) 5);
+
     ztimer_sleep(ZTIMER_SEC, 5);
   }
   
