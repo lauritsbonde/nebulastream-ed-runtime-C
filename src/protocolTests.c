@@ -942,21 +942,63 @@ Test message_gets_decoded(void){
     return test;
   }
 
-  if(message.amount != 1){
+  if(decoded.amount != 1) {
     test.failed = 1;
-    test.message = "output message amount is not 1";
+    test.message = "decoded message amount is not 1";
     return test;
   }
 
-  if(message.queries[0].amount != 1){
+  if(decoded.queries[0].amount != 1) {
     test.failed = 1;
-    test.message = "output message.query[0] amount is not 1";
+    test.message = "decoded message queries[0].amount is not 1";
     return test;
   }
 
-  if(message.queries[0].operations[0].unionCase != 0){
+  if(decoded.queries[0].operations[0].unionCase != 0) {
     test.failed = 1;
-    test.message = "output message.queries[0].operations[0].unioncase != 1";
+    test.message = "decoded message queries[0].operations[0].unionCase is not 0";
+    return test;
+  }
+
+  if(decoded.queries[0].operations[0].operation.map->attribute != 0) {
+    test.failed = 1;
+    test.message = "decoded message queries[0].operations[0].operation.map.attribute is not 0";
+    return test;
+  }
+
+  if(decoded.queries[0].operations[0].operation.map->expression->p_size != 5) {
+    test.failed = 1;
+    test.message = "decoded message queries[0].operations[0].operation.map.expression.p_size is not 5";
+    return test;
+  }
+
+  if(decoded.queries[0].operations[0].operation.map->expression->program[0].data._instruction != CONST) {
+    test.failed = 1;
+    test.message = "decoded message queries[0].operations[0].operation.map.expression.program[0].instruction is not CONST";
+    return test;
+  }
+
+  if(decoded.queries[0].operations[0].operation.map->expression->program[1].data._int != 1) {
+    test.failed = 1;
+    test.message = "decoded message queries[0].operations[0].operation.map.expression.program[1].data._int is not 1";
+    return test;
+  }
+
+  if(decoded.queries[0].operations[0].operation.map->expression->program[2].data._instruction != CONST) {
+    test.failed = 1;
+    test.message = "decoded message queries[0].operations[0].operation.map.expression.program[2].instruction is not CONST";
+    return test;
+  }
+
+  if(decoded.queries[0].operations[0].operation.map->expression->program[3].data._int != 1) {
+    test.failed = 1;
+    test.message = "decoded message queries[0].operations[0].operation.map.expression.program[3].data._int is not 1";
+    return test;
+  }
+
+  if(decoded.queries[0].operations[0].operation.map->expression->program[4].data._instruction != ADD) {
+    test.failed = 1;
+    test.message = "decoded message queries[0].operations[0].operation.map.expression.program[4].instruction is not ADD";
     return test;
   }
 

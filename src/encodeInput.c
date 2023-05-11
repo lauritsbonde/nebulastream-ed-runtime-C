@@ -225,7 +225,6 @@ void decoded_input_to_filter_operation(EndDeviceProtocol_FilterOperation decoded
 }
 
 void decoded_input_to_map_operation(EndDeviceProtocol_MapOperation decoded, Map *out){
-  printf("map\n");
   out->attribute = decoded.attribute;
 
   Expression submessage;

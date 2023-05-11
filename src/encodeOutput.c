@@ -73,7 +73,7 @@ void init_data(Instruction instr, EndDeviceProtocol_Data *out){
     out->data._double = instr.data._double;
     out->which_data = EndDeviceProtocol_Data__double_tag;
   } else {
-    printf("Unknown unioncase!\n");
+    printf("Unknown unioncase encode output!\n");
   }
 }
 
