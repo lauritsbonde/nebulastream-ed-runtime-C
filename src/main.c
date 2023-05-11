@@ -38,7 +38,7 @@ int main(void)
   puts("=====================================");
   
   //Run Tests
-  // runTests(ALL);
+  runTests(ALL);
 
   // Possibly put the gloabel env here
 
@@ -64,15 +64,14 @@ int main(void)
   // Verify result of the single map operation of the first query
   Instruction i = out.responses[0].response[0];
   printf("Result: %d\n", i.data._int);
-  printf("Result amount: %d\n", out.responses[0].amount);
-  printf("result amount2: %d\n", out.responses[0].response[0].unionCase);
 
-  printf("out amount: %d\n", out.amount);
   // Encode output
   uint8_t buffer[128];
   pb_ostream_t ostream = pb_ostream_from_buffer(buffer, sizeof(buffer));
-  printf("out.responses[0].amount: %d\n", out.responses[0].amount);
+
   encode_output_message(&ostream, out);
+  free_output_message(&out);
+
   int message_length = ostream.bytes_written;
   
   // Verify that output message gets encoded
@@ -84,10 +83,6 @@ int main(void)
   pb_istream_t test = pb_istream_from_buffer(buffer, message_length);
   EndDeviceProtocol_Output response = EndDeviceProtocol_Output_init_zero;
   decode_output_message(&test, &response);
-
-  printf("amount1: %d\n", response.responses_count);
-  printf("amount: %d\n", response.responses[0].response_count);
-  printf("value: %d\n", response.responses[0].response[0].data._int16);
 
   while (1) {
     puts("Main loop iteration");
