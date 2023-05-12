@@ -17,6 +17,8 @@
 #include "encodeOutput.h"
 //#include "lora.h"
 
+#include <time.h>
+
 //Testing
 #include "runTest.h"
 #include "testType.h"
@@ -38,14 +40,13 @@ int main(void)
   puts("=====================================");
   
   //Run Tests
-  runTests(ALL);
-
-  // Possibly put the gloabel env here
+  runTests(PROTOCOL);
+  return 0;
 
   // Connect lorawan and receive first message
   // connect_lorawan();
   // receive_message();
-  
+
   // Mock message: Map operation with 1 + 1 expression 
   uint8_t message[] = {0x0a, 0x18, 0x0a, 0x16, 0x0a, 0x14, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x08};
 
