@@ -12,7 +12,7 @@
 TestResult runProtocolTests(void){
   TestResult res;
 
-  const int numTests = 13;
+  const int numTests = 16;
   res.total = numTests;
   res.passed = 0;
   res.tests = malloc(sizeof(Test) * numTests);
@@ -31,6 +31,10 @@ TestResult runProtocolTests(void){
   res.tests[10] = message_is_initialised();
   res.tests[11] = message_gets_encoded();
   res.tests[12] = message_gets_decoded();
+
+  res.tests[13] = og_decode_map();
+  res.tests[14] = og_test_filter();
+  res.tests[15] = og_test_map_filter_msg();
 
   return res;
 }
@@ -1008,10 +1012,10 @@ Test message_gets_decoded(void){
 Test og_decode_map(void){
   Test test;
   test.name = "Decoding map from original testsuite input";
-  test.failed = 0;ƒ
+  test.failed = 0;
 
-  uint8_t message[] = {0x12,0x10,0x0e,0x02,0x08,0x00,0x02,0x10,0x08,0x02,0x08,0x10,0x01};
-  pb_istream_t istream = pb_istream_from_buffer(message, sizeof(message));
+  uint8_t message[] = {0x0a, 0x12, 0x0a, 0x10, 0x0a, 0x0e, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x10, 0x08, 0x0a, 0x02, 0x08, 0x0a, 0x10, 0x01};
+  pb_istream_t istream = pb_istream_from_buffer(message, 20);
 
 
   Message msg;
@@ -1023,9 +1027,144 @@ Test og_decode_map(void){
     return test;
   }
 
-  if(msg.queries[0]->operations[0]->operation.map->expression->program[0].data._instruction != CONST){
+  if(msg.queries[0].operations[0].operation.map->expression->program[0].data._instruction != CONST){
     test.failed = 1;
     test.message = "First instruction is not CONST";
     return test;
   }
+
+  if(msg.queries[0].operations[0].operation.map->expression->program[1].data._int != 8){
+    test.failed = 1;
+    test.message = "Second instructions value is not 8";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.map->expression->program[2].data._instruction != MUL){
+    test.failed = 1;
+    test.message = "Third instruction is not MUL";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.map->attribute != 1){
+    test.failed = 1;
+    test.message = "Map attribute is not 1";
+    return test;
+  }
+
+  return test;
+}
+
+Test og_test_filter(void){
+  Test test;
+  test.name = "Decoding filter from original testsuite input";
+  test.failed = 0;
+
+  uint8_t message[] = {0x0a,0x10,0x0a,0x0e,0x12,0x0c,0x0a,0x02,0x08,0x00,0x0a,0x02,0x10,0x08,0x0a,0x02,0x08,0x05};
+  pb_istream_t istream = pb_istream_from_buffer(message, 18);
+
+  Message msg;
+  bool status = decode_input_message(&istream, &msg);
+
+  if(status != true) {
+    test.failed = 1;
+    test.message = "Decoding failed";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.filter->predicate[0].program[0].data._instruction != CONST){
+    test.failed = 1;
+    test.message = "First instruction is not CONST";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.filter->predicate[0].program[1].data._int != 8){
+    test.failed = 1;
+    test.message = "Second instructions value is not 8";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.filter->predicate[0].program[2].data._instruction != LT){
+    test.failed = 1;
+    test.message = "Third instruction is not LT";
+    return test;
+  }
+
+  return test;
+}
+
+Test og_test_map_filter_msg(void){
+  Test test;
+  test.name = "Decoding map and filter from original testsuite input";
+  test.failed = 0;
+
+  uint8_t message[] = {0x0a,0x20,0x0a,0x0e,0x0a,0x0c,0x0a,0x02,0x08,0x00,0x0a,0x02,0x10,0x08,0x0a,0x02,0x08,0x0a,0x0a,0x0e,0x12,0x0c,0x0a,0x02,0x08,0x00,0x0a,0x02,0x30,0x64,0x0a,0x02,0x08,0x06};
+  pb_istream_t istream = pb_istream_from_buffer(message, 34);
+
+  Message msg;
+  bool status = decode_input_message(&istream, &msg);
+
+  if(status != true) {
+    test.failed = 1;
+    test.message = "Decoding failed";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].unionCase != 0){
+    test.failed = 1;
+    test.message = "First operation is not map";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.map->expression->program[0].data._instruction != CONST){
+    test.failed = 1;
+    test.message = "First map instruction is not CONST";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.map->expression->program[1].data._int != 8){
+    printf("val: %d\n", msg.queries[0].operations[0].operation.map->expression->program[1].data._int);
+    test.failed = 1;
+    test.message = "Second map instructions value is not 8";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.map->expression->program[2].data._instruction != MUL){
+    printf("isntr: %d\n", msg.queries[0].operations[0].operation.map->expression->program[2].data._instruction);
+    test.failed = 1;
+    test.message = "Third map instruction is not MUL";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.map->attribute != 0){
+    test.failed = 1;
+    test.message = "Map attribute is not 0";
+    return test;
+  }
+
+  if(msg.queries[0].operations[1].unionCase != 1){
+    test.failed = 1;
+    test.message = "Second operation is not filter";
+    return test;
+  }
+
+  if(msg.queries[0].operations[1].operation.filter->predicate[0].program[0].data._instruction != CONST){
+    test.failed = 1;
+    test.message = "First filter instruction is not CONST";
+    return test;
+  }
+
+  if(msg.queries[0].operations[1].operation.filter->predicate[0].program[1].data._int != 50){
+    test.failed = 1;
+    test.message = "Second filter instructions value is not 50";
+    return test;
+  }
+
+  if(msg.queries[0].operations[1].operation.filter->predicate[0].program[2].data._instruction != GT){
+    test.failed = 1;
+    test.message = "Third filter instruction is not GT";
+    return test;
+  }
+
+  return test;
+
 }
