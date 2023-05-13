@@ -41,7 +41,6 @@ int main(void)
   
   //Run Tests
   runTests(ALL);
-  return 0;
 
   // Connect lorawan and receive first message
   // connect_lorawan();
