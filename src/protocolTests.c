@@ -12,7 +12,7 @@
 TestResult runProtocolTests(void){
   TestResult res;
 
-  const int numTests = 16;
+  const int numTests = 20;
   res.total = numTests;
   res.passed = 0;
   res.tests = malloc(sizeof(Test) * numTests);
@@ -35,6 +35,10 @@ TestResult runProtocolTests(void){
   res.tests[13] = og_decode_map();
   res.tests[14] = og_test_filter();
   res.tests[15] = og_test_map_filter_msg();
+  res.tests[16] = og_window_message();
+  res.tests[17] = og_multiple_queries();
+  res.tests[18] = og_output_single_response();
+  res.tests[19] = og_output_multiple_response();
 
   return res;
 }
@@ -1166,5 +1170,355 @@ Test og_test_map_filter_msg(void){
   }
 
   return test;
+}
 
+Test og_window_message(void){
+  Test test;
+  test.name = "Decoding window from original testsuite input";
+  test.failed = 0;
+
+  uint8_t message[] = {0x0a,0x10,0x0a,0x0e,0x1a,0x0c,0x08,0x03,0x10,0x01,0x18,0x04,0x28,0x01,0x30,0x02,0x38,0x03};
+  pb_istream_t istream = pb_istream_from_buffer(message, 18);
+
+  Message msg;
+  bool status = decode_input_message(&istream, &msg);
+
+  if(status != true) {
+    test.failed = 1;
+    test.message = "Decoding failed";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].unionCase != 2){
+    test.failed = 1;
+    test.message = "First operation is not window";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.window->aggregationType != COUNT){
+    test.failed = 1;
+    test.message = "Window aggregation type is not COUNT";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.window->sizeType != COUNTBASED){
+    test.failed = 1;
+    test.message = "Window size type is not COUNTBASED";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.window->size != 3){
+    test.failed = 1;
+    test.message = "Window size is not 3";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.window->startAttribute != 0){
+    test.failed = 1;
+    test.message = "Window start attribute is not 0";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.window->endAttribute != 1){
+    test.failed = 1;
+    test.message = "Window end attribute is not 1";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.window->resultAttribute != 2){
+    test.failed = 1;
+    test.message = "Window result attribute is not 2";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.window->readAttribute != 3){
+    test.failed = 1;
+    test.message = "Window read attribute is not 3";
+    return test;
+  }
+
+  return test;
+
+}
+
+Test og_multiple_queries(void){
+  Test test;
+  test.name = "Decoding multiple queries from original testsuite input";
+  test.failed = 0;
+
+  uint8_t message[] = {0x0a,0x0c,0x0a,0x0a,0x0a,0x08,0x0a,0x02,0x08,0x00,0x0a,0x02,0x10,0x08,0x0a,0x20,0x0a,0x0e,0x1a,0x0c,0x08,0x03,0x10,0x01,0x18,0x04,0x28,0x01,0x30,0x02,0x38,0x03,0x0a,0x0e,0x12,0x0c,0x0a,0x02,0x08,0x00,0x0a,0x02,0x30,0x64,0x0a,0x02,0x08,0x05};
+  pb_istream_t istream = pb_istream_from_buffer(message, 48);
+
+  Message msg;
+  bool status = decode_input_message(&istream, &msg);
+
+  if(status != true) {
+    test.failed = 1;
+    test.message = "Decoding failed";
+    return test;
+  }
+
+  if(msg.amount != 2){
+    test.failed = 1;
+    test.message = "Amount of queries is not 2";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].unionCase != 0){
+    test.failed = 1;
+    test.message = "First operation of first query is not map";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.map->attribute != 0){
+    test.failed = 1;
+    test.message = "Map attribute is not 0";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.map->expression->program[0].data._instruction != CONST){
+    test.failed = 1;
+    test.message = "First map instruction is not CONST";
+    return test;
+  }
+
+  if(msg.queries[0].operations[0].operation.map->expression->program[1].data._int != 8){
+    test.failed = 1;
+    test.message = "Second map instructions value is not 8";
+    return test;
+  }
+
+  if(msg.queries[1].operations[0].unionCase != 2){
+    test.failed = 1;
+    test.message = "First operation of second query is not window";
+    return test;
+  }
+
+  if(msg.queries[1].operations[0].operation.window->aggregationType != COUNT){
+    test.failed = 1;
+    test.message = "Window aggregation type is not COUNT";
+    return test;
+  }
+
+  if(msg.queries[1].operations[0].operation.window->sizeType != COUNTBASED){
+    test.failed = 1;
+    test.message = "Window size type is not COUNTBASED";
+    return test;
+  }
+
+  if(msg.queries[1].operations[0].operation.window->size != 3){
+    test.failed = 1;
+    test.message = "Window size is not 3";
+    return test;
+  }
+
+  if(msg.queries[1].operations[0].operation.window->startAttribute != 0){
+    test.failed = 1;
+    test.message = "Window start attribute is not 0";
+    return test;
+  }
+
+  if(msg.queries[1].operations[0].operation.window->endAttribute != 1){
+    test.failed = 1;
+    test.message = "Window end attribute is not 1";
+    return test;
+  }
+
+  if(msg.queries[1].operations[0].operation.window->resultAttribute != 2){
+    test.failed = 1;
+    test.message = "Window result attribute is not 2";
+    return test;
+  }
+
+  if(msg.queries[1].operations[0].operation.window->readAttribute != 3){
+    test.failed = 1;
+    test.message = "Window read attribute is not 3";
+    return test;
+  }
+
+  if(msg.queries[1].operations[1].unionCase != 1){
+    test.failed = 1;
+    test.message = "Second operation of second query is not filter";
+    return test;
+  }
+
+  if(msg.queries[1].operations[1].operation.filter->predicate[0].program[0].data._instruction != CONST){
+    test.failed = 1;
+    test.message = "First filter instruction is not CONST";
+    return test;
+  }
+
+  if(msg.queries[1].operations[1].operation.filter->predicate[0].program[1].data._int != 50){
+    test.failed = 1;
+    test.message = "Second filter instructions value is not 50";
+    return test;
+  }
+
+  if(msg.queries[1].operations[1].operation.filter->predicate[0].program[2].data._instruction != LT){
+    test.failed = 1;
+    test.message = "Third filter instruction is not LT";
+    return test;
+  }
+
+  return test;
+
+}
+
+Test og_output_single_response(void){
+  Test test;
+  test.name = "Encoding a single response from original testsuite input";
+  test.failed = 0;
+
+  uint8_t message[] = {0x0a,0x16,0x08,0x01,0x12,0x02,0x10,0x48,0x12,0x02,0x10,0x45,0x12,0x02,0x10,0x4c,0x12,0x02,0x10,0x4c,0x12,0x02,0x10,0x4f};
+
+  // Create Message
+  EndDeviceProtocol_Data datah;
+  datah.data._uint8 = 0x48;
+  datah.which_data = EndDeviceProtocol_Data__uint8_tag;
+
+  EndDeviceProtocol_Data datae;
+  datae.data._uint8 = 0x45;
+  datae.which_data = EndDeviceProtocol_Data__uint8_tag;
+
+  EndDeviceProtocol_Data datal;
+  datal.data._uint8 = 0x4c;
+  datal.which_data = EndDeviceProtocol_Data__uint8_tag;
+
+  EndDeviceProtocol_Data datal2;
+  datal2.data._uint8 = 0x4c;
+  datal2.which_data = EndDeviceProtocol_Data__uint8_tag;
+
+  EndDeviceProtocol_Data datao;
+  datao.data._uint8 = 0x4f;
+  datao.which_data = EndDeviceProtocol_Data__uint8_tag;
+
+  EndDeviceProtocol_Data data[] = {datah, datae, datal, datal2, datao};
+
+  EndDeviceProtocol_Output_QueryResponse response;
+  for(int i = 0; i < 5; i++){
+    response.response[i] = data[i];
+  }
+  response.id = 1;
+  response.response_count = 5;
+
+  EndDeviceProtocol_Output output;
+  output.responses[0] = response;
+  output.responses_count = 1;
+
+  // Encode Message
+  uint8_t buffer[1024];
+  int message_length;
+  
+  pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+  bool status = pb_encode(&stream, EndDeviceProtocol_Output_fields, &output);
+  message_length = stream.bytes_written;
+
+
+  if(!status){
+    test.failed = 1;
+    test.message = "Encoding failed";
+    return test;
+  }
+
+  // Compare Message
+  for(int i = 0; i < message_length; i++){
+    if(buffer[i] != message[i]){
+      test.failed = 1;
+      test.message = "Encoded message does not match expected message";
+      return test;
+    }
+  }
+  
+
+  return test;
+}
+
+Test og_output_multiple_response(void){
+  Test test;
+  test.name = "Decoding multiple responses from original testsuite input";
+  test.failed = 0;
+
+  uint8_t message[] = {0x0a,0x06,0x08,0x01,0x12,0x02,0x10,0x48,0x0a,0x06,0x08,0x02,0x12,0x02,0x10,0x45,0x0a,0x06,0x08,0x03,0x12,0x02,0x10,0x4c,0x0a,0x06,0x08,0x04,0x12,0x02,0x10,0x4c,0x0a,0x06,0x08,0x05,0x12,0x02,0x10,0x4f};
+
+  // Create Message
+  EndDeviceProtocol_Data datah;
+  datah.data._uint8 = 0x48;
+  datah.which_data = EndDeviceProtocol_Data__uint8_tag;
+
+  EndDeviceProtocol_Data datae;
+  datae.data._uint8 = 0x45;
+  datae.which_data = EndDeviceProtocol_Data__uint8_tag;
+
+  EndDeviceProtocol_Data datal;
+  datal.data._uint8 = 0x4c;
+  datal.which_data = EndDeviceProtocol_Data__uint8_tag;
+
+  EndDeviceProtocol_Data datal2;
+  datal2.data._uint8 = 0x4c;
+  datal2.which_data = EndDeviceProtocol_Data__uint8_tag;
+
+  EndDeviceProtocol_Data datao;
+  datao.data._uint8 = 0x4f;
+  datao.which_data = EndDeviceProtocol_Data__uint8_tag;
+
+  EndDeviceProtocol_Data data[] = {datah, datae, datal, datal2, datao};
+
+  EndDeviceProtocol_Output_QueryResponse response1;
+  response1.response[0] = data[0];
+  response1.id = 1;
+  response1.response_count = 1;
+
+  EndDeviceProtocol_Output_QueryResponse response2;
+  response2.response[0] = data[1];
+  response2.id = 2;
+  response2.response_count = 1;
+
+  EndDeviceProtocol_Output_QueryResponse response3;
+  response3.response[0] = data[2];
+  response3.id = 3;
+  response3.response_count = 1;
+
+  EndDeviceProtocol_Output_QueryResponse response4;
+  response4.response[0] = data[3];
+  response4.id = 4;
+  response4.response_count = 1;
+
+  EndDeviceProtocol_Output_QueryResponse response5;
+  response5.response[0] = data[4];
+  response5.id = 5;
+  response5.response_count = 1;
+
+  EndDeviceProtocol_Output_QueryResponse responses[] = {response1, response2, response3, response4, response5};
+
+  EndDeviceProtocol_Output output;
+  for(int i = 0; i < 5; i++){
+    output.responses[i] = responses[i];
+  }
+  output.responses_count = 5;
+
+  // Encode Message
+  uint8_t buffer[1024];
+  int message_length;
+  
+  pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+  bool status = pb_encode(&stream, EndDeviceProtocol_Output_fields, &output);
+  message_length = stream.bytes_written;
+
+
+  if(!status){
+    test.failed = 1;
+    test.message = "Encoding failed";
+    return test;
+  }
+
+  // Compare Message
+  for(int i = 0; i < message_length; i++){
+    if(buffer[i] != message[i]){
+      test.failed = 1;
+      test.message = "Encoded message does not match expected message";
+      return test;
+    }
+  }
+
+  return test;
 }

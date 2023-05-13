@@ -40,7 +40,7 @@ int main(void)
   puts("=====================================");
   
   //Run Tests
-  runTests(PROTOCOL);
+  runTests(ALL);
   return 0;
 
   // Connect lorawan and receive first message
