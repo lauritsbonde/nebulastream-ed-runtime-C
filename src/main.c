@@ -35,15 +35,22 @@
 void test_encode_input(void);
 void test_encode_output(void);
 
+
+#ifndef BOARD_NATIVE
 extern semtech_loramac_t loramac;
+#endif
+
 
 int main(void)
 {
-  ztimer_sleep(ZTIMER_SEC, 5);
+  ztimer_sleep(ZTIMER_SEC, 3);
   puts("NebulaStream End Decive Runtime");
   puts("=====================================");
   
-  //Run Tests
+  //Run Tests (Only on native)
+#ifdef BOARD_NATIVE
+  runTests(ALL);
+#endif
   runTests(ALL);
 
   // Connect lorawan and receive first message
@@ -52,41 +59,49 @@ int main(void)
 #endif
   
 
-  
-  // Mock message: Map operation with 1 + 1 expression 
-  //{0x0a, 0x18, 0x0a, 0x16, 0x0a, 0x14, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x08};
+#ifndef BOARD_NATIVE
+  // Trigger first send
+  uint8_t msg[1];
+  send_message(msg, (uint8_t) 1);
+#endif
 
   // Initialize global variable environment
   Env * global_env = init_env();
   
   while (1) {
     puts("Main loop iteration");
+    ztimer_sleep(ZTIMER_SEC, 5);
+
     
     // Check for received messages
+    #ifndef BOARD_NATIVE
     pb_istream_t istream = pb_istream_from_buffer(loramac.rx_data.payload, loramac.rx_data.payload_len);
+    #else
+    uint8_t buffer[1024];
+    pb_istream_t istream = pb_istream_from_buffer(buffer, sizeof(buffer));
+    // Since nothing is in the bugger it cannot be decoded.
+    #endif
     Message msg;
-    decode_input_message(&istream, &msg);
+    bool status = decode_input_message(&istream, &msg);
+    
+    if(!status){
+      printf("no message\n");
+      continue;
+    }
 
     // Execute queries
     OutputMessage out;
     executeQueries(msg, &out, global_env);
 
-    printf("out.responses[0].amount: %d\n", out.responses[0].amount);
-
     if (out.amount > 0) {
-      puts("encoding and sending output");
       uint8_t buffer[256];
       pb_ostream_t ostream = pb_ostream_from_buffer(buffer, sizeof(buffer));
       encode_output_message(&ostream, &out);
+      #ifndef BOARD_NATIVE
       send_message(buffer, (uint8_t)256);
+      #endif
     }
-
-    uint8_t test[5];
-    send_message(test, (uint8_t) 5);
-
-    ztimer_sleep(ZTIMER_SEC, 5);
   }
   
-
   return 0;
 }
