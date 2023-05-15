@@ -22,7 +22,7 @@ If you wish to flash using an alternative programming tool than the default for 
 For more information see documentation on [The riot build system](https://doc.riot-os.org/flashing.html#flashing-general).
 
 ## LoRaWAN
-For testing purposes the application can connect to The Things Network (TTN) over LoRaWAN. The following steps are required to set this up:
+The application can connect to The Things Network (TTN) over LoRaWAN. The following steps are required to set this up:
 
 - Login to TTN and open console.
 - Create a new application.
