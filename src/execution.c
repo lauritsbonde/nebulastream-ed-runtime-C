@@ -5,6 +5,7 @@
 #include "environment.h"
 
 void executeQueries(Message message, OutputMessage *out, Env * env){
+
   QueryResponse *responses = (QueryResponse *) malloc(sizeof(QueryResponse) * message.amount);
 
   for (int i = 0; i < message.amount; i++) {
@@ -29,6 +30,7 @@ void executeQuery(Query query, QueryResponse *out, Env * env){
       set_value(env, query.operations[i].operation.map->attribute, num);
 
       Instruction *instr = (Instruction *) malloc(sizeof(Instruction));
+
       instr->unionCase = num.unionCase;
       if (num.unionCase == 1){
         instr->data._uint32 = num.type._uint32;
@@ -41,6 +43,7 @@ void executeQuery(Query query, QueryResponse *out, Env * env){
       } else {
         printf("Unknown unioncase execute map!\n");
       }
+      
       out->response = instr;
       out->amount = 1;
     } else if(query.operations[i].unionCase == 1){

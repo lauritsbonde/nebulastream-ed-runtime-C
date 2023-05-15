@@ -54,22 +54,22 @@ message Data {
 message Output {
     message QueryResponse {
         int32 id = 1;
-        repeated Data response = 2 [(nanopb).max_count = 50];
+        repeated Data response = 2 [(nanopb).max_count = 20];
     }
     repeated QueryResponse responses = 1 [(nanopb).max_count = 5];
 }
 
 message Expression {
-    repeated Data instructions = 1 [(nanopb).max_count = 50];
+    repeated Data instructions = 1 [(nanopb).max_count = 25];
 }
 
 message MapOperation {
-    repeated Data function = 1 [(nanopb).max_count = 50];
+    repeated Data function = 1 [(nanopb).max_count = 25];
     int32 attribute = 2;
 }
 
 message FilterOperation {
-    repeated Data predicate = 1 [(nanopb).max_count = 50];
+    repeated Data predicate = 1 [(nanopb).max_count = 25];
 }
 
 enum WindowAggregationType {
@@ -105,9 +105,9 @@ message Operation {
 
 message Query {
     //bytes resultType = 1; //For some reason minipb breaks if I make this a repeated enum or int32
-    repeated Operation operations = 1 [(nanopb).max_count = 5];   
+    repeated Operation operations = 1 [(nanopb).max_count = 3];   
 }
 
 message Message {
-    repeated Query queries = 1 [(nanopb).max_count = 3];
+    repeated Query queries = 1 [(nanopb).max_count = 2];
 }

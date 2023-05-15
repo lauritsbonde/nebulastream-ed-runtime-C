@@ -15,7 +15,10 @@
 #include "number.h"
 #include "encodeInput.h"
 #include "encodeOutput.h"
-//#include "lora.h"
+#ifndef BOARD_NATIVE
+#include "lora.h"
+#include "semtech_loramac.h"
+#endif
 
 #include <time.h>
 
@@ -32,10 +35,11 @@
 void test_encode_input(void);
 void test_encode_output(void);
 
+extern semtech_loramac_t loramac;
 
 int main(void)
 {
-  ztimer_sleep(ZTIMER_SEC, 1);
+  ztimer_sleep(ZTIMER_SEC, 5);
   puts("NebulaStream End Decive Runtime");
   puts("=====================================");
   
@@ -43,49 +47,43 @@ int main(void)
   runTests(ALL);
 
   // Connect lorawan and receive first message
-  // connect_lorawan();
-  // receive_message();
+#ifndef BOARD_NATIVE
+  connect_lorawan();
+#endif
+  
 
+  
   // Mock message: Map operation with 1 + 1 expression 
-  uint8_t message[] = {0x0a, 0x18, 0x0a, 0x16, 0x0a, 0x14, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x08};
-
-  // decode message
-  pb_istream_t istream = pb_istream_from_buffer(message, 26);
-  Message msg;
-  decode_input_message(&istream, &msg);
+  //{0x0a, 0x18, 0x0a, 0x16, 0x0a, 0x14, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x08};
 
   // Initialize global variable environment
   Env * global_env = init_env();
-
-  // Execute queries from message
-  OutputMessage out;
-  executeQueries(msg, &out, global_env);
-
-  // Verify result of the single map operation of the first query
-  Instruction i = out.responses[0].response[0];
-  printf("Result: %d\n", i.data._int);
-
-  // Encode output
-  uint8_t buffer[128];
-  pb_ostream_t ostream = pb_ostream_from_buffer(buffer, sizeof(buffer));
-
-  encode_output_message(&ostream, out);
-  free_output_message(&out);
-
-  int message_length = ostream.bytes_written;
   
-  // Verify that output message gets encoded
-  for (int i = 0; i < message_length; ++i) {
-    printf("%02hx", buffer[i]);
-  }
-  printf("\n");
-
-  pb_istream_t test = pb_istream_from_buffer(buffer, message_length);
-  EndDeviceProtocol_Output response = EndDeviceProtocol_Output_init_zero;
-  decode_output_message(&test, &response);
-
   while (1) {
     puts("Main loop iteration");
+    
+    // Check for received messages
+    pb_istream_t istream = pb_istream_from_buffer(loramac.rx_data.payload, loramac.rx_data.payload_len);
+    Message msg;
+    decode_input_message(&istream, &msg);
+
+    // Execute queries
+    OutputMessage out;
+    executeQueries(msg, &out, global_env);
+
+    printf("out.responses[0].amount: %d\n", out.responses[0].amount);
+
+    if (out.amount > 0) {
+      puts("encoding and sending output");
+      uint8_t buffer[256];
+      pb_ostream_t ostream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+      encode_output_message(&ostream, &out);
+      send_message(buffer, (uint8_t)256);
+    }
+
+    uint8_t test[5];
+    send_message(test, (uint8_t) 5);
+
     ztimer_sleep(ZTIMER_SEC, 5);
   }
   
