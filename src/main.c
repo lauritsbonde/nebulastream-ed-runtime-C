@@ -20,6 +20,8 @@
 #include "semtech_loramac.h"
 #endif
 
+#include <time.h>
+
 //Testing
 #include "runTest.h"
 #include "testType.h"
@@ -42,12 +44,14 @@ int main(void)
   puts("=====================================");
   
   //Run Tests
-  //runTests(ALL);
+  runTests(ALL);
 
   // Connect lorawan and receive first message
 #ifndef BOARD_NATIVE
   connect_lorawan();
 #endif
+  
+
   
   // Mock message: Map operation with 1 + 1 expression 
   //{0x0a, 0x18, 0x0a, 0x16, 0x0a, 0x14, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x00, 0x0a, 0x02, 0x38, 0x02, 0x0a, 0x02, 0x08, 0x08};
@@ -62,7 +66,6 @@ int main(void)
     pb_istream_t istream = pb_istream_from_buffer(loramac.rx_data.payload, loramac.rx_data.payload_len);
     Message msg;
     decode_input_message(&istream, &msg);
-
 
     // Execute queries
     OutputMessage out;

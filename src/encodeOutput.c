@@ -90,24 +90,22 @@ void init_query_response(QueryResponse * query, EndDeviceProtocol_Output_QueryRe
 }
 
 
-void init_output(OutputMessage *_output, EndDeviceProtocol_Output *out) {
-  for (int i = 0; i < _output->amount; i++) {
+void init_output(OutputMessage _output, EndDeviceProtocol_Output *out) {
+  for (int i = 0; i < _output.amount; i++) {
     EndDeviceProtocol_Output_QueryResponse current = EndDeviceProtocol_Output_QueryResponse_init_zero;
-    init_query_response(&_output->responses[i], &current);
+    init_query_response(_output.responses[i], &current);
     out->responses[i] = current;
   }
-  out->responses_count = _output->amount;
-}
 
-EndDeviceProtocol_Output output = EndDeviceProtocol_Output_init_zero;
+  out->responses_count = _output.amount;
+}
 
 bool encode_output_message(pb_ostream_t *stream, OutputMessage * msg) {
   printf("UC in encode: %d\n", msg->responses[0].response[0].unionCase);
   bool status;
 
+  EndDeviceProtocol_Output output = EndDeviceProtocol_Output_init_zero;
   init_output(msg, &output);
-
-  printf("outputlength: %d\n", output.responses_count);
   
   status = pb_encode(stream, EndDeviceProtocol_Output_fields, &output);
   
